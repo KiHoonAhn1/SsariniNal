@@ -1,0 +1,143 @@
+
+/* 최상단  */
+.rank-title {
+  width: 50vw;
+  height: 15vh;
+  margin-top: 2vh;
+  margin-bottom: -3vh;
+}
+.rank-title-word {
+  position: relative;
+  top:-8vh;
+  font-size: 30px;
+  font-weight: bold;
+}
+.rank-button-over {
+  position: relative;
+  width: 8vw;
+  height: 6vh;
+  top:-10vh;
+  right: -40vw;
+  background-color: #CD5069;
+  border-radius: 15px;
+  color: white;
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
+}
+
+/* 하단 메인 컨테이너 */
+.rank-container {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: -5vh;
+}
+/* 컨테이너 속성 */
+.rank-container-background {
+  width: 90vw;
+  height: 75vh;
+  background-color: #192045;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+/* 금,은,동 랭킹 */
+.gold-place {
+  position: relative;
+  top: -6.9vh;
+  /* width: 23.4vw; */
+  width: 450px;
+  height: 109%;
+}
+.gold-team {
+  position: absolute;
+  top: 10.5vh;
+  left:165px;
+  font-size: 70px;
+}
+.silver-place {
+  position: relative;
+  margin-left: -50px;
+  /* top: -6vh; */
+  width: 200px;
+  height: 100%;
+}
+.bronze-place {
+  position: relative;
+  margin-left: -50px;
+  top: -1vh;
+  width: 450px;
+  height: 101%;
+}
+/* 금은동 팀명 */
+.gold-team {
+  position: absolute;
+  top: 10.5vh;
+  left:175px;
+  font-size: 70px;
+}
+.silver-team {
+  position: absolute;
+  top: 22vh;
+  left: 3px;
+  font-size: 60px;
+}
+.bronze-team {
+  position: absolute;
+  top: 30.2vh;
+  left:147px;
+  font-size: 50px;
+}
+
+/* 우측 나머지 팀 결과 */
+/* 컨테이너 */
+.rank-list {
+  /* background-color: aqua; */
+  border: 3px solid white;
+  border-radius: 20px;
+  width: 12vw;
+  height: 101%;
+  position: absolute;
+  right: 16vh;
+  top: 12vh;
+  height: 50vh;
+  /* right:-100%; */
+}
+/* 결과 등수 */
+.rank-list-item-rank {
+  color:white;
+  font-weight: bold;
+  font-size: 25px;
+}
+/* 결과 팀 */
+.rank-list-item-team {
+  margin-left:30px;
+  color:white;
+  font-weight: bold;
+  font-size: 25px;
+}
+
+/* 금은동 싸집이 컨테이너 */
+.ssazip-container {
+  position:relative
+}
+.gold-ssazip {
+  position: absolute;
+  bottom: 21vh;
+  left:150px;
+  width: 140px;
+}
+.silver-ssazip {
+  position: absolute;
+  bottom: 11.5vh;
+  left: -30px;
+  width: 160px;
+}
+.bronze-ssazip {
+  position: absolute;
+  bottom: 8vh;
+  right:150px;
+  width: 140px;
+}
