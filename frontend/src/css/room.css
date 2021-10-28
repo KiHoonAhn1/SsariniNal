@@ -1,0 +1,357 @@
+.waiting-room .room-title {
+  background-color: #fcc861;
+  height: 6vh;
+  margin-bottom: 1.5%;
+  padding-top: 8px;
+}
+.waiting-room .room-left {
+  margin-left: 3%;
+  float: left;
+  width: 60%;
+  height: 85vh;
+  background-color: #f0e9cc;
+  border-radius: 20px;
+  overflow: scroll;
+}
+
+.waiting-room .room-left::-webkit-scrollbar {
+  display: none;
+}
+
+.waiting-room .room-right {
+  margin-right: 3%;
+  float: right;
+  width: 31%;
+}
+
+.waiting-room .score {
+  background-color: #e39b8b;
+  height: 40vh;
+  border-radius: 20px;
+  margin-bottom: 5%;
+  padding-top: 3%;
+}
+
+.waiting-room .score-line {
+  border-radius: 20px;
+  border: 3px solid #f0e9cc;
+  height: 92%;
+  width: 90%;
+  margin: auto;
+  padding: auto;
+}
+
+.waiting-room .thumbnail {
+  background-color: #f0e9cc;
+  height: 28vh;
+  border-radius: 20px;
+  margin-bottom: 2%;
+  padding-top: 3%;
+}
+
+.waiting-room .thumbnail-line {
+  border-radius: 20px;
+  border: 3px solid #e39b8b;
+  height: 90%;
+  width: 90%;
+  margin: auto;
+  padding: auto;
+}
+
+.waiting-room .select-game {
+  background-color: #12739e;
+  width: 30%;
+  height: 7vh;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+  font-size: larger;
+  margin-right: 30px;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.waiting-room .final-score {
+  background-color: #cd5069;
+  width: 30%;
+  height: 7vh;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+  font-size: larger;
+  margin-right: 30px;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.waiting-room .play-btn {
+  color: #ffa500;
+  background-color: white;
+  border-radius: 100%;
+  cursor: pointer;
+  /* position: absolute; */
+}
+
+.waiting-room #score-title {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.waiting-room #score-team {
+  color: #f0e9cc;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-left: 60px;
+  margin-right: 20px;
+}
+.waiting-room #score-number {
+  font-weight: bold;
+  font-size: 1.4rem;
+  margin-left: 20px;
+  margin-right: 60px;
+}
+.waiting-room .score-block {
+  margin-bottom: 20px;
+  margin-left: 90px;
+  margin-right: 90px;
+}
+/* 팀 생성 버튼 10개 */
+.waiting-room .btn-group {
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+.waiting-room .btn-group > button {
+  color: white;
+  border-radius: 10px;
+  width: 45px;
+  height: 45px;
+  font-size: 1.4rem;
+  margin-right: 15px;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+}
+.waiting-room .btn {
+  background-color: #a5a0a0;
+  box-shadow: 3px 3px 3px #86806e inset;
+}
+.waiting-room .btn-1 {
+  background-color: #e00f0f;
+  box-shadow: 3px 3px 3px #a09a87;
+}
+.waiting-room .btn-2 {
+  background-color: #ffa500;
+  box-shadow: 3px 3px 3px #a09a87;
+}
+.waiting-room .btn-3 {
+  background-color: #edcd11;
+  box-shadow: 3px 3px 3px #a09a87;
+}
+.waiting-room .btn-4 {
+  background-color: #b0cf3d;
+  box-shadow: 3px 3px 3px #a09a87;
+}
+.waiting-room .btn-5 {
+  background-color: #058b05;
+  box-shadow: 3px 3px 3px #a09a87;
+}
+.waiting-room .btn-6 {
+  background-color: #9bc8da;
+  box-shadow: 3px 3px 3px #a09a87;
+}
+.waiting-room .btn-7 {
+  background-color: #2377f4;
+  box-shadow: 3px 3px 3px #a09a87;
+}
+.waiting-room .btn-8 {
+  background-color: #081765;
+  box-shadow: 3px 3px 3px #a09a87;
+}
+.waiting-room .btn-9 {
+  background-color: #eda3ed;
+  box-shadow: 3px 3px 3px #a09a87;
+}
+.waiting-room .btn-10 {
+  background-color: #7118ca;
+  box-shadow: 3px 3px 3px #a09a87;
+}
+
+.waiting-room .team {
+  color: white;
+  border-radius: 10px;
+  width: 45px;
+  height: 35px;
+  font-size: 1.4rem;
+  display: inline-block;
+  margin-right: 50px;
+  padding-top: 10px;
+}
+.waiting-room .team-name {
+  border-radius: 30px;
+  width: 122px;
+  height: 38px;
+  display: inline-block;
+  margin-right: 25px;
+  font-size: larger;
+  padding-top: 10px;
+}
+.waiting-room .team-group {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.waiting-room #team-1 {
+  background-color: #e00f0f;
+}
+.waiting-room #team-1-name {
+  background-color: #e87869;
+}
+.waiting-room .team-group-1 {
+  background-color: #edbda6;
+}
+.waiting-room #team-2 {
+  background-color: #ffa500;
+}
+.waiting-room #team-2-name {
+  background-color: #f8c662;
+}
+.waiting-room .team-group-2 {
+  background-color: #f3dba3;
+}
+.waiting-room #team-3 {
+  background-color: #edcd11;
+}
+.waiting-room #team-3-name {
+  background-color: #eedb6a;
+}
+.waiting-room .team-group-3 {
+  background-color: #efe3a6;
+}
+.waiting-room #team-4 {
+  background-color: #b0cf3d;
+}
+.waiting-room #team-4-name {
+  background-color: #c8db7e;
+}
+.waiting-room .team-group-4 {
+  background-color: #e3e3af;
+}
+.waiting-room #team-5 {
+  background-color: #058b05;
+}
+.waiting-room #team-5-name {
+  background-color: #74b563;
+}
+.waiting-room .team-group-5 {
+  background-color: #bed59e;
+}
+.waiting-room #team-6 {
+  background-color: #9bc8da;
+}
+.waiting-room #team-6-name {
+  background-color: #c4d8d3;
+}
+.waiting-room .team-group-6 {
+  background-color: #dfe2cf;
+}
+.waiting-room #team-7 {
+  background-color: #2377f4;
+}
+.waiting-room #team-7-name {
+  background-color: #85aee1;
+}
+.waiting-room .team-group-7 {
+  background-color: #c7d2d4;
+}
+.waiting-room #team-8 {
+  background-color: #081765;
+}
+.waiting-room #team-8-name {
+  background-color: #787c96;
+}
+.waiting-room .team-group-8 {
+  background-color: #c2bfb7;
+}
+.waiting-room #team-9 {
+  background-color: #eda3ed;
+}
+.waiting-room #team-9-name {
+  background-color: #eebbdd;
+}
+.waiting-room .team-group-9 {
+  background-color: #efdbd2;
+}
+.waiting-room #team-10 {
+  background-color: #7118ca;
+}
+.waiting-room #team-10-name {
+  background-color: #ae7dca;
+}
+.waiting-room .team-group-10 {
+  background-color: #d7bfcb;
+}
+.waiting-room #team-extra {
+  background-color: #a5a0a0;
+  color: white;
+  border-radius: 10px;
+  width: 65px;
+  height: 40px;
+  font-size: 1.4rem;
+  display: inline-block;
+  margin-right: 20px;
+  padding-top: 10px;
+}
+.waiting-room #team-extra-name {
+  background-color: #c3bfad;
+  margin-bottom: 10px;
+}
+.waiting-room .team-group-extra {
+  padding-top: 20px;
+  padding-bottom: 10px;
+  margin-left: 20px;
+}
+
+.waiting-room #game-title {
+  font-weight: bold;
+  font-size: 2rem;
+  float: left;
+  margin-left: 3%;
+}
+
+.waiting-room #game-code {
+  float: right;
+  margin-right: 3%;
+  font-size: 1.7rem;
+  padding-top: 3px;
+}
+
+.waiting-room #selectgame-name {
+  font-weight: bold;
+  font-size: 1.7rem;
+  margin-top: 40px;
+}
+
+.waiting-room #game-name {
+  font-weight: bold;
+  font-size: 1.7rem;
+  margin-top: 3px;
+}
+
+.waiting-room #ssafymind-img {
+  margin-top: 1.2%;
+}
+
+.waiting-room #speakgame-img {
+  margin-top: 1.2%;
+  width: 42%;
+  margin-left: -30px;
+}
+
+.waiting-room #jumpgame-img {
+  margin-top: 1.2%;
+  width: 32%;
+}
