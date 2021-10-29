@@ -23,21 +23,22 @@ public class QuizController {
     @ApiOperation(value = "싸피마인드 문제 요청")
     @GetMapping(value = "quiz/mind/{quiz_cnt}")
     public ResponseEntity<List<MindDto>> getMindQuiz(
-            @ApiParam(value = "요청 할 문제 수",example = "10")
+            @ApiParam(value = "요청 할 문제 수", example = "10")
             @PathVariable(name = "quiz_cnt") int quizCnt
-    ) throws Exception{
+    ) throws Exception {
         List<MindDto> mindquiz = quizService.getMindQuiz(quizCnt);
         return ResponseEntity.ok().body(mindquiz);
     }
+
     /*싸피마인드 문제만들기*/
     @ApiOperation(value = "싸피마인드 문제 만들기")
     @PostMapping(value = "quiz/mind")
     public void makeMindQuiz(
             @ApiParam(value = "문제 만들기")
             @RequestBody MindDto.RequestSetMindQuiz request
-    ) throws Exception{
+    ) throws Exception {
         System.out.println(request.toString());
-        System.out.println("=-==="+request.getContents());
+        System.out.println("=-===" + request.getContents());
         quizService.createMindQuiz(request);
     }
 
@@ -45,19 +46,20 @@ public class QuizController {
     @ApiOperation(value = "또박또박 문제 요청")
     @GetMapping(value = "quiz/speak/{quiz_cnt}")
     public ResponseEntity<List<SpeakDto>> getSpeakQuiz(
-            @ApiParam(value = "요청 할 문제 수",example = "10")
+            @ApiParam(value = "요청 할 문제 수", example = "10")
             @PathVariable(name = "quiz_cnt") int quizCnt
-    ) throws Exception{
+    ) throws Exception {
         List<SpeakDto> speakDtoList = quizService.getSpeakQuiz(quizCnt);
         return ResponseEntity.ok().body(speakDtoList);
     }
+
     /*또박또박 문제만들기*/
     @ApiOperation(value = "또박또박 문제 만들기")
     @PostMapping(value = "quiz/speak")
     public void makeMindQuiz(
             @ApiParam(value = "문제 만들기")
             @RequestBody SpeakDto.RequestSetSpeakQuiz request
-    ) throws Exception{
+    ) throws Exception {
         quizService.createSpeakQuiz(request);
     }
 

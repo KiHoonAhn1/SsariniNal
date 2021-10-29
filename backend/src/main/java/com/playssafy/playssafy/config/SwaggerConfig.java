@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ResponseMessageBuilder;
-import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ResponseMessage;
 import springfox.documentation.spi.DocumentationType;
@@ -30,8 +29,7 @@ public class SwaggerConfig {
         List<ResponseMessage> responseMessages = new ArrayList<>();
         responseMessages.add(new ResponseMessageBuilder().code(200).message("처리 완료.").build());
         responseMessages.add(new ResponseMessageBuilder().code(404).message("페이지를 찾을 수 없습니다.").build());
-        responseMessages.add(new ResponseMessageBuilder().code(500).message("서버 에러.").
-                responseModel(new ModelRef("Error")).build());
+        responseMessages.add(new ResponseMessageBuilder().code(500).message("서버 에러.").build());
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .consumes(getConsumeContentTypes()) // 입력 형식 정의(아래 메서드 참고)

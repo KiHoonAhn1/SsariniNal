@@ -33,7 +33,7 @@ public class UserController {
     // 3. 로그인
     @ApiOperation(value = "로그인 요청", notes = "로그인을 요청한다")
     @PostMapping(value = "login")
-    public UserInfo loginUser(@ApiParam(name = "userInfo", value = "사용자 아이디, 비밀번호")
+    public UserInfo loginUser(@ApiParam(name = "userInfo", value = "사용자 아이디, 비밀번호를 입력으로 받는다.")
                           @RequestBody UserInfo request) throws Exception {
         return userService.loginUser(request);
     }
