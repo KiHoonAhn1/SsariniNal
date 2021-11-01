@@ -28,7 +28,7 @@ const routes = [
     component: SignUp,
   },
   {
-    path: '/room/1',
+    path: '/room/:roomId',
     name: 'Room',
     component: Room,
   },

@@ -18,6 +18,7 @@
 <script>
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { chatURL } from '@/util/http-common.js';
 
 export default {
   name: 'Chat',
@@ -38,15 +39,11 @@ export default {
   methods: {
     // 소켓 연결
     socketConnect() {
-      // var socket = new SockJS('http://localhost:8080/example');
-      var socket = new SockJS('http://3.38.99.194:8080/example');
+      var socket = new SockJS(chatURL);
       this.stompClient = Stomp.over(socket);
       this.stompClient.connect('', this.onConnected, this.onError);
     },
     onConnected() {
-      console.log('/sub/chat/room/' + this.id);
-      console.log(this.stompClient);
-
       // 채널 구독
       this.stompClient.subscribe('/sub/chat/room/' + this.id, this.onMessageReceived);
 
@@ -79,9 +76,7 @@ export default {
       this.receivedMessages.push(receiveMessage);
     },
     // 에러 수신
-    onError() {
-      // console.log(error);
-    },
+    onError() {},
   },
 };
 </script>

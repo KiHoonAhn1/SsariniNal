@@ -10,15 +10,15 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class Room {
+public class ChatRoom {
     private String roomId; // 채팅 방 ID
     private String name; // 채팅 방 이름
     // Spring에서 WebSocket Connection이 맺어진 세션들을 HashSet으로 저장해둔다.
     private Set<WebSocketSession> sessions = new HashSet<>();
 
     // 채팅방 생성
-    public static Room create(String name) {
-        Room room = new Room();
+    public static ChatRoom create(String name) {
+        ChatRoom room = new ChatRoom();
 
         // UUID를 기반으로 방에 고유 식별자를 부여한다.
         room.roomId = UUID.randomUUID().toString();

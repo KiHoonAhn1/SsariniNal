@@ -7,3 +7,6 @@ export default axios.create({
     'Content-type': 'application/json',
   },
 });
+
+// export const chatURL = 'http://localhost:8080/playssafy';
+export const chatURL = 'http://3.38.99.194:8080/example';

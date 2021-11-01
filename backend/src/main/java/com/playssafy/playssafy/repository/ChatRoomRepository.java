@@ -1,6 +1,6 @@
 package com.playssafy.playssafy.repository;
 
-import com.playssafy.playssafy.dto.chat.Room;
+import com.playssafy.playssafy.dto.chat.ChatRoom;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
@@ -8,7 +8,7 @@ import java.util.*;
 
 @Repository
 public class ChatRoomRepository {
-    private Map<String, Room> roomMap;
+    private Map<String, ChatRoom> roomMap;
 
     /**
      * @PostConstruct
@@ -21,8 +21,8 @@ public class ChatRoomRepository {
     }
 
     // 1. 전체 채팅방 반환 메서드
-    public List<Room> findAllRooms() {
-        List<Room> result = new ArrayList<>(roomMap.values());
+    public List<ChatRoom> findAllRooms() {
+        List<ChatRoom> result = new ArrayList<>(roomMap.values());
         // 최신 순으로 반환한다.
         Collections.reverse(result);
 
@@ -30,15 +30,20 @@ public class ChatRoomRepository {
     }
 
     // 2. ID를 기반으로 채팅방을 찾는 메서드
-    public Room findRoomById(String id) {
+    public ChatRoom findRoomById(String id) {
         return roomMap.get(id);
     }
 
     // 3. 채팅방을 생성하는 메서드
-    public Room createRoom(String name) {
-        Room room = Room.create(name);
+    public ChatRoom createRoom(String name) {
+        ChatRoom room = ChatRoom.create(name);
         roomMap.put(room.getRoomId(), room);
 
         return room;
+    }
+
+    // 4. 채팅방을 제거하는 메서드
+    public void deleteRoom(String id){
+        roomMap.remove(id);
     }
 }

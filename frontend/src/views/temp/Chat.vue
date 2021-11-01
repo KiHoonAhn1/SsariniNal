@@ -11,6 +11,7 @@
           :to="{ name: 'Chat', query: { name: `${room.name}`, id: `${room.roomId}` } }"
           >{{ room.name }}</router-link
         >
+        <button @click="removeChatRoom(`${room.roomId}`)">방 삭제</button>
       </div>
     </div>
     <router-view></router-view>
@@ -54,6 +55,18 @@ export default {
           this.rooms = res.data;
         })
         .catch((err) => {}); // eslint-disable-line no-unused-vars
+    },
+    // 채팅방 제거
+    removeChatRoom(roomId) {
+      console.log(roomId);
+      axios({
+        method: 'delete',
+        url: `/chat/room/${roomId}`,
+      })
+        .then(() => {
+          this.getChatRooms();
+        })
+        .catch(() => {});
     },
   },
 };
