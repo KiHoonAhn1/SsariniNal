@@ -13,19 +13,20 @@
           <!-- 1등 -->
           <div class="ssazip-container">
             <img class="gold-place" src="../assets/gold-place2.png" alt="">
-            <img class="gold-ssazip" src="../assets/ssazip-gold.png" alt="">
+            <img class="gold-ssazip" src="../assets/gold-ssazip.png" alt="">
+            <!-- <img class="gold-crown" src="../assets/gold-crown.png" alt=""> -->
             <div class="gold-team">2팀</div>
           </div>
           <!-- 2등 -->
           <div class="ssazip-container">
             <img class="silver-place" src="../assets/silver-place2.png" alt="">
-            <img class="silver-ssazip" src="../assets/ssazip-silver.png" alt="">
+            <img class="silver-ssazip" src="../assets/silver-ssazip.png" alt="">
             <div class="silver-team">1팀</div>
           </div>
           <!-- 3등 -->
           <div class="ssazip-container">
             <img class="bronze-place" src="../assets/bronze-place2.png" alt="">
-            <img class="bronze-ssazip" src="../assets/ssazip-bronze.png" alt="">
+            <img class="bronze-ssazip" src="../assets/bronze-ssazip.png" alt="">
             <div class="bronze-team">3팀</div>
           </div>
           <!-- 우측 나머지팀 결과 -->
