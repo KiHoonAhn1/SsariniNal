@@ -8,6 +8,8 @@ import Room from '@/views/Room.vue';
 import CreateRoom from '@/views/CreateRoom.vue';
 import Temp from '@/views/temp/Chat.vue';
 import Chat from '@/views/temp/ChatRoom.vue';
+import SSazipJump from '@/views/SSazipJump.vue';
+import SSazipJumpTemp from '@/views/ssazipjump/SSazipJumpTemp.vue';
 import SsafyMind from '@/views/ssafymind/SsafyMind.vue'
 
 Vue.use(VueRouter);
@@ -68,6 +70,16 @@ const routes = [
     component: Chat,
     props: true,
   },
+  {
+    path: '/ssazipjump',
+    name: 'SSazipJump',
+    component: SSazipJump,
+  },
+  {
+    path: '/ssazipjumptemp',
+    name: 'SSazipJumpTemp',
+    component: SSazipJumpTemp,
+  }
 ];
 
 const router = new VueRouter({
