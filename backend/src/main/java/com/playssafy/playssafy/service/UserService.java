@@ -32,10 +32,10 @@ public class UserService {
 
     @Transactional
     public UserInfo loginUser(UserInfo request){
-        UserEntity userEntity = userRepository.findByUserIdAndUserPass(request.getUserId(), request.getUserPass());
+        UserEntity userEntity = userRepository.findByIdAndPass(request.getId(), request.getPass());
         if(userEntity == null)
             return null;
-        UserInfo userInfo = new UserInfo(userEntity.getUserId(), userEntity.getUserName(), userEntity.getUserPass());
+        UserInfo userInfo = new UserInfo(userEntity.getId(), userEntity.getName(), null);
         return userInfo;
     }
 }

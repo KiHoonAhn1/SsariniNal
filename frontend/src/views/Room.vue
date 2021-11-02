@@ -10,8 +10,7 @@
     />
 
     <div class="room-title">
-      <span id="game-title">서울 3반 모여라!</span>
-      <!-- <span id="game-code">입장코드 : {{ getRoomId }}</span> -->
+      <span id="game-title">{{ room.name }}</span>
       <span id="game-code"
         >입장코드
         <button @click="copyCode">복사</button>
@@ -179,8 +178,14 @@
         </div>
         <div class="thumbnail">
           <div class="thumbnail-line">
-            <div v-if="ssafymind_explain === false && speakgame_explain === false && jumpgame_explain === false">
-              <img id="ssazip-img" src="~@/assets/images/ssazip-create.png" alt="">
+            <div
+              v-if="
+                ssafymind_explain === false &&
+                  speakgame_explain === false &&
+                  jumpgame_explain === false
+              "
+            >
+              <img id="ssazip-img" src="~@/assets/images/ssazip-create.png" alt="" />
               <div id="selectgame-name">게임 선택 버튼을 눌러 게임을 고르세요~!</div>
             </div>
             <div v-if="ssafymind_explain === true">
@@ -211,6 +216,7 @@
 import '@/css/room.css';
 import SelectGameModal from '@/components/room/SelectGameModal';
 import { mapGetters } from 'vuex';
+import axios from '@/util/http-common.js';
 
 export default {
   name: 'Room',
@@ -233,10 +239,24 @@ export default {
       ssafymind_explain: false,
       speakgame_explain: false,
       jumpgame_explain: false,
+      // 방 정보
+      room: {
+        name: '',
+        host: '',
+        members: [],
+      },
     };
   },
+  // 방 생성시
+  created() {
+    this.readRoom();
+  },
+  // 방 삭제시
+  destroyed() {
+    this.exitRoom();
+  },
   computed: {
-    ...mapGetters(['getRoomId']),
+    ...mapGetters(['getRoomId', 'getUser']),
   },
   methods: {
     showTeam1: function() {
@@ -365,6 +385,31 @@ export default {
     copyCode() {
       this.$copyText(this.getRoomId);
       alert('입장 코드를 복사했습니다!');
+    },
+    // 입장 정보 불러오기
+    readRoom() {
+      axios({
+        method: 'get',
+        url: `/game/read/${this.getRoomId}`,
+      })
+        .then((res) => {
+          // 방 정보 초기화
+          let room = res.data;
+          this.room.name = room.name;
+          this.room.host = room.host;
+          this.room.members = room.members;
+          console.log(this.room);
+        })
+        .catch(() => {});
+    },
+    // 퇴장시 정보 처리
+    exitRoom() {
+      axios({
+        method: 'delete',
+        url: `/game/exit/${this.getRoomId}/${this.getUser.name}`,
+      })
+        .then(() => {})
+        .catch(() => {});
     },
   },
 };

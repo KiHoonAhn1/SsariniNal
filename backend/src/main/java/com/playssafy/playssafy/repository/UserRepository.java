@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository // JPA 저장소 선언
 public interface UserRepository extends JpaRepository<UserEntity, String> { // UserEntity 테이블에 접근하고, PK는 String.
-    UserEntity findByUserIdAndUserPass(String userid, String userpass);
+    UserEntity findByIdAndPass(String id, String pass);
 }

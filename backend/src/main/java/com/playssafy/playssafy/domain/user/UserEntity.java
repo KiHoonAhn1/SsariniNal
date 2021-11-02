@@ -13,14 +13,14 @@ import javax.persistence.Id;
 @ApiModel
 public class UserEntity {
     @Id // primary key
-    private String userId;
-    private String userName;
-    private String userPass;
+    private String id;
+    private String name;
+    private String pass;
 
     @Builder
-    public UserEntity(String userId, @NonNull String userName, String userPass){
-        this.userId = userId;
-        this.userName = userName;
-        this.userPass = userPass;
+    public UserEntity(String id, @NonNull String name, String pass){
+        this.id = id;
+        this.name = name;
+        this.pass = pass;
     }
 }

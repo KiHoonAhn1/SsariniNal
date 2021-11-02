@@ -7,27 +7,42 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   plugins: [
     createPersistedState({
-      paths: ['userId', 'userName', 'visitedRoomId'],
+      paths: ['user', 'isLogin', 'visitedRoomId'],
     }),
   ],
   state: {
-    userId: null, // 유저 아이디
-    userName: null, // 유저 이름
+    // 유저 정보
+    user: {
+      id: null, // 유저 아이디
+      name: null, // 유저 이름
+    },
+    isLogin: false,
     visitedRoomId: null, // 현재 유저가 방문중인 방의 ID
   },
   getters: {
+    // 유저 정보 가져오기
+    getUser(state) {
+      return state.user;
+    },
+    // 로그인 여부 가져오기
+    getIsLogin(state) {
+      return state.isLogin;
+    },
     // 방 ID 가져오기
     getRoomId(state) {
       return state.visitedRoomId;
     },
   },
   mutations: {
-    // 1. 방장 로그인 정보 저장
+    // 1. 로그인, 접속 정보 저장
     LOGIN(state, user) {
-      state.userId = user.userId;
-      state.userName = user.userName;
+      state.user.id = user.id;
+      state.user.name = user.name;
     },
-    // 2. 유저 방 접속시 정보 저장
+    // 2. 로그인 여부 변환
+    CHANGE_LOGIN_STATE(state, payload) {
+      state.isLogin = payload;
+    },
     // 3. 유저가 참여중인 방정보 갱신
     JOIN_ROOM(state, roomId) {
       state.visitedRoomId = roomId;
@@ -38,7 +53,10 @@ export default new Vuex.Store({
     login({ commit }, user) {
       commit('LOGIN', user);
     },
-    // 2. 유저 방 접속시 정보 저장
+    // 2. 로그인 여부 변환
+    changeLoginState({ commit }, payload) {
+      commit('CHANGE_LOGIN_STATE', payload);
+    },
     // 3. 유저가 참여중인 방정보 갱신
     joinRoom({ commit }, roomId) {
       commit('JOIN_ROOM', roomId);

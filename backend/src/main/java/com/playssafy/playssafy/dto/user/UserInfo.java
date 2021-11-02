@@ -15,16 +15,16 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserInfo {
     @ApiModelProperty(value = "사용자 아이디", required = true)
-    private String userId;
+    private String id;
     @ApiModelProperty(value = "사용자 이름", required = true)
-    private String userName;
+    private String name;
     @ApiModelProperty(value = "비밀번호", required = true)
-    private String userPass;
+    private String pass;
 
     public UserEntity toEntity(){
         UserEntity userEntity = UserEntity.builder()
-                .userId(userId).userName(userName)
-                .userPass(userPass).build();
+                .id(id).name(name)
+                .pass(pass).build();
         return userEntity;
     }
 }
