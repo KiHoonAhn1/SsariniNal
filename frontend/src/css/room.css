@@ -57,35 +57,25 @@
   margin: auto;
   padding: auto;
 }
-
-.waiting-room .select-game {
-  background-color: #12739e;
+.waiting-room .waiting-room-btn {
   width: 30%;
   height: 7vh;
   border-radius: 20px;
   color: white;
   font-weight: bold;
-  font-size: larger;
+  font-size: 1.5rem;
   margin-right: 30px;
   border: 0;
   outline: 0;
   cursor: pointer;
   display: inline-block;
 }
+.waiting-room .select-game {
+  background-color: #12739e;
+}
 
 .waiting-room .final-score {
   background-color: #cd5069;
-  width: 30%;
-  height: 7vh;
-  border-radius: 20px;
-  color: white;
-  font-weight: bold;
-  font-size: larger;
-  margin-right: 30px;
-  border: 0;
-  outline: 0;
-  cursor: pointer;
-  display: inline-block;
 }
 
 .waiting-room .play-btn {
@@ -210,8 +200,9 @@
 .waiting-room #team-1-name {
   background-color: #e87869;
 }
-.waiting-room .team-group-1 {
+.waiting-room .team-group-1:hover {
   background-color: #edbda6;
+  cursor: pointer;
 }
 .waiting-room #team-2 {
   background-color: #ffa500;
@@ -219,8 +210,9 @@
 .waiting-room #team-2-name {
   background-color: #f8c662;
 }
-.waiting-room .team-group-2 {
+.waiting-room .team-group-2:hover {
   background-color: #f3dba3;
+  cursor: pointer;
 }
 .waiting-room #team-3 {
   background-color: #edcd11;
@@ -228,8 +220,9 @@
 .waiting-room #team-3-name {
   background-color: #eedb6a;
 }
-.waiting-room .team-group-3 {
+.waiting-room .team-group-3:hover {
   background-color: #efe3a6;
+  cursor: pointer;
 }
 .waiting-room #team-4 {
   background-color: #b0cf3d;
@@ -237,8 +230,9 @@
 .waiting-room #team-4-name {
   background-color: #c8db7e;
 }
-.waiting-room .team-group-4 {
+.waiting-room .team-group-4:hover {
   background-color: #e3e3af;
+  cursor: pointer;
 }
 .waiting-room #team-5 {
   background-color: #058b05;
@@ -246,8 +240,9 @@
 .waiting-room #team-5-name {
   background-color: #74b563;
 }
-.waiting-room .team-group-5 {
+.waiting-room .team-group-5:hover {
   background-color: #bed59e;
+  cursor: pointer;
 }
 .waiting-room #team-6 {
   background-color: #9bc8da;
@@ -255,8 +250,9 @@
 .waiting-room #team-6-name {
   background-color: #c4d8d3;
 }
-.waiting-room .team-group-6 {
+.waiting-room .team-group-6:hover {
   background-color: #dfe2cf;
+  cursor: pointer;
 }
 .waiting-room #team-7 {
   background-color: #2377f4;
@@ -264,8 +260,9 @@
 .waiting-room #team-7-name {
   background-color: #85aee1;
 }
-.waiting-room .team-group-7 {
+.waiting-room .team-group-7:hover {
   background-color: #c7d2d4;
+  cursor: pointer;
 }
 .waiting-room #team-8 {
   background-color: #081765;
@@ -273,8 +270,9 @@
 .waiting-room #team-8-name {
   background-color: #787c96;
 }
-.waiting-room .team-group-8 {
+.waiting-room .team-group-8:hover {
   background-color: #c2bfb7;
+  cursor: pointer;
 }
 .waiting-room #team-9 {
   background-color: #eda3ed;
@@ -282,8 +280,9 @@
 .waiting-room #team-9-name {
   background-color: #eebbdd;
 }
-.waiting-room .team-group-9 {
+.waiting-room .team-group-9:hover {
   background-color: #efdbd2;
+  cursor: pointer;
 }
 .waiting-room #team-10 {
   background-color: #7118ca;
@@ -291,8 +290,9 @@
 .waiting-room #team-10-name {
   background-color: #ae7dca;
 }
-.waiting-room .team-group-10 {
+.waiting-room .team-group-10:hover {
   background-color: #d7bfcb;
+  cursor: pointer;
 }
 .waiting-room #team-extra {
   background-color: #a5a0a0;
@@ -324,7 +324,7 @@
 
 .waiting-room #game-code {
   float: right;
-  margin-right: 3%;
+  margin-right: 5%;
   font-size: 1.7rem;
   padding-top: 3px;
 }
@@ -332,9 +332,13 @@
 .waiting-room #selectgame-name {
   font-weight: bold;
   font-size: 1.7rem;
-  margin-top: 40px;
+  margin-top: -120px;
 }
 
+.waiting-room #ssazip-img {
+  width: 65%;
+  margin-top: -56px;
+}
 .waiting-room #game-name {
   font-weight: bold;
   font-size: 1.7rem;

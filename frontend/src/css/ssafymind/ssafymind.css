@@ -1,0 +1,59 @@
+.ssafymind .room-title {
+  background-color: #fcc861;
+  height: 6vh;
+  margin-bottom: 1.5%;
+  padding-top: 8px;
+}
+.ssafymind #game-title {
+  font-weight: bold;
+  font-size: 2rem;
+  margin-left: 3%;
+}
+.ssafymind .canvas {
+  width: 1000px;
+  height: 760px;
+  background-color: white;
+  border-radius: 20px;
+  margin-top: -15px;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.controls {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.controls .controls_btns {
+  margin-top: 10px;
+  margin-left: 20px;
+}
+.controls_btns button {
+  all: unset;
+  cursor: pointer;
+  background-color: #f0e9cc;
+  padding: 5px 0px;
+  width: 80px;
+  text-align: center;
+  border-radius: 10px;
+  margin-right: 5px;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+}
+.controls_btns button:active {
+  transform: scale(0.98);
+}
+.controls .controls_colors {
+  display: flex;
+}
+.controls_colors .controls_color {
+  width: 50px;
+  height: 50px;
+  margin-right: 5px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+.controls .controls_range {
+  margin-left: 20px;
+  margin-top: 15px;
+}

@@ -94,7 +94,7 @@
   margin-top: 6%;
   height: 38vh;
 }
-.wr-explain-ssafymind-title {
+.wr-explain-ssafygame-title {
   color: white;
   font-size: 2rem;
   font-weight: bold;
@@ -106,13 +106,6 @@
   font-size: 1.5rem;
   font-weight: bold;
   line-height: 40px;
-}
-.wr-explain-speakgame-title {
-  color: white;
-  font-size: 2rem;
-  font-weight: bold;
-  margin-top: 3%;
-  margin-bottom: 3%;
 }
 .wr-explain-speakgame-content {
   color: #442323;
@@ -128,16 +121,14 @@
   margin-top: 4%;
   margin-left: 5%;
 }
-.wr-explain-jumpgame-title {
-  color: white;
-  font-size: 2rem;
-  font-weight: bold;
-  margin-top: 3%;
-  margin-bottom: 3%;
-}
 .wr-explain-jumpgame-content {
   color: #442323;
   font-size: 1.5rem;
   font-weight: bold;
   line-height: 40px;
+}
+.waiting-room #ssazip-img-modal {
+  width: 40%;
+  margin-top: -50px;
+  /* margin-left: -100px; */
 }

@@ -15,11 +15,12 @@
 						</div>
 					</div>
 					<div class="wr-explainbox">
-						<div class="wr-explain-ssafymind-title" v-if="ssafymind_explain == false && speakgame_explain == false && jumpgame_explain == false">
+						<!-- <img id="ssazip-img-modal" src="~@/assets/images/ssazip-create.png" alt=""> -->
+						<div class="wr-explain-ssafygame-title" v-if="ssafymind_explain == false && speakgame_explain == false && jumpgame_explain == false">
 							위에 보이는 3가지 게임 중에 하나를 선택하세요!
 						</div>
 						<div class="wr-explain-ssafymind" v-if="ssafymind_explain == true">
-							<div class="wr-explain-ssafymind-title">
+							<div class="wr-explain-ssafygame-title">
 								"싸피마인드!"
 							</div>
 							<div class="wr-explain-ssafymind-content">
@@ -28,9 +29,12 @@
 								다른 팀원들은 그림을 보고 제시어를 맞춰주세요!<br>
 								주어진 시간 안에 최대한 많은 점수를 획득하세요.
 							</div>
+							<div class="wr-explain-speakgame-num">
+								팀 별 문제 수 : 
+							</div>
 						</div>
 						<div class="wr-explain-speakgame" v-if="speakgame_explain == true">
-							<div class="wr-explain-speakgame-title">
+							<div class="wr-explain-ssafygame-title">
 								"또박또박 말해요!"
 							</div>
 							<div class="wr-explain-speakgame-content">
@@ -44,7 +48,7 @@
 							</div>
 						</div>
 						<div class="wr-explain-jumpgame" v-if="jumpgame_explain == true">
-							<div class="wr-explain-jumpgame-title">
+							<div class="wr-explain-ssafygame-title">
 								"싸집이 점프!"
 							</div>
 							<div class="wr-explain-jumpgame-content">
