@@ -328,7 +328,17 @@
   font-size: 1.7rem;
   padding-top: 3px;
 }
-
+.waiting-room #game-code-btn {
+  font-weight: bold;
+  font-size: 1.4rem;
+  height: 4vh;
+  border-radius: 10px;
+  color: white;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  background-color: #cd5069;
+}
 .waiting-room #selectgame-name {
   font-weight: bold;
   font-size: 1.7rem;

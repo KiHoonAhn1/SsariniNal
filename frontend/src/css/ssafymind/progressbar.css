@@ -1,0 +1,24 @@
+.ssafymind-left .progress {
+  background-color: white;
+  height: 20px;
+  width: 92%;
+  margin-left: 4%;
+  position: relative;
+  border-radius: 10px;
+}
+.ssafymind-left .progress-bar {
+  position: absolute;
+  height: 100%;
+  background-color: #cd5069;
+  animation: progress-animation 7s linear infinite;
+  border-radius: 10px;
+}
+
+@keyframes progress-animation {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}

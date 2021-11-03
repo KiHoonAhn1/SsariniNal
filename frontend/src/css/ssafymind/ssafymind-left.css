@@ -1,0 +1,106 @@
+.ssafymind-left {
+  background-color: #f0e9cc;
+  width: 19%;
+  height: 90vh;
+  float: left;
+  margin-left: 1%;
+  border-radius: 20px;
+  margin-top: -15px;
+  margin-right: 1%;
+}
+#questionTeam-title {
+  font-weight: 600;
+  font-size: 1.7rem;
+  margin-top: 5%;
+  margin-bottom: 3%;
+}
+.team-members-group {
+  margin-top: 5%;
+  margin-bottom: 4%;
+}
+.ssafymind-left .team-members {
+  font-weight: 550;
+  font-size: 1.2rem;
+  margin-right: 7px;
+}
+.myturn {
+  background-color: #cd5069;
+  color: white;
+  border-radius: 30px;
+  padding: 8px 8px 5px 8px;
+}
+.next-team-block {
+  background-color: #f8f4e6;
+  border-radius: 20px;
+  border: 5px solid #9eacdd;
+  margin-top: 6%;
+  width: 90%;
+  margin-left: 3.5%;
+  height: 12vh;
+  margin-bottom: 4%;
+}
+.ssafymind-score {
+  background-color: #9eacdd;
+  width: 90%;
+  margin-left: 5%;
+  height: 48vh;
+  border-radius: 20px;
+  padding-top: 4%;
+}
+.ssafymind-score-line {
+  border-radius: 20px;
+  border: 3px solid #f0e9cc;
+  height: 95%;
+  width: 90%;
+  margin: auto;
+  font-size: 1.3rem;
+  font-weight: 550;
+}
+.next-team-ready {
+  font-weight: 550;
+  font-size: 1.3rem;
+  margin-right: 7px;
+  margin-top: 3%;
+  margin-bottom: 2.4%;
+}
+.ssafymind-left .winner {
+  margin-right: 50px;
+}
+.ssafymind-left .winner-team {
+  margin-right: 50px;
+  color: #f0e9cc;
+}
+.ssafymind-left .winner-block {
+  margin-top: 4.5%;
+}
+.ssafymind-left .winner-img {
+  width: 15%;
+}
+.ssafymind-left .winner-one {
+  color: #e6c93c;
+}
+.ssafymind-left .winner-two {
+  color: #d8d8d8;
+}
+.ssafymind-left .winner-three {
+  color: #d56649;
+}
+
+.ssafymind-left .team-img {
+  width: 15.5%;
+}
+
+@media screen and (max-height: 900px) {
+  .ssafymind-left .ssafymind-score-line {
+    font-size: 1.1rem;
+  }
+  .ssafymind-left #questionTeam-title {
+    font-size: 1.5rem;
+  }
+  .ssafymind-left .team-members {
+    font-size: 1rem;
+  }
+  .ssafymind-left .next-team-ready {
+    font-size: 1.1rem;
+  }
+}
