@@ -1,18 +1,48 @@
 <template>
   <div>
-    <canvas id="canvas"></canvas>
-    <div style="display:none;">
-      <img id="ssazip"
-          src="@/assets/ssazip-blue.png">
+    <div class="temp"></div>
+    <!-- 좌측 게임 -->
+    <div class="ssazip-game-container">
+      <div id="ssazipbg" class="ssazip-game-background">
+        <canvas id="canvas"></canvas>
+        <div style="display:none;">
+          <img id="ssazip" class="t"
+              src="@/assets/ssazip-blue.png">
+        </div>
+        <div style="display:none;">
+          <img id="obstacle1"
+              src="@/assets/obstacle1.png">
+        </div>
+      </div>
     </div>
-    <div style="display:none;">
-      <img id="obstacle1"
-          src="@/assets/obstacle1.png">
+    <!-- 우측 라운드 표시 -->
+    <div class="ssazip-round-container">
+      <div class="ssazip-round-inner-container">
+        <div class="ssazip-round-item" style="background-color:#9EACDD; margin-top:1.2vh;">
+          <div class="ssazip-round-item-inner">
+            <div class="ssazip-round-item-title">현재 게임</div>
+
+          </div>
+        </div>
+        <div class="ssazip-round-item" style="background-color:#EAC16F; margin-top:2.5vh;">
+          <div class="ssazip-round-item-inner">
+            <div class="ssazip-round-item-title">다음 게임</div>
+          </div>
+        </div>
+
+        <div class="ssazip-round-item" style="background-color:#B9D272;margin-top:2.5vh;">
+          <div class="ssazip-round-item-inner">
+            <div class="ssazip-round-item-title">3 ROUND</div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="now-playing-game"></div> -->
     </div>
   </div>
 </template>
 
 <script>
+import '../css/ssazip-jump.css'
 export default {
   name: "SSazipJump",
   data: function (){
@@ -32,14 +62,14 @@ export default {
       let ctx = canvas.getContext('2d')
       
       // 캔버스 크기 지정
-      canvas.width = window.innerWidth - 100
-      canvas.height = window.innerHeight - 100
+      canvas.width = window.innerWidth/100*71
+      canvas.height = window.innerHeight/100*40
       
       // 캐릭터 속성
       let dino = {
         // 캐릭터 등장 좌표(왼쪽 상단으로부터)
         x: 10,
-        y: 200,
+        y: window.innerHeight/100*25.3,
         // 캐릭터 크기
         width : 50,
         height : 50,
@@ -57,8 +87,8 @@ export default {
         // 장애물 생성기
         constructor(){
           // 장애물 등장 위치(왼쪽 상단으로부터)
-          this.x = 1000,
-          this.y = 200,
+          this.x = window.innerWidth/100*71,
+          this.y = window.innerHeight/100*25.3,
           this.width = 50,
           this.height = 50
         }
@@ -90,7 +120,7 @@ export default {
           this.fTime++;
         }
         // 장애물 생성시간 조정 (3초로 설정)
-        if (this.time%3 == 0){
+        if (this.time%2 == 0){
           this.time++;
           var cactus = new Cactus()
           cactusarr.push(cactus) //2초마다 생성되면 장애물 리스트에 넣기
@@ -103,7 +133,7 @@ export default {
               o.splice(i, 1)
             }
             //장애물 점점 왼쪽으로 가게 만들기
-            a.x -= 2; //장애물 속도
+            a.x -= 4; //장애물 속도
 
             checkCollision(dino, a); //모든 장애물과 충돌확인
 
@@ -115,12 +145,12 @@ export default {
           }
           // 착지
           if (this.jump == false) {
-            if(dino.y<200) {
+            if(dino.y<window.innerHeight/100*25.3) {
               dino.y += 4; //착지속도
             }
           }
           // 점프 중지
-          if (dino.y<=70){
+          if (dino.y<=100){
             this.jump = false;
           }
         }
@@ -131,7 +161,7 @@ export default {
       //스페이스바 누르면 점프값 변경 
       document.addEventListener('keydown', (e) =>{
         //착지해야만 점프가능
-        if(dino.y== 200){
+        if(dino.y== window.innerHeight/100*25.3){
           if (e.code === 'Space'){
             this.jump = true;
           }
@@ -142,8 +172,11 @@ export default {
       const checkCollision =(dino, cactus)=>{
         let xDiff = cactus.x - (dino.x +dino.width);
         let yDiff = cactus.y - (dino.y + dino.height);
+        const ssazipbg = document.getElementById("ssazipbg")
         if (xDiff < -10 && yDiff < -10){
           cancelAnimationFrame(animation) //게임중단
+          ssazipbg.style.animation = 'paused';
+
         }
       }
       },

@@ -1,5 +1,83 @@
+/* 좌측 게임컨테이너 */
 .ssazip-game-container {
-  width:10vw;
-  height:4vh;
+  position: absolute;
+  top: 10.5vh;
+  width:73.5vw;
+  height:86.5vh;
+  left: 1.5vw;
   background-color: #F0E9CC ;
+  border-radius: 15px;
+  display: inline-block;
+}
+
+/* .t{
+
+} */
+
+.ssazip-game-background{
+  position: absolute;
+  top:2vh;
+  left:2.6vh;
+  background: url('../assets/ssazipjump-game-bg2.png') 0 center / 73vw repeat-x;
+  animation: movebg 5.9s linear infinite;
+  background-size: 73vw 40vh;
+  width: 71vw;
+  height: 40vh;
+}
+@keyframes movebg {
+  0% {background-position: 0 center;}
+  100% {background-position:-73vw center;}
+}
+
+/* 우측 라운드표시 컨테이너 */
+.ssazip-round-container {
+  position: absolute;
+  top: 10.5vh;
+  width:21vw;
+  height:86.5vh;
+  margin-left: 1.5vw;
+  right: 1.5vw;
+  background-color: #F0E9CC ;
+  border-radius: 15px;
+  display: inline-block;
+}
+/* 우측 라운드표시의 이너 컨테이너(간격) */
+.ssazip-round-inner-container {
+  width:19vw; 
+  height: 82vh;  
+  display:inline-block; 
+  margin-top:2vh
+}
+/* 개별 라운드표지판 */
+.ssazip-round-item {
+  width:18vw; 
+  height: 25vh;    
+  display:inline-block; 
+   
+  border-radius:10px;
+}
+/* 개별 라운드표지판 이너 테두리 */
+.ssazip-round-item-inner{
+  width:16vw; 
+  height:21vh; 
+  border: 2px solid #FFFFFF; 
+  display:inline-block; 
+  margin-top:1.8vh; 
+  border-radius:10px;
+}
+.ssazip-round-item-title{
+  color:#FFFFFF;
+  margin-top: 1vh;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+
+
+
+.temp {
+  background-color: #fcc861;
+  height: 6vh;
+  margin-bottom: 1.5%;
+  padding-top: 8px;
 }
