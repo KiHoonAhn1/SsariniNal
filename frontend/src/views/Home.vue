@@ -33,6 +33,7 @@
 import '@/css/home.css';
 import { mapActions } from 'vuex';
 import axios from '@/util/http-common.js';
+import { uuidv4 } from '@/util/util.js';
 
 export default {
   name: 'Home',
@@ -58,8 +59,8 @@ export default {
         return;
       }
       axios({
-        method: 'post',
-        url: `/game/join/${this.roomId}/${this.user.name}`,
+        method: 'get',
+        url: `/game/exist/${this.roomId}`,
       })
         .then((res) => {
           let exist = res.data;
@@ -70,6 +71,7 @@ export default {
           }
           // 방이 존재하는 경우
           // 유저 정보 저장
+          this.user.id = uuidv4();
           this.login(this.user);
           // 유저가 참여중인 방 정보 갱신
           this.joinRoom(this.roomId);

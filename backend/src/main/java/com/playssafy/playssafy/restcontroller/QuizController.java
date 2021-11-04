@@ -1,4 +1,4 @@
-package com.playssafy.playssafy.controller;
+package com.playssafy.playssafy.restcontroller;
 
 import com.playssafy.playssafy.domain.Quiz.MindDto;
 import com.playssafy.playssafy.domain.Quiz.SpeakDto;

@@ -11,7 +11,8 @@
 
     <div class="room-title">
       <span id="game-title">{{ room.name }}</span>
-      <span id="game-code">입장코드
+      <span id="game-code"
+        >입장코드
         <button @click="copyCode" id="game-code-btn">복사</button>
       </span>
     </div>
@@ -215,7 +216,7 @@
 import '@/css/room.css';
 import SelectGameModal from '@/components/room/SelectGameModal';
 import { mapGetters } from 'vuex';
-import axios from '@/util/http-common.js';
+import { socketConnect } from '@/util/socket-common.js';
 
 export default {
   name: 'Room',
@@ -244,15 +245,20 @@ export default {
         host: '',
         members: [],
       },
+      // socket Client
+      stompClient: null,
     };
   },
   // 방 생성시
   created() {
-    this.readRoom();
+    // 방 정보 불러오기
+    // this.readRoom();
+    // 소켓 연결
+    this.stompClient = socketConnect(this.onConnected, this.onError);
   },
   // 방 삭제시
   destroyed() {
-    this.exitRoom();
+    this.onDisconnect();
   },
   computed: {
     ...mapGetters(['getRoomId', 'getUser']),
@@ -385,31 +391,54 @@ export default {
       this.$copyText(this.getRoomId);
       alert('입장 코드를 복사했습니다!');
     },
-    // 입장 정보 불러오기
-    readRoom() {
-      axios({
-        method: 'get',
-        url: `/game/read/${this.getRoomId}`,
-      })
-        .then((res) => {
-          // 방 정보 초기화
-          let room = res.data;
-          this.room.name = room.name;
-          this.room.host = room.host;
-          this.room.members = room.members;
-          console.log(this.room);
+    /**
+     * Socket 요청들
+     */
+    // 게임 방 입장 : 정보 구독 및 유저 정보 전송
+    onConnected() {
+      this.stompClient.subscribe('/game/room/' + this.getRoomId, this.onMessageReceived);
+      this.stompClient.send(
+        '/pub/game/enter',
+        {},
+        JSON.stringify({
+          roomId: this.getRoomId,
+          participantId: this.getUser.id,
+          participantName: this.getUser.name,
         })
-        .catch(() => {});
+      );
     },
-    // 퇴장시 정보 처리
-    exitRoom() {
-      axios({
-        method: 'delete',
-        url: `/game/exit/${this.getRoomId}/${this.getUser.name}`,
-      })
-        .then(() => {})
-        .catch(() => {});
+    // 메세지 수신
+    onMessageReceived(payload) {
+      // 방장이 퇴장한 경우
+      if (payload.body == 'exit') {
+        // 모든 참가자의 연결을 끊고
+        this.onDisconnect();
+        alert('방장이 퇴장하여 게임이 종료됩니다!');
+        // 모든 참가자 내보내기
+        this.$router.push('/room');
+        return;
+      }
+      let room = JSON.parse(payload.body);
+      this.room.name = room.name;
+      this.room.host = room.host;
+      this.room.members = room.members;
+      console.log(this.room);
     },
+    onError() {},
+    // 게임 방 퇴장 소켓 연결 해제 및 게임 방 유저 정보 삭제
+    onDisconnect() {
+      this.stompClient.send(
+        '/pub/game/exit',
+        {},
+        JSON.stringify({
+          roomId: this.getRoomId,
+          participantId: this.getUser.id,
+          participantName: this.getUser.name,
+        })
+      );
+      // this.stompClient.socketDisconnect;
+    },
+    // 방장이 퇴장하는 경우
   },
 };
 </script>

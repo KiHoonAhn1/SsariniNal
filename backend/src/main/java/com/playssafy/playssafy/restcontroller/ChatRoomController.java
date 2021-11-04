@@ -1,4 +1,4 @@
-package com.playssafy.playssafy.controller;
+package com.playssafy.playssafy.restcontroller;
 
 import com.playssafy.playssafy.dto.chat.ChatRoom;
 import com.playssafy.playssafy.repository.ChatRoomRepository;

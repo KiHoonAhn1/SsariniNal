@@ -19,6 +19,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer { // We
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/pub"); // Client가 Message를 퍼블리싱할 주소(메세지를 보내는 곳)
-        // registry.enableSimpleBroker("/sub");를 사용하여 Client가 구독할 채널 주소를 설정해줄 수 있다.
     }
 }

@@ -51,7 +51,12 @@ export default {
     createGameRoom() {
       axios({
         method: 'post',
-        url: `/game/create/${this.roomName}/${this.getUser.id}`,
+        url: `/game/create/${this.roomName}`,
+        data: {
+          roomId: this.getRoomId,
+          participantId: this.getUser.id,
+          participantName: this.getUser.name,
+        },
       })
         .then((res) => {
           // room 정보 받기

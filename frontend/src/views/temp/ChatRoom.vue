@@ -16,9 +16,7 @@
 </template>
 
 <script>
-import { Stomp } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-import { chatURL } from '@/util/http-common.js';
+import { socketConnect } from '@/util/socket-common.js';
 
 export default {
   name: 'Chat',
@@ -34,20 +32,13 @@ export default {
   created() {
     this.id = this.$route.query.id;
     this.name = this.$route.query.name;
-    this.socketConnect();
+    this.stompClient = socketConnect(this.onConnected, this.onError);
+    console.log(this.stompClient);
   },
   methods: {
-    // 소켓 연결
-    socketConnect() {
-      var socket = new SockJS(chatURL);
-      this.stompClient = Stomp.over(socket);
-      this.stompClient.connect('', this.onConnected, this.onError);
-    },
+    // 채팅 채널 구독 및 입장 메세지 출력
     onConnected() {
-      // 채널 구독
-      this.stompClient.subscribe('/sub/chat/room/' + this.id, this.onMessageReceived);
-
-      // 입장 메세지 출력
+      this.stompClient.subscribe('/chat/room/' + this.id, this.onMessageReceived);
       this.stompClient.send(
         '/pub/chat/message',
         {},
@@ -71,7 +62,6 @@ export default {
     },
     // 메세지 수신
     onMessageReceived(payload) {
-      console.log(payload);
       let receiveMessage = JSON.parse(payload.body);
       this.receivedMessages.push(receiveMessage);
     },
