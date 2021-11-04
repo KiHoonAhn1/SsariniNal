@@ -1,5 +1,5 @@
 <template>
-  <div>
+	<div>
 		<div class="progress">
 			<div class="progress-bar"></div>
 		</div>
@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import "@/css/ssafymind/progressbar.css";
+import "@/components/css/ssafymind/progressbar.css";
 export default {
 	name: 'ProgressBar',
 }

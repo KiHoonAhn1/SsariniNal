@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import "@/css/ssafymind/ssafymind-right.css";
+import "@/components/css/ssafymind/ssafymind-right.css";
 export default {
   name: 'SsafymindRight',
 }

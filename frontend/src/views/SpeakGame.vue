@@ -3,7 +3,7 @@
     <div class="speak-game">
 		<Header v-bind:gameTitle="'또박또박 말해요'"/>
       <div class="game-screen">
-        <SsafymindLeft game="speak"/>
+        <GameStatus game="speak"/>
         <div class="game-board">
           <p class="sentence">"삼성 청년 소프트웨어 아카데미"</p>
           <div v-for="(member, i) in teamMember" :key="i" class="sentence-board">
@@ -51,13 +51,13 @@
 <script>
 import "@/css/speak-game.css"
 import Header from '@/components/common/Header.vue'
-import SsafymindLeft from '@/components/ssafymind/SsafymindLeft.vue';
+import GameStatus from '@/components/GameStatus.vue';
 
 export default {
   name: "SpeakGame",
   components: {
     Header,
-    SsafymindLeft
+    GameStatus
   },
   data: () => {
     return {

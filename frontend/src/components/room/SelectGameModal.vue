@@ -66,7 +66,7 @@
 	</div>
 </template>
 <script>
-import '@/css/selectGameModal.css'
+import '@/components/css/selectGameModal.css'
 export default {
 	name: 'SelectGameModal',
 	data: function(){

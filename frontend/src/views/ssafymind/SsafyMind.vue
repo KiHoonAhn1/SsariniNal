@@ -4,9 +4,13 @@
       <span id="game-title">싸피마인드</span>
     </div> -->
 		<Header v-bind:gameTitle="'싸피마인드'"/>
-		<SsafymindLeft />
+		<GameStatus />
 		<div class="ssafymind-center">
+			<div class="question-word">문제: SSA.zip</div>
+			<Timer />
+			<div class="turn-notice">당신 차례 입니다! 빨리 그리세요!</div>
 			<canvas id="jsCanvas" class="canvas" v-on:mousemove="onMouseMove" v-on:mousedown="startPainting" v-on:mouseup="stopPainting" v-on:mouseleave="stopPainting" v-on:mouseenter="mouseEnter" v-on:contextmenu="handleCM"></canvas>
+			<!-- <div class="controls-stop"></div> -->
 			<div class="controls">
 				<div class="controls_colors" id="jsColors">
 					<div class="controls_color jsColor" style="background-color:#E00F0F"></div>
@@ -35,22 +39,26 @@
 </template>
 <script>
 import Header from '@/components/common/Header.vue'
-import SsafymindLeft from '@/components/ssafymind/SsafymindLeft.vue'
+import GameStatus from '@/components/GameStatus.vue'
 import SsafymindRight from '@/components/ssafymind/SsafymindRight.vue'
-import "@/css/ssafymind/ssafymind.css";
+import Timer from '@/components/common/Timer.vue'
+import "@/css/ssafymind.css";
 
 export default {
   name: 'SsafyMind',
 	components: {
     Header,
-		SsafymindLeft,
+		GameStatus,
 		SsafymindRight,
+		Timer
   },
 	data: function() {
 		return {
 			painting: false,
 			clickmouse: false,
 			filling: false,
+			drawData:[],
+			colorData:[],
 		}
 	},
 	methods: {
@@ -65,17 +73,21 @@ export default {
 			const ctx = canvas.getContext("2d");
 			const x = event.offsetX;
 			const y = event.offsetY;
+			const size = ctx.lineWidth;
 			// console.log(x, y)
-			// console.log(ctx)
+			// console.log(event)
 
 			if(!this.painting){
 				ctx.beginPath(); // 새로운 경로를 만든다. 경로가 생성되었다면, 이후 그리기 명령들은 경로를 구성하고 만드는 데에 사용된다.
 				ctx.moveTo(x, y); // 해당 좌표로 펜을 이동하는 메소드
+
 				// console.log(ctx.beginPath)
 			}else{
 				ctx.lineTo(x, y); // 현재 위치에서 해당 좌표까지 선 그리기
 				ctx.stroke(); // 윤곽선을 이용해 선 그리기
-				// console.log(ctx.stroke)
+				// console.log(x, y)
+				this.drawData.push({x, y, size});
+				console.log(this.drawData)
 			}
 		},
 		mouseEnter: function(){
@@ -97,6 +109,8 @@ export default {
 			const color = event.target.style.backgroundColor;
 			ctx.strokeStyle = color;
 			ctx.fillStyle = color;
+			// this.colorData.push({color});
+			// console.log(this.colorData)
 		},
 		handleRangeChange: function(event){
 			const canvas = document.getElementById("jsCanvas");
@@ -130,6 +144,26 @@ export default {
 			event.preventDefault();
 		},
 		handleSave:function(){
+			// const canvas = document.getElementById("jsCanvas");
+			// const ctx = canvas.getContext("2d");
+			// // ctx.clearRect(0, 0, 1100, 760)
+			// // ctx.lineWidth = 30;
+			// ctx.strokeStyle = "red";
+			// ctx.beginPath();
+			// if(this.drawData.length > 0){
+			// 	this.drawData.forEach((lookline) => {
+			// 		ctx.lineWidth = lookline.size;
+			// 		// ctx.fillRect(0,0,lookline.x, lookline.y)
+			// 		ctx.moveTo(lookline.x+50, lookline.y+50);
+			// 		ctx.lineTo(lookline.x+50, lookline.y+50);
+			// 		// console.log(lookline.x, lookline.y, lookline.size);
+			// 		console.log(ctx.lineWidth)
+			// 	})
+			// }
+			// // console.log(this.drawData.length)
+			// ctx.stroke();
+			// ctx.closePath();
+
 			const canvas = document.getElementById("jsCanvas");
 			const image = canvas.toDataURL();
 			const link = document.createElement("a");
