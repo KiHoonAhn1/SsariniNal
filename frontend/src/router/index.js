@@ -11,7 +11,7 @@ import Temp from '@/views/temp/Chat.vue';
 import Chat from '@/views/temp/ChatRoom.vue';
 import SSazipJump from '@/views/SSazipJump.vue';
 import SSazipJumpTemp from '@/views/ssazipjump/SSazipJumpTemp.vue';
-import SsafyMind from '@/views/ssafymind/SsafyMind.vue'
+import SsafyMind from '@/views/ssafymind/SsafyMind.vue';
 
 Vue.use(VueRouter);
 
@@ -89,9 +89,9 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes,
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes,
 });
 
 export default router;

@@ -1,6 +1,8 @@
 package com.playssafy.playssafy.dto.chat;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -15,6 +17,7 @@ public class ChatRoom {
     private String name; // 채팅 방 이름
     // Spring에서 WebSocket Connection이 맺어진 세션들을 HashSet으로 저장해둔다.
     private Set<WebSocketSession> sessions = new HashSet<>();
+
 
     // 채팅방 생성
     public static ChatRoom create(String name) {

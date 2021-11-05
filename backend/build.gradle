@@ -38,8 +38,14 @@ dependencies {
 
 	// WebSocket
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: '2.5.3'
+
+	// redis
+//	implementation  'org.springframework.boot:spring-boot-starter-data-redis:2.3.1.RELEASE'
+// https://mvnrepository.com/artifact/org.springframework.data/spring-data-redis
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '2.4.10'
 }
 
 test {
 	useJUnitPlatform()
 }
+

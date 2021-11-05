@@ -9,4 +9,6 @@ public class ChatMessage {
     private String roomId; // 속한 채팅방 ID
     private String writer; // 작성자
     private String message; // 메세지
+
+    //방장여부
 }
