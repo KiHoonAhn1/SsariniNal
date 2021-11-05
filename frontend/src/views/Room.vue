@@ -251,8 +251,6 @@ export default {
   },
   // 방 생성시
   created() {
-    // 방 정보 불러오기
-    // this.readRoom();
     // 소켓 연결
     this.stompClient = socketConnect(this.onConnected, this.onError);
   },
@@ -404,6 +402,7 @@ export default {
           roomId: this.getRoomId,
           participantId: this.getUser.id,
           participantName: this.getUser.name,
+          teamNo: 0,
         })
       );
     },
@@ -436,9 +435,8 @@ export default {
           participantName: this.getUser.name,
         })
       );
-      // this.stompClient.socketDisconnect;
+      this.stompClient.disconnect();
     },
-    // 방장이 퇴장하는 경우
   },
 };
 </script>

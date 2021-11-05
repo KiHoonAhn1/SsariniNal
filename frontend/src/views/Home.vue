@@ -49,8 +49,8 @@ export default {
   methods: {
     joinGameRoom() {
       // 닉네임 길이는 3글자 이상, 15글자 이하로 한다.
-      if (3 > this.user.name.length || this.user.name.length > 15) {
-        alert('닉네임 길이는 3글자 이상, 15글자 이하로 설정해주세요.');
+      if (1 > this.user.name.length || this.user.name.length > 4) {
+        alert('닉네임 길이는 1글자 이상, 4글자 이하로 설정해주세요.');
         return;
       }
       // roomId를 입력하지 않는 경우 참여가 불가능하다
@@ -58,18 +58,29 @@ export default {
         alert('참가 코드를 입력하세요!');
         return;
       }
+      // 서버 레벨 입장 가능 여부 확인 로직
       axios({
-        method: 'get',
-        url: `/game/exist/${this.roomId}`,
+        method: 'post',
+        url: `/game/user`,
+        data: { roomId: this.roomId, participantName: this.user.name },
       })
         .then((res) => {
           let exist = res.data;
-          // 방이 존재하지 않는 경우 존재하지 않음을 표시
-          if (!exist) {
-            alert('해당 방은 존재하지 않습니다. 입장코드를 확인하세요!');
+          // 방이 존재하지 않는 경우
+          if (exist == 0) {
+            alert('해당 방은 존재하지 않습니다. 입장코드를 확인해주세요!');
             return;
           }
-          // 방이 존재하는 경우
+          // 입장 제한인원을 초과한 경우
+          else if (exist == 1) {
+            alert('해당 방의 입장 가능 정원을 초과했습니다!');
+            return;
+          }
+          // 동일한 이름의 참가자가 존재하는 경우
+          else if (exist == 2) {
+            alert('동일한 이름을 가진 참가자가 존재합니다. 이름을 수정해주세요!');
+            return;
+          }
           // 유저 정보 저장
           this.user.id = uuidv4();
           this.login(this.user);
