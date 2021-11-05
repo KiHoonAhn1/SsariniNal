@@ -21,7 +21,7 @@ public class ParticipantController {
     @MessageMapping(value = "/game/enter")
     public void enter(Participant participant) {
         // 유저 입장 후 해당 게임 방 정보 얻기
-        GameRoom gameRoom = gameRoomRepository.joinRoom(participant);
+        GameRoom gameRoom = gameRoomRepository.enterRoom(participant);
         // 게임 방이 없는 경우 입장할 방이 없다고 알려주기
         if (gameRoom == null) {
             template.convertAndSend("/game/room/" + participant.getRoomId(), "null");
@@ -43,5 +43,13 @@ public class ParticipantController {
         }
         // 게임방 정보 소켓으로 반환
         template.convertAndSend("/game/room/" + participant.getRoomId(), gameRoom);
+    }
+
+    // 3. 팀 변환
+    @MessageMapping(value = "/game/change")
+    public void changeTeam(GameRoom gameRoom) {
+        System.out.println("here");
+        // 변경된 팀 정보 다시 유저들에게 뿌려주기
+        template.convertAndSend("/game/room/" + gameRoom.getId(), gameRoom);
     }
 }

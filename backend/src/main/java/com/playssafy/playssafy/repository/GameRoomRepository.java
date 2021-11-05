@@ -30,15 +30,17 @@ public class GameRoomRepository {
     }
 
     // 3. 게임 방 참여 메소드
-    public GameRoom joinRoom(Participant participant) {
+    public GameRoom enterRoom(Participant participant) {
         GameRoom gameRoom = roomMap.get(participant.getRoomId());
         // 방이 없는 경우 null 반환
-        if (gameRoom == null)
+        if (gameRoom == null) {
             return null;
+        }
         // 참여자가 방장인 경우 사용자를 추가하지 않고 그대로 게임방 정보만 반환
         if (gameRoom.getHost().equals(participant.getParticipantId()))
             return gameRoom;
         // 유저 정보 추가
+        participant.setTeamNo(0); // 초기 팀 정보는 0번 : 관전자
         gameRoom.getMembers().add(participant);
         return gameRoom;
     }

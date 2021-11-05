@@ -241,6 +241,7 @@ export default {
       jumpgame_explain: false,
       // 방 정보
       room: {
+        id: '',
         name: '',
         host: '',
         members: [],
@@ -253,6 +254,8 @@ export default {
   created() {
     // 소켓 연결
     this.stompClient = socketConnect(this.onConnected, this.onError);
+    // 방정보 초기화
+    this.room.id = this.getRoomId;
   },
   // 방 삭제시
   destroyed() {
@@ -263,6 +266,15 @@ export default {
   },
   methods: {
     showTeam1: function() {
+      // 그 사람 찾는 로직
+      if (this.room.members != null) {
+        for (let member of this.room.members) {
+          member.teamNo = 1;
+          break;
+        }
+      }
+      this.changeTeamMessage();
+      // 자신을 찾기
       const btn = document.querySelector('#btn-1');
       if (this.teamline1 == true) {
         this.teamline1 = false;
@@ -417,6 +429,7 @@ export default {
         this.$router.push('/room');
         return;
       }
+
       let room = JSON.parse(payload.body);
       this.room.name = room.name;
       this.room.host = room.host;
@@ -436,6 +449,10 @@ export default {
         })
       );
       this.stompClient.disconnect();
+    },
+    // 팀 번호 변경시 소켓 요청
+    changeTeamMessage() {
+      this.stompClient.send('/pub/game/change', {}, JSON.stringify(this.room));
     },
   },
 };
