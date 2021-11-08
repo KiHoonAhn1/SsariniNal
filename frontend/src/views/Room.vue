@@ -277,30 +277,38 @@ export default {
     // 유효하지 않은 방으로 입장했다면 home 화면으로 이동
     checkRoom: function() {
       const roomId = this.$route.params.roomId;
+      // 서버 레벨 입장 가능 여부 확인 로직
       axios({
-        method: 'get',
-        url: `/game/exist/${roomId}`,
+        method: 'post',
+        url: `/game/user`,
+        data: { roomId: roomId, participantName: this.getUser.name },
       })
-      .then(res => {
-        let exist = res.data;
-        if (!exist) {
-          if(this.visitedRoomId) {
-            this.$store.dispatch('joinRoom', '');
+        .then((res) => {
+          let exist = res.data;
+          // 방이 존재하지 않는 경우
+          if (exist == 0) {
+            alert('해당 방은 존재하지 않습니다. 입장코드를 확인해주세요!');
+            return;
           }
-          alert('해당 방은 존재하지 않습니다. 입장코드를 확인하세요!');
-          this.$router.push('/');
-          return
-        }
-      })
-      .catch(err => {
-        return err
-      })
+          // 입장 제한인원을 초과한 경우
+          else if (exist == 1) {
+            alert('해당 방의 입장 가능 정원을 초과했습니다!');
+            return;
+          }
+          // 동일한 이름의 참가자가 존재하는 경우
+          else if (exist == 2) {
+            alert('동일한 이름을 가진 참가자가 존재합니다. 이름을 수정해주세요!');
+            return;
+          }
+        })
+        .catch(() => {});
     },
     // 이름이 없으면(url을 통해 이름을 정하지 않고 들어왔다면) home 화면으로 강퇴
     checkName: function() {
-      const userName = this.getUser.name
-      if(!userName) {
-        this.$router.push('/')
+      const userName = this.getUser.name;
+      if (!userName) {
+        alert('잘못된 접근입니다.');
+        this.$router.push('/');
       }
     },
     showTeam: function(team) {
@@ -310,7 +318,7 @@ export default {
         btn.classList.remove(`btn-${team}`);
       } else if (this.teamline[team] == false) {
         this.teamline[team] = true;
-        console.log(this.teamline)
+        console.log(this.teamline);
         btn.classList.add(`btn-${team}`);
       }
     },
