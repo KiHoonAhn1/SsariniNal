@@ -1,57 +1,31 @@
 <template>
   <div>
-    <div class="temp"></div>
-    <!-- 좌측 게임 -->
-    <div class="ssazip-game-container">
-      <div id="ssazipbg" class="ssazip-game-background">
-        <canvas id="canvas"></canvas>
-        <div style="display:none;">
-          <img id="ssazip" class="t"
-              src="@/assets/ssazip-blue.png">
-        </div>
-        <div style="display:none;">
-          <img id="obstacle1"
-              src="@/assets/obstacle1.png">
-        </div>
+    <canvas id="canvas"></canvas>
+      <div style="display:none;">
+        <img id="ssazip" class="t"
+            src="@/assets/ssazip-blue.png">
       </div>
-    </div>
-    <!-- 우측 라운드 표시 -->
-    <div class="ssazip-round-container">
-      <div class="ssazip-round-inner-container">
-        <div class="ssazip-round-item" style="background-color:#9EACDD; margin-top:1.2vh;">
-          <div class="ssazip-round-item-inner">
-            <div class="ssazip-round-item-title">현재 게임</div>
-
-          </div>
-        </div>
-        <div class="ssazip-round-item" style="background-color:#EAC16F; margin-top:2.5vh;">
-          <div class="ssazip-round-item-inner">
-            <div class="ssazip-round-item-title">다음 게임</div>
-          </div>
-        </div>
-
-        <div class="ssazip-round-item" style="background-color:#B9D272;margin-top:2.5vh;">
-          <div class="ssazip-round-item-inner">
-            <div class="ssazip-round-item-title">3 ROUND</div>
-          </div>
-        </div>
+      <div style="display:none;">
+        <img id="obstacle1"
+            src="@/assets/obstacle1.png">
       </div>
-      <!-- <div class="now-playing-game"></div> -->
-    </div>
   </div>
 </template>
 
 <script>
-import '../css/ssazip-jump.css'
 export default {
-  name: "SSazipJump",
-  data: function (){ 
+  name: "SSazip",
+  data: function (){
     return {
       time: 0,
       fTime: 0,
-      jump: false,
+      jumpData: [0,1],
     }
   },
+  props:{
+    ssazip:[]
+  },
+
   methods: {
     ssazipGame: function(){
       const ssazip = document.getElementById("ssazip")
@@ -119,7 +93,7 @@ export default {
         if (fTime>this.fTime){ //이전 time의 초보다 커지면 1초 더해줌(계속 시간 가도록)
           this.fTime++;
         }
-        // 장애물 생성시간 조정 (2초로 설정)
+        // 장애물 생성시간 조정 (3초로 설정)
         if (this.time%2 == 0){
           this.time++;
           var cactus = new Cactus()
@@ -134,24 +108,24 @@ export default {
             }
             //장애물 점점 왼쪽으로 가게 만들기
             a.x -= 4; //장애물 속도
-            console.log('장애물확인',a,i)
+
             checkCollision(dino, a); //모든 장애물과 충돌확인
 
             a.draw();
           })
           // 점프
-          if (this.jump == true){
+          if (this.jumpData[0] == true){
             dino.y -= 4;  //점프속도
           }
           // 착지
-          if (this.jump == false) {
+          if (this.jumpData[0] == false) {
             if(dino.y<window.innerHeight/100*25.3) {
               dino.y += 4; //착지속도
             }
           }
           // 점프 중지
           if (dino.y<=100){
-            this.jump = false;
+            this.jumpData[0] = false;
           }
         }
         dino.draw();
@@ -163,7 +137,7 @@ export default {
         //착지해야만 점프가능
         if(dino.y== window.innerHeight/100*25.3){
           if (e.code === 'Space'){
-            this.jump = true;
+            this.jumpData[0] = true;
           }
         }
       })

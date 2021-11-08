@@ -13,9 +13,11 @@
 /* .t{
 
 } */
-
-.ssazip-game-background{
+.t{
   position: absolute;
+}
+.ssazip-game-background{
+  position: relative;
   top:2vh;
   left:2.6vh;
   background: url('../assets/ssazipjump-game-bg2.png') 0 center / 73vw repeat-x;
