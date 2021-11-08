@@ -17,8 +17,9 @@
   padding: 8px;
   border-radius: 25px;
   position: absolute;
-  width: 57.2%;
-  height: 5.7vh;
+  width: 56.6%;
+  height: 5.9vh;
+  margin-left: 5px;
   opacity: 0.6;
 }
 .controls {
@@ -29,10 +30,13 @@
   background-color: #f0e9cc;
   padding: 8px;
   border-radius: 25px;
+  width: 97.5%;
+  margin-left: 6px;
 }
 .controls .controls_colors {
   display: flex;
-  margin-left: 2.7%;
+  margin-left: 2.1%;
+  margin-top: 2px;
 }
 .controls_colors .controls_color {
   width: 50px;

@@ -369,3 +369,22 @@
   margin-top: 1.2%;
   width: 32%;
 }
+@media screen and (max-height: 900px) {
+  .waiting-room #score-team {
+    font-size: 1.1rem;
+  }
+  .waiting-room #score-number {
+    font-size: 1rem;
+  }
+  .waiting-room #selectgame-name {
+    font-size: 1.4rem;
+  }
+}
+@media screen and (max-width: 1000px) {
+  .waiting-room #score-team {
+    font-size: 0.5rem;
+  }
+  .waiting-room #score-number {
+    font-size: 0.5rem;
+  }
+}

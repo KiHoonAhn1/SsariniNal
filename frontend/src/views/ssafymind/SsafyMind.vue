@@ -89,6 +89,29 @@ export default {
 				this.drawData.push({x, y, size});
 				console.log(this.drawData)
 			}
+
+			// // 실시간으로 그려지나 확인
+			// // const canvas = document.getElementById("jsCanvas");
+			// // const ctx = canvas.getContext("2d");
+			// ctx.clearRect(0, 0, 1100, 760)
+			// // ctx.lineWidth = 30;
+			// // ctx.strokeStyle = "red";
+			// ctx.beginPath();
+			// if(this.drawData.length > 0){
+			// 	this.drawData.forEach((lookline) => {
+			// 		ctx.lineWidth = lookline.size;
+			// 		// ctx.fillRect(0,0,lookline.x, lookline.y)
+			// 		if(!this.painting){
+			// 			ctx.moveTo(lookline.x+50, lookline.y+50);
+			// 		}
+			// 		else{ctx.lineTo(lookline.x+50, lookline.y+50);}
+			// 		// console.log(lookline.x, lookline.y, lookline.size);
+			// 		console.log(ctx.lineWidth)
+			// 	})
+			// }
+			// // console.log(this.drawData.length)
+			// ctx.stroke();
+			// ctx.closePath();
 		},
 		mouseEnter: function(){
 			if(this.clickmouse){
@@ -144,35 +167,35 @@ export default {
 			event.preventDefault();
 		},
 		handleSave:function(){
-			// const canvas = document.getElementById("jsCanvas");
-			// const ctx = canvas.getContext("2d");
-			// // ctx.clearRect(0, 0, 1100, 760)
-			// // ctx.lineWidth = 30;
-			// ctx.strokeStyle = "red";
-			// ctx.beginPath();
-			// if(this.drawData.length > 0){
-			// 	this.drawData.forEach((lookline) => {
-			// 		ctx.lineWidth = lookline.size;
-			// 		// ctx.fillRect(0,0,lookline.x, lookline.y)
-			// 		ctx.moveTo(lookline.x+50, lookline.y+50);
-			// 		ctx.lineTo(lookline.x+50, lookline.y+50);
-			// 		// console.log(lookline.x, lookline.y, lookline.size);
-			// 		console.log(ctx.lineWidth)
-			// 	})
-			// }
-			// // console.log(this.drawData.length)
-			// ctx.stroke();
-			// ctx.closePath();
-
 			const canvas = document.getElementById("jsCanvas");
-			const image = canvas.toDataURL();
-			const link = document.createElement("a");
-			// const imageName = prompt("그림 이름 지어줭");
-			link.href = image;
-			// link.download = imageName;
-			link.download = "내가그린기린그림";
-			link.click();
-			// console.log(image);
+			const ctx = canvas.getContext("2d");
+			// ctx.clearRect(0, 0, 1100, 760)
+			// ctx.lineWidth = 30;
+			ctx.strokeStyle = "red";
+			ctx.beginPath();
+			if(this.drawData.length > 0){
+				this.drawData.forEach((lookline) => {
+					ctx.lineWidth = lookline.size;
+					// ctx.fillRect(0,0,lookline.x, lookline.y)
+					ctx.moveTo(lookline.x+50, lookline.y+50);
+					ctx.lineTo(lookline.x+50, lookline.y+50);
+					// console.log(lookline.x, lookline.y, lookline.size);
+					console.log(ctx.lineWidth)
+				})
+			}
+			// console.log(this.drawData.length)
+			ctx.stroke();
+			ctx.closePath();
+
+			// const canvas = document.getElementById("jsCanvas");
+			// const image = canvas.toDataURL();
+			// const link = document.createElement("a");
+			// // const imageName = prompt("그림 이름 지어줭");
+			// link.href = image;
+			// // link.download = imageName;
+			// link.download = "내가그린기린그림";
+			// link.click();
+			// // console.log(image);
 		},
 		setCanvas: function(){
 			const canvas = document.getElementById("jsCanvas");
