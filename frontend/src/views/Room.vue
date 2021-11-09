@@ -250,6 +250,8 @@ export default {
           }
           // 동일한 이름의 참가자가 존재하는 경우
           else if (exist == 2) {
+            // 새로고침하는 경우
+            if (this.getUser.name.length != 0) return;
             alert('동일한 이름을 가진 참가자가 존재합니다. 이름을 수정해주세요!');
             this.$router.push('/');
             return;
@@ -266,7 +268,6 @@ export default {
       }
     },
     showTeam: function(team) {
-      if (this.room.teamline[team].length >= 6) return;
       // 자신을 찾기
       const btn = document.querySelector(`#btn-${team}`);
       if (this.room.teamline[team] == true) {
@@ -295,6 +296,10 @@ export default {
       for (let idx = 0; idx < this.room.members.length; idx++) {
         if (this.room.members[idx].participantName == this.getUser.name) {
           if (this.room.members[idx].teamNo == teamNo) return;
+          if (this.assignTeamNo[teamNo].length >= 6) {
+            alert('해당 팀은 정원이 가득 찼습니다!');
+            return;
+          }
           this.room.members[idx].teamNo = teamNo;
           let temp = this.room.members[idx];
           this.room.members.splice(idx, 1);
