@@ -101,9 +101,9 @@ public class GameRoomService {
     }
 
     // 6. 팀 열기
-    public void openTeam(String openTeams, String roomId) {
+    public GameRoom openTeam(String openTeams, String roomId) {
         GameRoom gameRoom = gameRoomRepository.findById(roomId).get();
         gameRoom.setOpenTeams(openTeams);
-        gameRoomRepository.save(gameRoom);
+        return gameRoomRepository.save(gameRoom);
     }
 }

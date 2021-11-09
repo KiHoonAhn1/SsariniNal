@@ -57,8 +57,8 @@ public class ParticipantController {
     // 4. 팀 번호 열어주기
     @MessageMapping(value = "/game/openTeam/{roomId}")
     public void openTeam(String openTeams, @DestinationVariable String roomId) {
-        gameRoomService.openTeam(openTeams, roomId);
+        GameRoom gameRoom = gameRoomService.openTeam(openTeams, roomId);
         // 바뀐 상태 다시 뿌려주기
-        template.convertAndSend("/game/team/" + roomId, openTeams);
+        template.convertAndSend("/game/team/" + roomId, gameRoom);
     }
 }
