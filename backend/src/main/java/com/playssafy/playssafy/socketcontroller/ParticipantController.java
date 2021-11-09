@@ -4,6 +4,7 @@ import com.playssafy.playssafy.dto.game.GameRoom;
 import com.playssafy.playssafy.dto.game.Participant;
 import com.playssafy.playssafy.service.GameRoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -51,5 +52,12 @@ public class ParticipantController {
         gameRoomService.changeTeam(gameRoom);
         // 변경된 팀 정보 다시 유저들에게 뿌려주기
         template.convertAndSend("/game/room/" + gameRoom.getId(), gameRoom);
+    }
+
+    // 4. 팀 번호 열어주기
+    @MessageMapping(value = "/game/openTeam/{roomId}")
+    public void openTeam(String message, @DestinationVariable String roomId) {
+        // 바뀐 상태 다시 뿌려주기
+        template.convertAndSend("/game/team/" + roomId, message);
     }
 }

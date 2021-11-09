@@ -19,7 +19,7 @@
     <div class="d-flex justify-content-center">
       <div class="room-left">
         <!-- <div v-if="this.checkHost()" class="btn-group"> -->
-        <div class="btn-group">
+        <div class="btn-group" v-if="this.room.host == this.getUser.id">
           <!-- <span v-for="index in totalTeam" :key='index'>
             <button v-bind:id="'btn-'+index" class="btn" @click="showTeam(index)">{{index}}</button>
           </span> -->
@@ -288,6 +288,7 @@ export default {
         console.log(this.teamline);
         btn.classList.add(`btn-${team}`);
       }
+      this.openTeamMessage();
     },
     assignTeam: function() {
       for (let i = 0; i < 11; i++) {
@@ -342,7 +343,10 @@ export default {
      */
     // 게임 방 입장 : 정보 구독 및 유저 정보 전송
     onConnected() {
+      // 유저 정보 교환
       this.stompClient.subscribe('/game/room/' + this.getRoomId, this.onMessageReceived);
+      // 팀 정보 교환
+      this.stompClient.subscribe('/game/team/' + this.getRoomId, this.onTeamReceived);
       this.stompClient.send(
         '/pub/game/enter',
         {},
@@ -374,6 +378,11 @@ export default {
       // 분류하는 함수
       // this.assignTeam();
     },
+    onTeamReceived(payload) {
+      let teams = JSON.parse(payload.body);
+      console.log(teams);
+      this.teamline = teams;
+    },
     onError() {},
     // 게임 방 퇴장 소켓 연결 해제 및 게임 방 유저 정보 삭제
     onDisconnect() {
@@ -391,6 +400,14 @@ export default {
     // 팀 번호 변경시 소켓 요청
     changeTeamMessage() {
       this.stompClient.send('/pub/game/change', {}, JSON.stringify(this.room));
+    },
+    // 방장이 팀 창을 열어주면 소켓 요청
+    openTeamMessage() {
+      this.stompClient.send(
+        `/pub/game/openTeam/${this.getRoomId}`,
+        {},
+        JSON.stringify(this.teamline)
+      );
     },
   },
 };
