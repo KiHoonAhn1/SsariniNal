@@ -36,23 +36,39 @@
         </div>
         <!-- </div> -->
         <div class="team-group">
-          <div v-for="index in totalTeam" :key='index'>
-            <div v-bind:class="'team-group team-group-'+index" v-show="teamline[index]" @click="changeTeam(index)">
-              <div v-bind:id="'team-'+index" class="team">{{index}}</div>
-              <div v-bind:id="'team-'+index+'-name'" class="team-name">{{assignTeamNo[index][0]}}</div>
-              <div v-bind:id="'team-'+index+'-name'" class="team-name">{{assignTeamNo[index][1]}}</div>
-              <div v-bind:id="'team-'+index+'-name'" class="team-name">{{assignTeamNo[index][2]}}</div>
-              <div v-bind:id="'team-'+index+'-name'" class="team-name">{{assignTeamNo[index][3]}}</div>
-              <div v-bind:id="'team-'+index+'-name'" class="team-name">{{assignTeamNo[index][4]}}</div>
-              <div v-bind:id="'team-'+index+'-name'" class="team-name">{{assignTeamNo[index][5]}}</div>
+          <div v-for="index in totalTeam" :key="index">
+            <div
+              v-bind:class="'team-group team-group-' + index"
+              v-show="teamline[index]"
+              @click="changeTeam(index)"
+            >
+              <div v-bind:id="'team-' + index" class="team">{{ index }}</div>
+              <div v-bind:id="'team-' + index + '-name'" class="team-name">
+                {{ assignTeamNo[index][0] }}
+              </div>
+              <div v-bind:id="'team-' + index + '-name'" class="team-name">
+                {{ assignTeamNo[index][1] }}
+              </div>
+              <div v-bind:id="'team-' + index + '-name'" class="team-name">
+                {{ assignTeamNo[index][2] }}
+              </div>
+              <div v-bind:id="'team-' + index + '-name'" class="team-name">
+                {{ assignTeamNo[index][3] }}
+              </div>
+              <div v-bind:id="'team-' + index + '-name'" class="team-name">
+                {{ assignTeamNo[index][4] }}
+              </div>
+              <div v-bind:id="'team-' + index + '-name'" class="team-name">
+                {{ assignTeamNo[index][5] }}
+              </div>
             </div>
           </div>
           <!-- 여기서부터는 관전자 -->
           <div class="team-group-extra">
             <div id="team-extra">관전</div>
-            <span v-for="(member, index) in room.members" :key='index'>
+            <span v-for="(member, index) in room.members" :key="index">
               <span v-if="member.teamNo === 0" id="team-extra-name" class="team-name">
-                {{member.participantName}}
+                {{ member.participantName }}
               </span>
             </span>
           </div>
@@ -170,7 +186,7 @@ export default {
         members: [],
       },
       // assignTeamNo: [],
-      assignTeamNo:{
+      assignTeamNo: {
         0: [],
         1: [],
         2: [],
@@ -209,10 +225,10 @@ export default {
     ...mapActions(['joinRoom']),
   },
   methods: {
-    checkHost: function(){
-      if(this.getUser.name == this.room.host) return true;
+    checkHost: function() {
+      if (this.getUser.name == this.room.host) return true;
       else false;
-      console.log('여기좀', this.room.members[0].participantName)
+      console.log('여기좀', this.room.members[0].participantName);
     },
     // 유효하지 않은 방으로 입장했다면 home 화면으로 이동
     checkRoom: function() {
@@ -263,20 +279,21 @@ export default {
         btn.classList.add(`btn-${team}`);
       }
     },
-    assignTeam: function(){
-      for(let i = 0; i < 11; i++){
+    assignTeam: function() {
+      for (let i = 0; i < 11; i++) {
         this.assignTeamNo[i] = [];
       }
-      for(let member of this.room.members){
+      for (let member of this.room.members) {
         this.assignTeamNo[member.teamNo].push(member.participantName);
         // console.log("여기 확인", this.assignTeamNo)
       }
+      this.changeTeamMessage();
     },
-    changeTeam: function(teamNo){
-      for(let member of this.room.members){
+    changeTeam: function(teamNo) {
+      for (let member of this.room.members) {
         // console.log(member.participantName)
         // console.log(this.getUser.name)
-        if(member.participantName == this.getUser.name){
+        if (member.participantName == this.getUser.name) {
           member.teamNo = teamNo;
           this.assignTeam();
           break;
@@ -344,7 +361,7 @@ export default {
       this.room.host = room.host;
       this.room.members = room.members;
       console.log(this.room);
-       // 분류하는 함수
+      // 분류하는 함수
       this.assignTeam();
     },
     onError() {},
