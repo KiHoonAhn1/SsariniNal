@@ -293,6 +293,7 @@ export default {
     changeTeam: function(teamNo) {
       for (let idx = 0; idx < this.room.members.length; idx++) {
         if (this.room.members[idx].participantName == this.getUser.name) {
+          if (this.room.members[idx].teamNo == teamNo) return;
           this.room.members[idx].teamNo = teamNo;
           let temp = this.room.members[idx];
           this.room.members.splice(idx, 1);
