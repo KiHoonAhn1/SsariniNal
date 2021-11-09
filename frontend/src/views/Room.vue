@@ -208,8 +208,6 @@ export default {
   created() {
     this.checkRoom();
     this.checkName();
-    // 방 정보 불러오기
-    // this.readRoom();
     // 소켓 연결
     this.stompClient = socketConnect(this.onConnected, this.onError);
     // 방정보 초기화
@@ -217,7 +215,7 @@ export default {
   },
   // 방 삭제시
   destroyed() {
-    // this.onDisconnect(); //꼭 풀어라 주석
+    this.onDisconnect();
   },
   computed: {
     ...mapGetters(['getRoomId', 'getUser']),
@@ -227,7 +225,6 @@ export default {
   watch: {
     'room.members'() {
       this.assignTeam();
-      console.log('asdfasdf');
     },
   },
   methods: {
@@ -243,7 +240,11 @@ export default {
       axios({
         method: 'post',
         url: `/game/user`,
-        data: { roomId: roomId, participantName: this.getUser.name },
+        data: {
+          roomId: roomId,
+          participantName: this.getUser.name,
+          participantId: this.getUser.id,
+        },
       })
         .then((res) => {
           let exist = res.data;
@@ -295,12 +296,12 @@ export default {
       }
     },
     changeTeam: function(teamNo) {
-      for (let member of this.room.members) {
-        // console.log(member.participantName)
-        // console.log(this.getUser.name)
-        if (member.participantName == this.getUser.name) {
-          member.teamNo = teamNo;
-          // this.assignTeam();
+      for (let idx = 0; idx < this.room.members.length; idx++) {
+        if (this.room.members[idx].participantName == this.getUser.name) {
+          this.room.members[idx].teamNo = teamNo;
+          let temp = this.room.members[idx];
+          this.room.members.splice(idx, 1);
+          this.room.members.push(temp);
           break;
         }
       }

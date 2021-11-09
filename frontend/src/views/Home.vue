@@ -58,11 +58,13 @@ export default {
         alert('참가 코드를 입력하세요!');
         return;
       }
+      // 유저 정보 저장
+      this.user.id = uuidv4();
       // 서버 레벨 입장 가능 여부 확인 로직
       axios({
         method: 'post',
         url: `/game/user`,
-        data: { roomId: this.roomId, participantName: this.user.name },
+        data: { roomId: this.roomId, participantName: this.user.name, participantId: this.user.id },
       })
         .then((res) => {
           let exist = res.data;
@@ -82,7 +84,7 @@ export default {
             return;
           }
           // 유저 정보 저장
-          this.user.id = uuidv4();
+          // this.user.id = uuidv4();
           this.login(this.user);
           // 유저가 참여중인 방 정보 갱신
           this.joinRoom(this.roomId);
