@@ -59,6 +59,6 @@ public class ParticipantController {
     public void openTeam(String openTeams, @DestinationVariable String roomId) {
         GameRoom gameRoom = gameRoomService.openTeam(openTeams, roomId);
         // 바뀐 상태 다시 뿌려주기
-        template.convertAndSend("/game/team/" + roomId, gameRoom);
+        template.convertAndSend("/game/room/" + roomId, gameRoom);
     }
 }
