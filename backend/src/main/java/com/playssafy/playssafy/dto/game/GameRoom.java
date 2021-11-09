@@ -16,6 +16,6 @@ public class GameRoom {
     private String id; // 게임 방 ID
     private String name; // 게임 방 이름
     private String host; // 방장
-//    private HashSet<Participant> members = new HashSet<>();
-    private List<Participant> members = new ArrayList<>();
+    private String openTeams; // 열린 팀 정보
+    private List<Participant> members = new ArrayList<>(); // 유저 정보
 }

@@ -185,7 +185,6 @@ export default {
         host: '',
         members: [],
       },
-      // assignTeamNo: [],
       assignTeamNo: {
         0: [],
         1: [],
@@ -283,6 +282,12 @@ export default {
       if (this.teamline[team] == true) {
         this.teamline[team] = false;
         btn.classList.remove(`btn-${team}`);
+        for (let member of this.room.members) {
+          if (member.teamNo == team) {
+            member.teamNo = 0;
+          }
+        }
+        this.changeTeamMessage();
       } else if (this.teamline[team] == false) {
         this.teamline[team] = true;
         console.log(this.teamline);
@@ -296,7 +301,6 @@ export default {
       }
       for (let member of this.room.members) {
         this.assignTeamNo[member.teamNo].push(member.participantName);
-        // console.log("여기 확인", this.assignTeamNo)
       }
     },
     changeTeam: function(teamNo) {
@@ -371,9 +375,11 @@ export default {
       }
 
       let room = JSON.parse(payload.body);
+      console.log(room);
       this.room.name = room.name;
       this.room.host = room.host;
       this.room.members = room.members;
+      if (room.openTeams != null) this.teamline = JSON.parse(room.openTeams);
       console.log(this.room);
       // 분류하는 함수
       // this.assignTeam();
