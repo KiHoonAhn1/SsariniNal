@@ -97,7 +97,9 @@ public class GameRoomService {
 
     // 5. 팀 변경 메소드
     public void changeTeam(GameRoom gameRoom) {
-        gameRoomRepository.save(gameRoom);
+        GameRoom temp = gameRoomRepository.findById(gameRoom.getId()).get();
+        temp.setMembers(gameRoom.getMembers());
+        gameRoomRepository.save(temp);
     }
 
     // 6. 팀 열기

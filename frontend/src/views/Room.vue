@@ -374,6 +374,7 @@ export default {
 
       let room = JSON.parse(payload.body);
       console.log(room);
+      console.log(payload.body);
       this.room.name = room.name;
       this.room.host = room.host;
       this.room.members = room.members;
