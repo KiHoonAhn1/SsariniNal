@@ -54,6 +54,9 @@ public class GameRoomService {
         // 유저 정보 추가
         participant.setTeamNo(0); // 초기 팀 정보는 0번 : 관전자
         gameRoom.getMembers().add(participant);
+        // 변경 완료
+        gameRoomRepository.save(gameRoom);
+
         return gameRoom;
     }
 
@@ -71,6 +74,8 @@ public class GameRoomService {
         }
         // 방장이 아니라면 유저 정보만 삭제
         gameRoom.getMembers().remove(participant);
+        // 변경 완료
+        gameRoomRepository.save(gameRoom);
         return gameRoom;
     }
 
