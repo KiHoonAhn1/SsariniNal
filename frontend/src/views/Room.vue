@@ -287,7 +287,6 @@ export default {
         this.assignTeamNo[member.teamNo].push(member.participantName);
         // console.log("여기 확인", this.assignTeamNo)
       }
-      this.changeTeamMessage();
     },
     changeTeam: function(teamNo) {
       for (let member of this.room.members) {
@@ -299,6 +298,7 @@ export default {
           break;
         }
       }
+      this.changeTeamMessage();
     },
     getOpenModal(openmodal) {
       this.openmodal = openmodal;
