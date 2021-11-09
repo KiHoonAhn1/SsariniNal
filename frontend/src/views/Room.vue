@@ -64,7 +64,7 @@
             </div>
           </div>
           <!-- 여기서부터는 관전자 -->
-          <div class="team-group-extra">
+          <div class="team-group-extra" @click="changeTeam(0)">
             <div id="team-extra">관전</div>
             <span v-for="(member, index) in room.members" :key="index">
               <span v-if="member.teamNo === 0" id="team-extra-name" class="team-name">
