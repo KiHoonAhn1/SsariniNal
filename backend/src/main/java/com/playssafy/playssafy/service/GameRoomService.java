@@ -51,6 +51,9 @@ public class GameRoomService {
         // 참여자가 방장인 경우 사용자를 추가하지 않고 그대로 게임방 정보만 반환
         if (participant.getParticipantId() != null && gameRoom.getHost().equals(participant.getParticipantId()))
             return gameRoom;
+        // 중복된 사람이 있는 경우 추가하지 않는다.
+        if (gameRoom.getMembers().contains(participant))
+            return gameRoom;
         // 유저 정보 추가
         participant.setTeamNo(0); // 초기 팀 정보는 0번 : 관전자
         gameRoom.getMembers().add(participant);

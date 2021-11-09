@@ -266,6 +266,7 @@ export default {
       }
     },
     showTeam: function(team) {
+      if (this.room.teamline[team].length >= 6) return;
       // 자신을 찾기
       const btn = document.querySelector(`#btn-${team}`);
       if (this.room.teamline[team] == true) {
