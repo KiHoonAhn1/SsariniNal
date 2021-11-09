@@ -349,8 +349,6 @@ export default {
     onConnected() {
       // 유저 정보 교환
       this.stompClient.subscribe('/game/room/' + this.getRoomId, this.onMessageReceived);
-      // 팀 정보 교환
-      this.stompClient.subscribe('/game/team/' + this.getRoomId, this.onTeamReceived);
       this.stompClient.send(
         '/pub/game/enter',
         {},
