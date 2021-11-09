@@ -251,16 +251,19 @@ export default {
           // 방이 존재하지 않는 경우
           if (exist == 0) {
             alert('해당 방은 존재하지 않습니다. 입장코드를 확인해주세요!');
+            this.$router.push('/');
             return;
           }
           // 입장 제한인원을 초과한 경우
           else if (exist == 1) {
             alert('해당 방의 입장 가능 정원을 초과했습니다!');
+            this.$router.push('/');
             return;
           }
           // 동일한 이름의 참가자가 존재하는 경우
           else if (exist == 2) {
             alert('동일한 이름을 가진 참가자가 존재합니다. 이름을 수정해주세요!');
+            this.$router.push('/');
             return;
           }
         })
