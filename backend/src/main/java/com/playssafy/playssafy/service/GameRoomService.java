@@ -25,7 +25,7 @@ public class GameRoomService {
     // 1. 게임방 생성 메소드
     public GameRoom createRoom(String roomName, Participant participant) {
         GameRoom room = new GameRoom();
-        
+
         // UUID를 기반으로 방에 고유 식별자 부여.
         room.setId(UUID.randomUUID().toString());
         room.setName(roomName);
@@ -93,5 +93,11 @@ public class GameRoomService {
             return 2;
         // 입장이 가능한 경우
         return 3;
+    }
+
+    // 5. 팀 변경 메소드
+    public void changeTeam(GameRoom gameRoom) {
+        gameRoomRepository.save(gameRoom);
+        return;
     }
 }

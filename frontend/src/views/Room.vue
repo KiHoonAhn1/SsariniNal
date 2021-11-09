@@ -300,7 +300,7 @@ export default {
         // console.log(this.getUser.name)
         if (member.participantName == this.getUser.name) {
           member.teamNo = teamNo;
-          this.assignTeam();
+          // this.assignTeam();
           break;
         }
       }
