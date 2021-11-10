@@ -29,13 +29,6 @@ public class Room implements Serializable {
     private HashMap<Long, Team> guests;//게스트, 게스트팀정보
     private int gameState; //게임상태, 플레이 중인 게임 번호
     private HashMap<Integer, Integer> scores;//점수
-//    public Member(String userId, String userName, boolean masterflag) {
-//        this.userID = userId;
-//        this.userName = userName;
-//        this.masterflag = masterflag;
-//    }
-
-
 
     @Override
     public String toString() {
@@ -56,5 +49,17 @@ public class Room implements Serializable {
         this.guests = guests;
         this.gameState = gameState;
         this.scores = scores;
+    }
+
+    class Team{
+        private Long guestId;
+        private String guestName;
+        private int teamNum;
+
+        public Team(Long guestId, String guestName, int teamNum) {
+            this.guestId= guestId;
+            this.guestName = guestName;
+            this.teamNum = teamNum;
+        }
     }
 }

@@ -4,13 +4,13 @@ import lombok.Data;
 
 @Data
 public class Team {
-        private Long guestId;
-        private String guestName;
+        private Long participantId;
+        private String participantName;
         private int teamNum;
 
-        public Team(Long guestId, String guestName, int teamNum) {
-                this.guestId= guestId;
-                this.guestName = guestName;
+        public Team(Long participantId, String participantName, int teamNum) {
+                this.participantId= participantId;
+                this.participantName = participantName;
                 this.teamNum = teamNum;
         }
 }
