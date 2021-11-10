@@ -9,6 +9,7 @@ public class JumpInfo {
     private String roomId; // 게임방 ID
     private boolean[] jumpArr1; // 점프값 어레이
     private boolean[] jumpArr2;
+    private boolean reload;
 
 //    @Override
 //    public String toString() {
