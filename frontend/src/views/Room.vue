@@ -141,7 +141,7 @@
         <div>
           <button class="waiting-room-btn select-game" @click="openmodal = true">게임 선택</button>
           <button class="waiting-room-btn final-score">최종 결과</button>
-          <i class="fas fa-play-circle play-btn fa-5x"></i>
+          <i class="fas fa-play-circle play-btn fa-5x" @click="gameStart()"></i>
         </div>
       </div>
     </div>
@@ -173,6 +173,8 @@ export default {
         host: '',
         members: [],
         teamline: [null, false, false, false, false, false, false, false, false, false, false],
+        gameType: 0,
+        gameScore: [],
       },
       assignTeamNo: {
         0: [],
@@ -187,6 +189,7 @@ export default {
         9: [],
         10: [],
       },
+      curGame: '',
       totalTeam: 10,
       // socket Client
       stompClient: null,
@@ -197,6 +200,7 @@ export default {
     this.checkRoom();
     this.checkName();
     // 소켓 연결
+    // this.setStompClient(socketConnect(this.onConnected, this.onError));
     this.stompClient = socketConnect(this.onConnected, this.onError);
     // 방정보 초기화
     this.room.id = this.getRoomId;
@@ -206,13 +210,21 @@ export default {
     this.onDisconnect();
   },
   computed: {
-    ...mapGetters(['getRoomId', 'getUser']),
+    ...mapGetters(['getRoomId', 'getUser', 'getStompClient']),
     ...mapState(['visitedRoomId']),
-    ...mapActions(['joinRoom']),
   },
   watch: {
     'room.members'() {
       this.assignTeam();
+    },
+    curGame() {
+      if (this.curGame == 1) {
+        this.$router.push('/ssafymind/' + this.room.id);
+      } else if (this.curGame == 2) {
+        //
+      } else {
+        //
+      }
     },
   },
   methods: {
@@ -296,7 +308,7 @@ export default {
       for (let idx = 0; idx < this.room.members.length; idx++) {
         if (this.room.members[idx].participantName == this.getUser.name) {
           if (this.room.members[idx].teamNo == teamNo) return;
-          if (this.assignTeamNo[teamNo].length >= 6) {
+          if (this.assignTeamNo[teamNo].length >= 6 && teamNo != 0) {
             alert('해당 팀은 정원이 가득 찼습니다!');
             return;
           }
@@ -304,9 +316,12 @@ export default {
           let temp = this.room.members[idx];
           this.room.members.splice(idx, 1);
           this.room.members.push(temp);
+          // vuex 팀정보도 바꾸기
+          this.changeUserTeamNo(teamNo);
           break;
         }
       }
+      console.log('aa');
       this.changeTeamMessage();
     },
     getOpenModal(openmodal) {
@@ -317,18 +332,21 @@ export default {
       this.ssafymind_explain = ssafymind_explain;
       this.speakgame_explain = false;
       this.jumpgame_explain = false;
+      this.room.gameType = 1;
       // console.log("싸피마인드 사진", ssafymind_explain);
     },
     infoSpeakGame(speakgame_explain) {
       this.speakgame_explain = speakgame_explain;
       this.ssafymind_explain = false;
       this.jumpgame_explain = false;
+      this.room.gameType = 2;
       // console.log("또박또박 사진", speakgame_explain);
     },
     infoJumpGame(jumpgame_explain) {
       this.jumpgame_explain = jumpgame_explain;
       this.ssafymind_explain = false;
       this.speakgame_explain = false;
+      this.room.gameType = 3;
       // console.log("점프 사진", jumpgame_explain);
     },
     // 입장코드 복사
@@ -343,6 +361,8 @@ export default {
     onConnected() {
       // 유저 정보 교환
       this.stompClient.subscribe('/game/room/' + this.getRoomId, this.onMessageReceived);
+      // 게임방 조작 관련 메세지
+      this.stompClient.subscribe('/game/start/' + this.getRoomId, this.startMessageReceived);
       this.stompClient.send(
         '/pub/game/enter',
         {},
@@ -367,6 +387,7 @@ export default {
       }
 
       let room = JSON.parse(payload.body);
+      console.log(room);
       this.room.name = room.name;
       this.room.host = room.host;
       this.room.members = room.members;
@@ -388,9 +409,39 @@ export default {
     },
     // 팀 번호 변경시 소켓 요청
     changeTeamMessage() {
-      console.log('this');
       this.stompClient.send('/pub/game/change', {}, JSON.stringify(this.room));
     },
+    // 게임 시작
+    gameStart() {
+      axios({
+        method: 'post',
+        url: `/game/create/ssafymind`,
+        data: {
+          roomId: this.room.id,
+          host: this.room.host,
+          exist: this.room.teamline,
+          gameType: this.room.gameType,
+        },
+      })
+        .then(() => {
+          // 방에 있는 모든 참가자 게임방으로 옮기기
+          if (this.room.gameType == 1) {
+            // 싸피마인드
+            this.stompClient.send(`/pub/game/start/${1}`, {}, this.room.id);
+            // 게임방 이동 메세지 보내기
+          } else if (this.room.gameType == 2) {
+            // 또박또박말해요
+          } else {
+            // 싸집이 점프
+          }
+        })
+        .catch(() => {});
+    },
+    // 게임 시작 메세지
+    startMessageReceived(payload) {
+      this.curGame = payload.body;
+    },
+    ...mapActions(['changeUserTeamNo', 'setStompClient']),
   },
 };
 </script>

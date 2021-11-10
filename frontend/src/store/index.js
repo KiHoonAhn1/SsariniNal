@@ -15,6 +15,7 @@ export default new Vuex.Store({
     user: {
       id: null, // 유저 아이디
       name: null, // 유저 이름
+      teamNo: null, // 팀 번호
     },
     isLogin: false,
     visitedRoomId: null, // 현재 유저가 방문중인 방의 ID
@@ -47,6 +48,11 @@ export default new Vuex.Store({
     JOIN_ROOM(state, roomId) {
       state.visitedRoomId = roomId;
     },
+    // 4. 유저 팀 정보 변경
+    CHANGE_USER_TEAM_NO(state, teamNo) {
+      state.user.teamNo = teamNo;
+      console.log(state.user.teamNo);
+    },
   },
   actions: {
     // 1. 방장 로그인 정보 저장
@@ -60,6 +66,10 @@ export default new Vuex.Store({
     // 3. 유저가 참여중인 방정보 갱신
     joinRoom({ commit }, roomId) {
       commit('JOIN_ROOM', roomId);
+    },
+    // 4. 유저 팀 정보 변경
+    changeUserTeamNo({ commit }, teamNo) {
+      commit('CHANGE_USER_TEAM_NO', teamNo);
     },
   },
   modules: {},

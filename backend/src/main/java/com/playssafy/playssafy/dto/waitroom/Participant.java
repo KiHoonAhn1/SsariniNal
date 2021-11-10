@@ -1,6 +1,8 @@
-package com.playssafy.playssafy.dto.game;
+package com.playssafy.playssafy.dto.waitroom;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -8,6 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class Participant {
     private String roomId; // 게임방 ID
     private String participantId; // 참가자의 고유 ID
