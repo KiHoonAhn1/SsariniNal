@@ -14,7 +14,7 @@
             </div>
         </div>
         <!-- 우측 라운드 표시 -->
-        <div class="ssazip-round-container">
+        <!-- <div class="ssazip-round-container">
             <div class="ssazip-round-inner-container">
                 <div class="ssazip-round-item" style="background-color:#9EACDD; margin-top:1.2vh;">
                     <div class="ssazip-round-item-inner">
@@ -32,8 +32,7 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="now-playing-game"></div> -->
-        </div>
+        </div> -->
     </div>
 </template>
 
