@@ -1,55 +1,53 @@
 <template>
   <div>
-		<Header v-bind:gameTitle="'또박또박 말해요'"/>
+		<Header v-bind:gameTitle="'싸집이 점프 게임'"/>
 
     <div style="display:flex; justify-content:center">
       <!-- 좌측 게임 -->
       <div class="ssazip-game-outer-container">
+        <!-- 윗팀 -->
         <div class="ssazip-game-container">
           <div id="ssazipbg" class="ssazip-game-background">
             <canvas id="canvas"></canvas>
             <div style="display:none;">
-              <img id="ssazip" class="t"
-                  src="@/assets/ssazip-blue.png">
+              <img id="ssazip" class="t" src="@/assets/ssazip-blue.png">
             </div>
             <div style="display:none;">
-              <img id="obstacle1"
-                  src="@/assets/obstacle1.png">
+              <img id="ssazipMe" class="t" src="@/assets/ssazipMe.png">
             </div>
             <div style="display:none;">
-              <img id="obstacle2"
-                  src="@/assets/logo.png">
+              <img id="obstacle1" src="@/assets/obstacle1.png">
             </div>
             <div style="display:none;">
-              <img id="obstacle3"
-                  src="@/assets/eraser.png">
+              <img id="obstacle2" src="@/assets/logo.png">
+            </div>
+            <div style="display:none;">
+              <img id="obstacle3" src="@/assets/eraser.png">
             </div>
              <div style="display:none;">
-              <img id="obstacle4"
-                  src="@/assets/team1.png">
+              <img id="obstacle4" src="@/assets/team1.png">
             </div>
           </div>
+          <!-- 아랫팀 -->
           <div id="ssazipbg2" class="ssazip-game-background2">
             <canvas id="canvas2"></canvas>
             <div style="display:none;">
-              <img id="ssazip2" class="t"
-                  src="@/assets/ssazip-blue.png">
+              <img id="ssazip2" class="t" src="@/assets/ssazip-blue.png">
             </div>
             <div style="display:none;">
-              <img id="obstacle12"
-                  src="@/assets/obstacle1.png">
+              <img id="ssazipMe2" class="t" src="@/assets/ssazipMe.png">
             </div>
             <div style="display:none;">
-              <img id="obstacle22"
-                  src="@/assets/logo.png">
+              <img id="obstacle12" src="@/assets/obstacle1.png">
             </div>
             <div style="display:none;">
-              <img id="obstacle32"
-                  src="@/assets/eraser.png">
+              <img id="obstacle22" src="@/assets/logo.png">
+            </div>
+            <div style="display:none;">
+              <img id="obstacle32" src="@/assets/eraser.png">
             </div>
              <div style="display:none;">
-              <img id="obstacle42"
-                  src="@/assets/team1.png">
+              <img id="obstacle42" src="@/assets/team1.png">
             </div>
           </div>
           
@@ -63,7 +61,6 @@
             <div class="ssazip-round-item" style="background-color:#9EACDD; margin-top:1.2vh;">
               <div class="ssazip-round-item-inner">
                 <div class="ssazip-round-item-title">현재 게임</div>
-
               </div>
             </div>
             <div class="ssazip-round-item" style="background-color:#EAC16F; margin-top:2.5vh;">
@@ -78,330 +75,15 @@
               </div>
             </div>
           </div>
-          <!-- <div class="now-playing-game"></div> -->
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import Header from '@/components/common/Header.vue';
-import './../css/ssazip-jump.css'
-export default {
-  name: "SSazipJump",
-  data: function (){ 
-    return {
-      time: 0,
-      fTime: 0,
-      otime: 0,
-      ofTime: 0,
-      users:[
-        {userId: '이장섭', jump:0},
-        {userId: '권희은', jump:0},
-        {userId: '김태현', jump:0},
-        {userId: '차은채', jump:0},
-        {userId: '안기훈', jump:0},
-        // {userId: '박용미', jump:0},
-        // {userId: '이미영', jump:0}
-      ],
-      users2:[
-        {userId: '이장섭', jump:0},
-        {userId: '권희은', jump:0},
-        {userId: '김태현', jump:0},
-        {userId: '차은채', jump:0},
-        {userId: 'ddd', jump:0},
-        // {userId: '박용미', jump:0},
-        // {userId: '이미영', jump:0}
-      ],
-      dinos:[],
-      dinos2:[],
-      userId: '안기훈',
-      userIdx: 0,
-      status: true,
-      obstacle1: document.getElementById("obstacle1"),
-      obstacle2: document.getElementById("obstacle2"),
-      obstacle3: document.getElementById("obstacle3")
-    }
-  },
-  components: {
-    Header,
-  },
-  methods: {
-    drawSsazipgame(){
-      const ssazip = document.getElementById("ssazip")
-      const ssazip2 = document.getElementById("ssazip2")
+<script src="./ssazipjump.js">
 
-      // canvas는 mounted이후에 사용이 가능하다.
-      let canvas = document.getElementById('canvas')
-      let ctx = canvas.getContext('2d')
-      let canvas2 = document.getElementById('canvas2')
-      let ctx2 = canvas2.getContext('2d')
-      
-      // 캔버스 크기 지정
-      canvas.width = 1200;
-      canvas.height = 350
-      canvas2.width = 1200;
-      canvas2.height = 350
-
-      const leftSpace = 50; //싸집이들 왼쪽 공간
-
-
-      
-      this.users.forEach((user,i)=>{
-        // 캐릭터 속성
-        let dino = {
-          // 캐릭터 등장 좌표(왼쪽 상단으로부터)
-          x: leftSpace+70*i,
-          y: 220,
-          // 캐릭터 크기
-          width : 50,
-          height : 50,
-          idx: i,
-          // 캐릭터 그리기 함수(생성)
-          draw(){
-            ctx.fillStyle = 'green'
-            ctx.fillRect(this.x, this.y, this.width, this.height); //위치, 크기
-            ctx.drawImage(ssazip, this.x, this.y, this.width, this.height);
-          }
-        }
-        this.dinos.push(dino)
-        if (user.userId == this.userId){
-          this.userIdx = i
-        }
-      })
-
-      this.users2.forEach((user,i)=>{
-        // 캐릭터 속성
-        let dino = {
-          // 캐릭터 등장 좌표(왼쪽 상단으로부터)
-          x: leftSpace+70*i,
-          y: 220,
-          // 캐릭터 크기
-          width : 50,
-          height : 50,
-          idx: i,
-          // 캐릭터 그리기 함수(생성)
-          draw(){
-            ctx2.fillStyle = 'green'
-            ctx2.fillRect(this.x, this.y, this.width, this.height); //위치, 크기
-            ctx2.drawImage(ssazip2, this.x, this.y, this.width, this.height);
-            // console.log(ssazip)
-          }
-        }
-        this.dinos2.push(dino)
-        if (user.userId == this.userId){
-          this.userIdx = i
-        }
-        // this.dinos[i].draw();
-      })
-
-      let animation;
-      let cactusarr = [];
-      let cactusarr2 = [];
-      const obstacle1= document.getElementById("obstacle1") // eslint-disable-line no-unused-vars
-      const obstacle2= document.getElementById("obstacle2") // eslint-disable-line no-unused-vars
-      const obstacle3= document.getElementById("obstacle3") // eslint-disable-line no-unused-vars
-      const obstacle4= document.getElementById("obstacle4") // eslint-disable-line no-unused-vars
-    
-        
-        // 장애물 속성
-      class Cactus {
-        // 장애물 생성기
-        constructor(){
-          // 장애물 등장 위치(왼쪽 상단으로부터)
-          this.x = 1200,
-          this.y = 220,
-          this.width = 50,
-          this.height = 50,
-          this.type = Math.floor(Math.random()*(4-0+1))+0
-        }
-        draw() {
-          if(this.type!=0){
-            ctx.fillStyle="red"
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-            ctx.drawImage(eval('obstacle'+this.type), this.x, this.y, this.width, this.height);
-          }else{
-            this.x = 0,
-            this.y = 0
-          }
-        }
-      }
-
-        // 장애물 속성
-      class Cactus2 {
-        // 장애물 생성기
-        constructor(){
-          // 장애물 등장 위치(왼쪽 상단으로부터)
-          this.x = 1200,
-          this.y = 220,
-          this.width = 50,
-          this.height = 50,
-          this.type = Math.floor(Math.random()*(4-0+1))+0
-        }
-        draw() {
-          if(this.type!=0){
-            ctx2.fillStyle="red"
-            ctx2.fillRect(this.x, this.y, this.width, this.height);
-            ctx2.drawImage(eval('obstacle'+this.type), this.x, this.y, this.width, this.height);
-          }else{
-            this.x = 0,
-            this.y = 0
-          }
-        }
-      }
-
-
-       // 1초에 60번 실행할 함수
-      const frame = (timestamp) => {
-        // requestAnimationFrame(frame) //frame을 1초에 60번 실행해줘
-
-        animation = requestAnimationFrame(frame) //frame을 1초에 60번 실행해줘
-        ctx.clearRect(0,0, canvas.width, canvas.height); //canvas 지워줘(잔상 안 남게)
-        ctx2.clearRect(0,0, canvas2.width, canvas2.height); //canvas2 지워줘(잔상 안 남게)
-        
-        // 시간 세기 시작
-
-        const cntTime =  parseInt(timestamp/1000) //1초로 나눔
-        const fTime = parseInt(timestamp/16.7) // 1/60초마다 추가
-
-        if (cntTime>this.time){ //이전 time의 초보다 커지면 1초 더해줌(계속 시간 가도록)
-          this.time++;
-        }
-        if (fTime>this.fTime){ //이전 time의 초보다 커지면 1초 더해줌(계속 시간 가도록)
-          this.fTime++;
-        }
-        // 장애물 생성시간 조정 (2초로 설정)
-        if (this.time%2 == 0){
-          this.time++;
-          var cactus = new Cactus()
-          var cactus2 = new Cactus2()
-          cactusarr.push(cactus) //2초마다 생성되면 장애물 리스트에 넣기
-          cactusarr2.push(cactus2) //2초마다 생성되면 장애물 리스트에 넣기
-        }
-        // 장애물 이동을 1/60초마다 이루어지게 조정
-        if (fTime > this.fTime){
-          cactusarr.forEach((a, i, o)=>{  //장애물 리스트에서 하나씩 빼서 그려주기
-            //이미 지나간 장애물은 삭제
-            if (i+1 < o.length){
-              if (o[i+1].x < -50) {
-                o.splice(i, 1)
-              }
-            }
-            //장애물 점점 왼쪽으로 가게 만들기
-            a.x -= 4; //장애물 속도
-            // checkCollision(dino, a); //모든 장애물과 충돌확인
-
-            this.dinos.forEach((dino)=>{
-              checkCollision(dino, a); //모든 장애물과 충돌확인
-              
-            }),
-
-            a.draw();
-          })
-          cactusarr2.forEach((a, i, o)=>{  //장애물 리스트에서 하나씩 빼서 그려주기
-            //이미 지나간 장애물은 삭제
-            if (i+1 < o.length){
-              if (o[i+1].x < -50) {
-                o.splice(i, 1)
-              }
-            }
-            //장애물 점점 왼쪽으로 가게 만들기
-            a.x -= 4; //장애물 속도
-            // checkCollision(dino, a); //모든 장애물과 충돌확인
-
-            this.dinos2.forEach((dino)=>{
-              checkCollision(dino, a); //모든 장애물과 충돌확인
-              
-            }),
-
-            a.draw();
-          })
-          // 점프
-          this.dinos.forEach((dino,i)=>{
-            // 점프
-            if (this.users[i].jump == true){
-              this.dinos[i].y -= 4;  //점프속도
-            }
-            // 착지
-            if (this.users[i].jump == false) {
-              if(dino.y<220) {
-                this.dinos[i].y += 4; //착지속도
-              }
-            }
-            // 점프 중지
-            if ( this.dinos[i].y<=90){
-              this.users[i].jump = false;
-            }
-            // }    
-            this.dinos[i].draw();
-            // console.log(this.dinos[i])
-          })
-
-          this.dinos2.forEach((dino,i)=>{
-            // 점프
-            if (this.users2[i].jump == true){
-              this.dinos2[i].y -= 4;  //점프속도
-            }
-            // 착지
-            if (this.users2[i].jump == false) {
-              if(dino.y<220) {
-                this.dinos2[i].y += 4; //착지속도
-              }
-            }
-            // 점프 중지
-            if ( this.dinos2[i].y<=90){
-              this.users2[i].jump = false;
-            }
-    
-            this.dinos2[i].draw();
-          })
-        }
-      }
-      frame();
-       // 충돌체크함수
-      const checkCollision= (dino, cactus)=>{
-        // console.log(dino)
-        let xDiff = cactus.x - (dino.x +dino.width);
-        let yDiff = cactus.y - (dino.y + dino.height);
-        const ssazipbg = document.getElementById("ssazipbg")
-        const ssazipbg2 = document.getElementById("ssazipbg2")
-        if(dino.x<=cactus.x+cactus.width){
-          if (xDiff < -10 && yDiff < -10){
-            cancelAnimationFrame(animation) //게임중단
-            console.log(xDiff)
-            ssazipbg.style.animation = 'paused';
-            ssazipbg2.style.animation = 'paused';
-            // this.status = false
-          }
-        }
-      }
-    },
-  },
-  mounted() {
-    this.drawSsazipgame()
-    //스페이스바 누르면 점프값 변경 
-    document.addEventListener('keydown', (e) =>{
-      //착지해야만 점프가능
-      if(this.dinos[this.userIdx].y== 220){
-        if (e.code === 'Space'){
-          this.users[this.userIdx].jump = true;
-        }
-      }
-    })
-
-    document.addEventListener('keydown', (e) =>{
-      //착지해야만 점프가능
-      if(this.dinos2[4].y== 220){
-        if (e.code === 'Enter'){
-          this.users2[4].jump = true;
-        }
-      }
-    })
-  }
-}
 </script>
 
 <style>
-
 </style>
