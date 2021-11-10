@@ -58,9 +58,9 @@ public class SsafyMindService {
         // 방장이 아닌 경우에만
         if (!ssafyMind.getHost().equals(participant.getParticipantId())) {
             // 방에 팀 정보 추가(해당 팀에 유저가 존재하지 않는 경우)
-            ArrayList<Participant> team = ssafyMind.getTeams().get(participant.getTeamNo());
-            if (!team.contains(participant)) {
-                team.add(participant);
+//            ArrayList<Participant> team = ssafyMind.getTeams().get(participant.getTeamNo());
+            if (!ssafyMind.getTeams().get(participant.getTeamNo()).contains(participant)) {
+                ssafyMind.getTeams().get(participant.getTeamNo()).add(participant);
             }
         }
 
