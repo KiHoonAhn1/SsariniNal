@@ -1,9 +1,11 @@
 package com.playssafy.playssafy.socketcontroller;
 
+import com.playssafy.playssafy.dto.ssafymind.Point;
 import com.playssafy.playssafy.dto.ssafymind.SsafyMind;
 import com.playssafy.playssafy.dto.waitroom.Participant;
 import com.playssafy.playssafy.service.SsafyMindService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -28,7 +30,21 @@ public class SsafyMindController {
     public void exit(Participant participant) {
         // 유저 입장 후 해당 게임 방 정보 얻기
         SsafyMind ssafyMind = ssafyMindService.exit(participant);
+        // 방장이 퇴장한 경우 종료 메세지 뿌려주기
+        if (ssafyMind == null) {
+            template.convertAndSend("/ssafymind/" + participant.getRoomId(), "exit");
+            return;
+        }
         // 게임 방 정보 소켓으로 반환
         template.convertAndSend("/ssafymind/" + participant.getRoomId(), ssafyMind);
+    }
+
+    // 3. 그림 데이터 서버 저장 및 교환
+    @MessageMapping(value = "/ssafymind/draw/{roomId}")
+    public void draw(@DestinationVariable String roomId, Point point) {
+        // 우선 그리는 데이터 즉시 보내주기
+        template.convertAndSend("/ssafymind/draw/" + roomId, point);
+        // 그린 내용 서버에 저장
+        ssafyMindService.draw(roomId, point);
     }
 }

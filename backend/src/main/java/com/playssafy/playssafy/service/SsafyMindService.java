@@ -1,15 +1,14 @@
 package com.playssafy.playssafy.service;
 
 
+import com.playssafy.playssafy.dto.ssafymind.Point;
 import com.playssafy.playssafy.dto.ssafymind.SsafyMind;
 import com.playssafy.playssafy.dto.ssafymind.Team;
 import com.playssafy.playssafy.dto.waitroom.InitGame;
 import com.playssafy.playssafy.dto.waitroom.Participant;
 import com.playssafy.playssafy.repository.SsafyMindRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +17,6 @@ import java.util.List;
 public class SsafyMindService {
     @Autowired
     private SsafyMindRepository ssafyMindRepository;
-    @Autowired
-    RedisTemplate<String, Object> redisTemplate;
 
     // 0. 게임방 생성 메서드
     public void createSsafyMind(InitGame initGame) {
@@ -58,49 +55,18 @@ public class SsafyMindService {
     }
 
     // 1. 게임방 입장 메서드
-    @Transactional
     public synchronized SsafyMind enter(Participant participant) {
-        System.out.println("come");
-
-//        redisTemplate.execute(new SessionCallback() {
-//            @Override
-//            public Object execute(RedisOperations redisOperations) throws DataAccessException {
-//                redisOperations.watch(participant.getRoomId());
-//                SsafyMind ssafyMind = (SsafyMind) redisOperations.opsForValue().get("SsafyMind:" + participant.getRoomId());
-//                System.out.println(ssafyMind);
-//                redisOperations.multi();
-//                return redisOperations.exec();
-//            }
-//        });
-
         SsafyMind ssafyMind = ssafyMindRepository.findById(participant.getRoomId()).get();
-        // 방장이 아닌 경우에만
-//        if (!ssafyMind.getHost().equals(participant.getParticipantId())) {
-        // 방에 팀 정보 추가(해당 팀에 유저가 존재하지 않는 경우)
-//        System.out.println(ssafyMind.getTeams().get(participant.getTeamNo()));
-        System.out.println(ssafyMind);
         Team team = ssafyMind.getTeams().get(participant.getTeamNo());
         if (!team.getMembers().contains(participant))
             team.getMembers().add(participant);
-        System.out.println(ssafyMind);
-        System.out.println("done");
-//        if(!ssafyMind.getTeams().get(participant.getTeamNo()).getMembers().contains(participant))
-//            team.getMembers().add(participant);
-//        ArrayList<Participant> team = new ArrayList<>();
-//        if (team == null) {
-//            team.add(participant);
-//        }
-//        else if (!team.contains(participant)) {
-//            team.add(participant);
-//        }
-//        }
 
         // 변경 완료
         return ssafyMindRepository.save(ssafyMind);
     }
 
     // 2. 게임방 퇴장 메서드
-    public SsafyMind exit(Participant participant) {
+    public synchronized SsafyMind exit(Participant participant) {
         SsafyMind ssafyMind = ssafyMindRepository.findById(participant.getRoomId()).get();
 
         // 방장이라면 방 자체를 삭제 후 종료
@@ -109,10 +75,20 @@ public class SsafyMindService {
             return null;
         }
         // 방장이 아니라면 유저 정보만 삭제
-//        ssafyMind.getTeams().get(participant.getTeamNo()).remove(participant);
+        Team team = ssafyMind.getTeams().get(participant.getTeamNo());
+        team.getMembers().remove(participant);
 
         // 변경 완료
         return ssafyMindRepository.save(ssafyMind);
+    }
+
+    // 3. 그림 데이터 교환
+    public void draw(String roomId, Point point) {
+        SsafyMind ssafyMind = ssafyMindRepository.findById(roomId).get();
+
+        // 그림 데이터 추가
+        ssafyMind.getPoints().add(point);
+        ssafyMindRepository.save(ssafyMind);
     }
 
 

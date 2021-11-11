@@ -1,10 +1,14 @@
 <template>
   <div class="ssafymind" v-on:mousedown="isMouseDown" v-on:mouseup="isMouseUp">
-	<GameOrderModal v-if="ordermodal == true" @getCloseModal="getCloseModal"/>
+    <GameOrderModal v-if="ordermodal == true" @getCloseModal="getCloseModal" />
     <!-- <div class="room-title">
       <span id="game-title">싸피마인드</span>
     </div> -->
-    <Header v-bind:gameTitle="'싸피마인드'" />
+    <Header
+      v-bind:gameTitle="'싸피마인드'"
+      v-bind:host="room.host"
+      v-on:onDisconnect="onDisconnect()"
+    />
     <GameStatus />
     <div class="ssafymind-center">
       <div class="question-word">문제: SSA.zip</div>
@@ -73,23 +77,24 @@ export default {
   name: 'SsafyMind',
   components: {
     Header,
-		GameStatus,
-		SsafymindRight,
-		Timer,
-		GameOrderModal, // 게임 순서 모달
+    GameStatus,
+    SsafymindRight,
+    Timer,
+    GameOrderModal, // 게임 순서 모달
   },
-	data: function() {
-		return {
-			ordermodal: true,
-			startTime: false,
-			painting: false,
-			clickmouse: false,
-			filling: false,
-			drawData:[], // 그린 좌표들 저장하는 배열
-			colorData:[],
-			saveData:[], // 마우스를 떼었을 때 멈추고 다시 저장하기 위한 배열
-			stompClient: null, // socket
-			};
+  data: function() {
+    return {
+      ordermodal: true,
+      startTime: false,
+      painting: false,
+      clickmouse: false,
+      filling: false,
+      drawData: [], // 그린 좌표들 저장하는 배열
+      colorData: [],
+      saveData: [], // 마우스를 떼었을 때 멈추고 다시 저장하기 위한 배열
+      stompClient: null, // socket
+      room: {}, // 방 정보
+    };
   },
   created() {
     this.stompClient = socketConnect(this.onConnected, this.onError);
@@ -97,235 +102,238 @@ export default {
   computed: {
     ...mapGetters(['getUser', 'getRoomId']),
   },
-	methods: {
-		startTimer(startTime){
-			this.startTime = startTime;
-		},
-		getCloseModal(ordermodal) {
+  destroyed() {
+    this.onDisconnect();
+  },
+  methods: {
+    startTimer(startTime) {
+      this.startTime = startTime;
+    },
+    getCloseModal(ordermodal) {
       this.ordermodal = ordermodal;
     },
-		stopPainting: function(){
-			this.painting = false;                                                                                           
-		},
-		startPainting: function(){
-			this.painting = true;
-		},
-		onMouseMove: function(event){
-			const canvas = document.getElementById("jsCanvas");
-			const ctx = canvas.getContext("2d");
-			const x = event.offsetX;
-			const y = event.offsetY;
-			const size = ctx.lineWidth;
-			// console.log(x, y)
-			// console.log(event)
+    stopPainting: function() {
+      this.painting = false;
+    },
+    startPainting: function() {
+      this.painting = true;
+    },
+    onMouseMove: function(event) {
+      const canvas = document.getElementById('jsCanvas');
+      const ctx = canvas.getContext('2d');
+      const x = event.offsetX;
+      const y = event.offsetY;
+      const size = ctx.lineWidth;
+      // console.log(x, y)
+      // console.log(event)
 
-			if(!this.painting){
-				ctx.beginPath(); // 새로운 경로를 만든다. 경로가 생성되었다면, 이후 그리기 명령들은 경로를 구성하고 만드는 데에 사용된다.
-				ctx.moveTo(x, y); // 해당 좌표로 펜을 이동하는 메소드
-				// console.log(ctx.beginPath)
-			}else{
-				this.strokePath(x, y);
-				ctx.lineTo(x, y); // 현재 위치에서 해당 좌표까지 선 그리기
-				ctx.stroke(); // 윤곽선을 이용해 선 그리기
-				// console.log(x, y)
-				this.drawData.push({x, y, size});
-				this.drawing();
-				// console.log(this.drawData)
-			}
+      if (!this.painting) {
+        ctx.beginPath(); // 새로운 경로를 만든다. 경로가 생성되었다면, 이후 그리기 명령들은 경로를 구성하고 만드는 데에 사용된다.
+        ctx.moveTo(x, y); // 해당 좌표로 펜을 이동하는 메소드
+        // console.log(ctx.beginPath)
+      } else {
+        this.strokePath(x, y);
+        ctx.lineTo(x, y); // 현재 위치에서 해당 좌표까지 선 그리기
+        ctx.stroke(); // 윤곽선을 이용해 선 그리기
+        // console.log(x, y)
+        this.drawData.push({ x, y, size });
+        this.drawing();
+        // console.log(this.drawData)
+      }
 
-			// // 실시간으로 그려지나 확인
-			// // const canvas = document.getElementById("jsCanvas");
-			// // const ctx = canvas.getContext("2d");
-			// ctx.clearRect(0, 0, 1100, 760)
-			// // ctx.lineWidth = 30;
-			// // ctx.strokeStyle = "red";
-			// ctx.beginPath();
-			// if(this.drawData.length > 0){
-			// 	this.drawData.forEach((lookline) => {
-			// 		ctx.lineWidth = lookline.size;
-			// 		// ctx.fillRect(0,0,lookline.x, lookline.y)
-			// 		if(!this.painting){
-			// 			ctx.moveTo(lookline.x+50, lookline.y+50);
-			// 		}
-			// 		else{ctx.lineTo(lookline.x+50, lookline.y+50);}
-			// 		// console.log(lookline.x, lookline.y, lookline.size);
-			// 		console.log(ctx.lineWidth)
-			// 	})
-			// }
-			// // console.log(this.drawData.length)
-			// ctx.stroke();
-			// ctx.closePath();
-		},
-		strokePath: function(x, y){
-			const canvas = document.getElementById("jsCanvas");
-			const ctx = canvas.getContext("2d");
-			var color = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-			var currentColor = ctx.strokeStyle;
-			console.log('색깔이 보이나?', arguments.length)
-			if (color !== null) {
-				ctx.strokeStyle = color;
-			}
+      // // 실시간으로 그려지나 확인
+      // // const canvas = document.getElementById("jsCanvas");
+      // // const ctx = canvas.getContext("2d");
+      // ctx.clearRect(0, 0, 1100, 760)
+      // // ctx.lineWidth = 30;
+      // // ctx.strokeStyle = "red";
+      // ctx.beginPath();
+      // if(this.drawData.length > 0){
+      // 	this.drawData.forEach((lookline) => {
+      // 		ctx.lineWidth = lookline.size;
+      // 		// ctx.fillRect(0,0,lookline.x, lookline.y)
+      // 		if(!this.painting){
+      // 			ctx.moveTo(lookline.x+50, lookline.y+50);
+      // 		}
+      // 		else{ctx.lineTo(lookline.x+50, lookline.y+50);}
+      // 		// console.log(lookline.x, lookline.y, lookline.size);
+      // 		console.log(ctx.lineWidth)
+      // 	})
+      // }
+      // // console.log(this.drawData.length)
+      // ctx.stroke();
+      // ctx.closePath();
+    },
+    strokePath: function(x, y) {
+      const canvas = document.getElementById('jsCanvas');
+      const ctx = canvas.getContext('2d');
+      var color = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+      var currentColor = ctx.strokeStyle;
+      console.log('색깔이 보이나?', arguments.length);
+      if (color !== null) {
+        ctx.strokeStyle = color;
+      }
 
-			ctx.lineTo(x, y);
-			ctx.stroke();
-			ctx.strokeStyle = currentColor;
-		},
-		drawing: function(){
-			// 실시간으로 그려지나 확인
-			const canvas = document.getElementById("jsCanvas");
-			const ctx = canvas.getContext("2d");
-			// ctx.clearRect(0, 0, 1100, 760)
-			// ctx.lineWidth = 30;
-			// ctx.strokeStyle = "red";
-			// console.log("saveData 확인", this.saveData.length)
-			if(this.saveData.length > 0){
-				this.saveData.forEach((lookline) => {
-					ctx.lineWidth = lookline.size;
-					console.log('lookline', lookline[0].x+50)
-					// ctx.beginPath()
-					ctx.moveTo(lookline[0].x+50, lookline.y+50);
-					ctx.lineTo(lookline[0].x+50, lookline.y+50);
-					// ctx.stroke();
-				})
-			}
-			// ctx.save()
-			
-			// ctx.closePath();
-			// ctx.restore();
-			// if(this.saveData.length > 0){
-			// 	this.saveData.forEach((lookline) => {
-			// 		ctx.lineWidth = lookline.size;
-			// 		ctx.moveTo(lookline.x+50, lookline.y+50);
-			// 		ctx.lineTo(lookline.x+50, lookline.y+50);
-			// 	})
-			// }
-			// ctx.save()
-			// ctx.beginPath()
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.strokeStyle = currentColor;
+    },
+    drawing: function() {
+      // 실시간으로 그려지나 확인
+      const canvas = document.getElementById('jsCanvas');
+      const ctx = canvas.getContext('2d');
+      // ctx.clearRect(0, 0, 1100, 760)
+      // ctx.lineWidth = 30;
+      // ctx.strokeStyle = "red";
+      // console.log("saveData 확인", this.saveData.length)
+      if (this.saveData.length > 0) {
+        this.saveData.forEach((lookline) => {
+          ctx.lineWidth = lookline.size;
+          console.log('lookline', lookline[0].x + 50);
+          // ctx.beginPath()
+          ctx.moveTo(lookline[0].x + 50, lookline.y + 50);
+          ctx.lineTo(lookline[0].x + 50, lookline.y + 50);
+          // ctx.stroke();
+        });
+      }
+      // ctx.save()
 
-			// this.drawData.forEach((lookline) => {
-			// 	ctx.lineWidth = lookline.size;
-			// 	ctx.moveTo(lookline.x, lookline.y);
-			// 	ctx.lineTo(lookline.x, lookline.y);
-			// })
-			// ctx.stroke();
-			// ctx.closePath();
-			// ctx.restore();
-		},
-		mouseEnter: function(){
-			if(this.clickmouse){
-				this.painting = true;
-			}else{
-				this.painting = false;
-			}
-		},
-		isMouseDown: function(){
-			// 그리기 시작
-			this.clickmouse = true;
-		},
-		isMouseUp: function(){
-			// 그리기 종료
-			this.clickmouse = false;
-			
-			console.log('여기서부터 4개 확인')
-			console.log(this.drawData)
-			console.log(this.drawData.length)
-			console.log(this.saveData)
-			console.log(this.saveData.length)
-			if(this.drawData && this.drawData.length > 0){
-				this.saveData[this.saveData.length] = this.drawData; // 그리는 거 저장하겠다
-				this.drawData = []; // 초기화
-			}
-		},
-		handleColorClick: function(event){
-			const canvas = document.getElementById("jsCanvas");
-			const ctx = canvas.getContext("2d");
-			const color = event.target.style.backgroundColor;
-			ctx.strokeStyle = color;
-			ctx.fillStyle = color;
-			// this.colorData.push({color});
-			// console.log(this.colorData)
-		},
-		handleRangeChange: function(event){
-			const canvas = document.getElementById("jsCanvas");
-			const ctx = canvas.getContext("2d");
-			const size = event.target.value;
-			ctx.lineWidth = size;
-		},
-		handlePaintModeClick: function(){
-			const canvas = document.getElementById("jsCanvas");
-			if(this.filling === false){
-				// canvas.classList.remove(`painteraser`);
-				canvas.classList.remove(`paintbrush`);
-				canvas.classList.add(`paintbucket`);
-				this.filling = true;
-			}
-		},
-		handlePaletteModeClick: function(){
-			const canvas = document.getElementById("jsCanvas");
-			if(this.filling === true){
-				// canvas.classList.remove(`painteraser`);
-				canvas.classList.remove(`paintbucket`);
-				canvas.classList.add(`paintbrush`);
-				this.filling = false;
-			}
-		},
-		handleCanvasClick: function(){
-			const canvas = document.getElementById("jsCanvas");
-			const ctx = canvas.getContext("2d");
-			if(this.filling){
-				// this.fill();
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-			}
-		},
-		// fill: function(){
-		// 	const canvas = document.getElementById("jsCanvas");
-		// 	const ctx = canvas.getContext("2d");
+      // ctx.closePath();
+      // ctx.restore();
+      // if(this.saveData.length > 0){
+      // 	this.saveData.forEach((lookline) => {
+      // 		ctx.lineWidth = lookline.size;
+      // 		ctx.moveTo(lookline.x+50, lookline.y+50);
+      // 		ctx.lineTo(lookline.x+50, lookline.y+50);
+      // 	})
+      // }
+      // ctx.save()
+      // ctx.beginPath()
 
-		// 	var color = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-		// 	var currentColor = ctx.fillStyle;
+      // this.drawData.forEach((lookline) => {
+      // 	ctx.lineWidth = lookline.size;
+      // 	ctx.moveTo(lookline.x, lookline.y);
+      // 	ctx.lineTo(lookline.x, lookline.y);
+      // })
+      // ctx.stroke();
+      // ctx.closePath();
+      // ctx.restore();
+    },
+    mouseEnter: function() {
+      if (this.clickmouse) {
+        this.painting = true;
+      } else {
+        this.painting = false;
+      }
+    },
+    isMouseDown: function() {
+      // 그리기 시작
+      this.clickmouse = true;
+    },
+    isMouseUp: function() {
+      // 그리기 종료
+      this.clickmouse = false;
 
-		// 	if (color !== null) {
-		// 		ctx.fillStyle = color;
-		// 	}
+      console.log('여기서부터 4개 확인');
+      console.log(this.drawData);
+      console.log(this.drawData.length);
+      console.log(this.saveData);
+      console.log(this.saveData.length);
+      if (this.drawData && this.drawData.length > 0) {
+        this.saveData[this.saveData.length] = this.drawData; // 그리는 거 저장하겠다
+        this.drawData = []; // 초기화
+      }
+    },
+    handleColorClick: function(event) {
+      const canvas = document.getElementById('jsCanvas');
+      const ctx = canvas.getContext('2d');
+      const color = event.target.style.backgroundColor;
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      // this.colorData.push({color});
+      // console.log(this.colorData)
+    },
+    handleRangeChange: function(event) {
+      const canvas = document.getElementById('jsCanvas');
+      const ctx = canvas.getContext('2d');
+      const size = event.target.value;
+      ctx.lineWidth = size;
+    },
+    handlePaintModeClick: function() {
+      const canvas = document.getElementById('jsCanvas');
+      if (this.filling === false) {
+        // canvas.classList.remove(`painteraser`);
+        canvas.classList.remove(`paintbrush`);
+        canvas.classList.add(`paintbucket`);
+        this.filling = true;
+      }
+    },
+    handlePaletteModeClick: function() {
+      const canvas = document.getElementById('jsCanvas');
+      if (this.filling === true) {
+        // canvas.classList.remove(`painteraser`);
+        canvas.classList.remove(`paintbucket`);
+        canvas.classList.add(`paintbrush`);
+        this.filling = false;
+      }
+    },
+    handleCanvasClick: function() {
+      const canvas = document.getElementById('jsCanvas');
+      const ctx = canvas.getContext('2d');
+      if (this.filling) {
+        // this.fill();
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+    },
+    // fill: function(){
+    // 	const canvas = document.getElementById("jsCanvas");
+    // 	const ctx = canvas.getContext("2d");
 
-		// 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-		// 	ctx.fillStyle = currentColor;
+    // 	var color = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    // 	var currentColor = ctx.fillStyle;
 
-		// 	console.log('fill이 되나', arguments)
-		// },
-		handleCanvasErase: function(){
-			const canvas = document.getElementById("jsCanvas");
-			const ctx = canvas.getContext("2d");
-			// canvas.classList.remove(`paintbucket`);
-			// canvas.classList.remove(`paintbrush`);
-			// canvas.classList.add(`painteraser`);
-			ctx.strokeStyle = "white";
-			// ctx.lineWidth = 30;
-			this.handlePaletteModeClick();
-		},
-		handleCM: function(event){
-			event.preventDefault();
-		},
-		handleSave:function(){
-			const canvas = document.getElementById("jsCanvas");
-			const ctx = canvas.getContext("2d");
-			// ctx.clearRect(0, 0, 1100, 760)
-			// ctx.lineWidth = 30;
-			ctx.strokeStyle = "red";
-			ctx.beginPath();
-			if(this.saveData.length > 0){
-				this.saveData.forEach((lookline) => {
-					ctx.lineWidth = lookline.size;
-					// ctx.fillRect(0,0,lookline.x, lookline.y)
-					ctx.moveTo(lookline.x+50, lookline.y+50);
-					ctx.lineTo(lookline.x+50, lookline.y+50);
-					// console.log(lookline.x, lookline.y, lookline.size);
-					console.log(ctx.lineWidth)
-				})
-			}
-			// console.log(this.drawData.length)
-			ctx.stroke();
-			ctx.closePath();
+    // 	if (color !== null) {
+    // 		ctx.fillStyle = color;
+    // 	}
+
+    // 	ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // 	ctx.fillStyle = currentColor;
+
+    // 	console.log('fill이 되나', arguments)
+    // },
+    handleCanvasErase: function() {
+      const canvas = document.getElementById('jsCanvas');
+      const ctx = canvas.getContext('2d');
+      // canvas.classList.remove(`paintbucket`);
+      // canvas.classList.remove(`paintbrush`);
+      // canvas.classList.add(`painteraser`);
+      ctx.strokeStyle = 'white';
+      // ctx.lineWidth = 30;
+      this.handlePaletteModeClick();
+    },
+    handleCM: function(event) {
+      event.preventDefault();
+    },
+    handleSave: function() {
+      const canvas = document.getElementById('jsCanvas');
+      const ctx = canvas.getContext('2d');
+      // ctx.clearRect(0, 0, 1100, 760)
+      // ctx.lineWidth = 30;
+      ctx.strokeStyle = 'red';
+      ctx.beginPath();
+      if (this.saveData.length > 0) {
+        this.saveData.forEach((lookline) => {
+          ctx.lineWidth = lookline.size;
+          // ctx.fillRect(0,0,lookline.x, lookline.y)
+          ctx.moveTo(lookline.x + 50, lookline.y + 50);
+          ctx.lineTo(lookline.x + 50, lookline.y + 50);
+          // console.log(lookline.x, lookline.y, lookline.size);
+          console.log(ctx.lineWidth);
+        });
+      }
+      // console.log(this.drawData.length)
+      ctx.stroke();
+      ctx.closePath();
 
       // const canvas = document.getElementById("jsCanvas");
       // const image = canvas.toDataURL();
@@ -379,7 +387,10 @@ export default {
      */
     // 게임 방 입장 : 정보 구독 및 유저 정보 전송
     onConnected() {
+      // 방 정보 교환 채널
       this.stompClient.subscribe('/ssafymind/' + this.getRoomId, this.onMesseageReceived);
+      // 그림 정보 교환 채널
+      this.stompClient.subscribe('/ssafymind/draw/' + this.getRoomId, this.onDrawMessageReceived);
       this.stompClient.send(
         '/pub/ssafymind/enter',
         {},
@@ -393,8 +404,42 @@ export default {
       // this.test();
     },
     onMesseageReceived(payload) {
+      if (payload.body == 'exit') {
+        // 모든 참가자의 연결을 끊고
+        this.onDisconnect();
+        alert('방장이 퇴장하여 게임이 종료됩니다!');
+        // 모든 참가자 내보내기
+        this.$router.push('/room/' + this.getRoomId);
+        return;
+      }
+      const data = JSON.parse(payload.body);
+      this.room = data;
+      console.log(data);
+      // 여기에 받은 데이터를 기반으로 그리고 있는 그림 초기화하는 로직 구현
+      // for(this.room.points)
+    },
+    // 게임 방 퇴장 소켓 연결 해제 및 게임 방 유저 정보 삭제
+    onDisconnect() {
+      this.stompClient.send(
+        '/pub/ssafymind/exit',
+        {},
+        JSON.stringify({
+          roomId: this.getRoomId,
+          participantId: this.getUser.id,
+          participantName: this.getUser.name,
+        })
+      );
+      this.stompClient.disconnect();
+      this.$router.push('/room/' + this.getRoomId);
+    },
+    sendDrawMessage() {
+      // 보내는 객체 여기다가 넣기
+      this.stompClient.send(`/pub/ssafymind/draw/${this.getRoomId}`, {}, JSON.stringify());
+    },
+    onDrawMessageReceived(payload) {
       const data = JSON.parse(payload.body);
       console.log(data);
+      // 여기에 실시간으로 그리는 로직 작성
     },
     test() {
       this.stompClient.send(

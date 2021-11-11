@@ -1,19 +1,31 @@
 <template>
   <div class="room-title">
     <span id="game-title">{{ gameTitle }}</span>
-    <button id="game-over-btn">게임 중단</button>
+    <button id="game-over-btn" v-if="getUser.id == host" @click="onDisconnect()">게임 중단</button>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'Header',
-	props:{
-		gameTitle:{
-			type: String
-		}
-	}
-}
+  props: {
+    gameTitle: {
+      type: String,
+    },
+    host: {
+      type: String,
+    },
+  },
+  computed: {
+    ...mapGetters(['getUser']),
+  },
+  methods: {
+    onDisconnect() {
+      this.$emit('onDisconnect');
+    },
+  },
+};
 </script>
 
 <style>
