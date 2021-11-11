@@ -100,6 +100,7 @@ export default {
 			offsetY: 0,
 			lineSize: 2.5,
 			color: "rgb(0, 0, 0)",
+			beginPath: true,
 			};
   },
   created() {
@@ -134,15 +135,18 @@ export default {
       // console.log(event)
 
       if (!this.painting) {
-        ctx.beginPath(); // 새로운 경로를 만든다. 경로가 생성되었다면, 이후 그리기 명령들은 경로를 구성하고 만드는 데에 사용된다.
-        ctx.moveTo(this.offsetX, this.offsetY); // 해당 좌표로 펜을 이동하는 메소드
+				this.beginPath = true;
+        // ctx.beginPath(); // 새로운 경로를 만든다. 경로가 생성되었다면, 이후 그리기 명령들은 경로를 구성하고 만드는 데에 사용된다.
+        // ctx.moveTo(this.offsetX, this.offsetY); // 해당 좌표로 펜을 이동하는 메소드
         // console.log(ctx.beginPath)
       } else {
+				this.beginPath = false;
         // this.strokePath(x, y);
-        ctx.lineTo(this.offsetX, this.offsetY); // 현재 위치에서 해당 좌표까지 선 그리기
-        ctx.stroke(); // 윤곽선을 이용해 선 그리기
+        // ctx.lineTo(this.offsetX, this.offsetY); // 현재 위치에서 해당 좌표까지 선 그리기
+        // ctx.stroke(); // 윤곽선을 이용해 선 그리기
         // console.log(x, y)
         // this.drawData.push({ x, y, size });
+
 				this.sendDrawMessage();
         this.drawing();
         // console.log(this.drawData)
@@ -491,14 +495,21 @@ export default {
 					size: this.lineSize,
 					color: this.color,
 					fillFlag: this.filling,
-					painting : this.painting,
+					beginPath : this.beginPath,
 				}));
     },
     onDrawMessageReceived(payload) {
       const data = JSON.parse(payload.body);
       console.log(data);
       // 여기에 실시간으로 그리는 로직 작성
-
+			if (data.beginPath) {
+        this.ctx.beginPath();
+				this.ctx.moveTo(data.x, data.y); 
+				// console.log(ctx.beginPath)
+      } else {
+        this.ctx.lineTo(data.x, data.y);
+        this.ctx.stroke();
+      }
     },
     test() {
       this.stompClient.send(

@@ -13,5 +13,5 @@ public class Point {
     private double size; // 선 굵기
     private String color; // 색
     private boolean fillFlag; // 채우기 여부
-    private boolean painting; // 선 긋기 판단
+    private boolean beginPath; // 선 긋기 판단
 }
