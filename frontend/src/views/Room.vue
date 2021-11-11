@@ -369,7 +369,7 @@ export default {
           roomId: this.getRoomId,
           participantId: this.getUser.id,
           participantName: this.getUser.name,
-          teamNo: 0,
+          teamNo: this.getUser.teamNo,
         })
       );
     },
