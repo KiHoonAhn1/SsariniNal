@@ -281,9 +281,53 @@ export default {
           teamNo: this.getUser.teamNo,
         })
       );
+      // this.test();
     },
     onMesseageReceived(payload) {
-      console.log(payload.body);
+      const data = JSON.parse(payload.body);
+      console.log(data);
+    },
+    test() {
+      this.stompClient.send(
+        '/pub/ssafymind/enter',
+        {},
+        JSON.stringify({
+          roomId: this.getRoomId,
+          participantId: 1,
+          participantName: '김태현',
+          teamNo: '1',
+        })
+      );
+      this.stompClient.send(
+        '/pub/ssafymind/enter',
+        {},
+        JSON.stringify({
+          roomId: this.getRoomId,
+          participantId: 2,
+          participantName: '김태현2',
+          teamNo: '2',
+        })
+      );
+      this.stompClient.send(
+        '/pub/ssafymind/enter',
+        {},
+        JSON.stringify({
+          roomId: this.getRoomId,
+          participantId: 3,
+          participantName: '김태현3',
+          teamNo: '3',
+        })
+      );
+      this.stompClient.send(
+        '/pub/ssafymind/enter',
+        {},
+        JSON.stringify({
+          roomId: this.getRoomId,
+          participantId: 4,
+          participantName: '김태현4',
+          teamNo: '3',
+        })
+      );
     },
   },
   mounted: function() {

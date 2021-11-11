@@ -42,6 +42,7 @@ export default {
       user: {
         id: '',
         name: '',
+        teamNo: 0,
       },
       roomId: '',
     };

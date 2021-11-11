@@ -9,14 +9,14 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableRedisRepositories
+@EnableTransactionManagement
 @RequiredArgsConstructor
 public class RedisConfig {
-
     private final RedisProperties redisProperties;
 
     @Value("${spring.redis.host}")
@@ -25,28 +25,35 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int redisPort;
 
+    // Connection 설정
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        // Host 설정
         redisStandaloneConfiguration.setHostName(redisHost);
+        // Port 설정
         redisStandaloneConfiguration.setPort(redisPort);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
-//        return new LettuceConnectionFactory(redisProperties.getHost(),redisProperties.getPort());
     }
+
+    // template 설정
     @Bean
     public RedisTemplate<?, ?> redisTeplate() {
         RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
+        // transaction 사용 가능 여부 설정
+//        redisTemplate.setEnableTransactionSupport(true);
         return redisTemplate;
     }
 
-    @Bean
-    public StringRedisTemplate stringRedisTemplate() {
-        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
-        stringRedisTemplate.setConnectionFactory(redisConnectionFactory());
-
-        return stringRedisTemplate;
-    }
+//    @Bean
+//    public StringRedisTemplate stringRedisTemplate() {
+//        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
+//        stringRedisTemplate.setConnectionFactory(redisConnectionFactory());
+//        stringRedisTemplate.
+//
+//        return stringRedisTemplate;
+//    }
 
 //    @Bean
 //    public RedisTemplate<String, Object> redisTemplate() {

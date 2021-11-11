@@ -15,7 +15,7 @@ export default new Vuex.Store({
     user: {
       id: null, // 유저 아이디
       name: null, // 유저 이름
-      teamNo: null, // 팀 번호
+      teamNo: 0, // 팀 번호
     },
     isLogin: false,
     visitedRoomId: null, // 현재 유저가 방문중인 방의 ID
@@ -39,6 +39,7 @@ export default new Vuex.Store({
     LOGIN(state, user) {
       state.user.id = user.id;
       state.user.name = user.name;
+      state.user.teamNo = user.teamNo;
     },
     // 2. 로그인 여부 변환
     CHANGE_LOGIN_STATE(state, payload) {

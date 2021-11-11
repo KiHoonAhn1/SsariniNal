@@ -21,22 +21,22 @@ public class WaitRoomService {
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 테스트용 멤버 추가
-        room.getMembers().add(new Participant(participant.getRoomId(), "1", "김태현", 1));
-        room.getMembers().add(new Participant(participant.getRoomId(), "2", "김태현2", 1));
-        room.getMembers().add(new Participant(participant.getRoomId(), "3", "김태현3", 1));
-        room.getMembers().add(new Participant(participant.getRoomId(), "4", "이장섭", 2));
-        room.getMembers().add(new Participant(participant.getRoomId(), "5", "이장섭2", 2));
-        room.getMembers().add(new Participant(participant.getRoomId(), "6", "이장섭3", 2));
-        room.getMembers().add(new Participant(participant.getRoomId(), "7", "권희은", 5));
-        room.getMembers().add(new Participant(participant.getRoomId(), "8", "권희은2", 5));
-        room.getMembers().add(new Participant(participant.getRoomId(), "9", "권희은3", 5));
-        room.getMembers().add(new Participant(participant.getRoomId(), "10", "차은채", 7));
-        room.getMembers().add(new Participant(participant.getRoomId(), "11", "차은채2", 7));
-        room.getMembers().add(new Participant(participant.getRoomId(), "12", "차은채3", 7));
-        room.getMembers().add(new Participant(participant.getRoomId(), "13", "안기훈", 10));
-        room.getMembers().add(new Participant(participant.getRoomId(), "14", "안기훈2", 10));
-        room.getMembers().add(new Participant(participant.getRoomId(), "15", "안기훈3", 10));
-        room.setTeamline(new boolean[] {false, true, true, false, false, true, false, true, false, false, true});
+//        room.getMembers().add(new Participant(participant.getRoomId(), "1", "김태현", 1));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "2", "김태현2", 1));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "3", "김태현3", 1));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "4", "이장섭", 2));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "5", "이장섭2", 2));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "6", "이장섭3", 2));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "7", "권희은", 5));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "8", "권희은2", 5));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "9", "권희은3", 5));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "10", "차은채", 7));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "11", "차은채2", 7));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "12", "차은채3", 7));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "13", "안기훈", 10));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "14", "안기훈2", 10));
+//        room.getMembers().add(new Participant(participant.getRoomId(), "15", "안기훈3", 10));
+//        room.setTeamline(new boolean[] {false, true, true, false, false, true, false, true, false, false, true});
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         System.out.println(room.getMembers());

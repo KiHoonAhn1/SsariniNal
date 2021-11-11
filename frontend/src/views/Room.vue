@@ -321,7 +321,6 @@ export default {
           break;
         }
       }
-      console.log('aa');
       this.changeTeamMessage();
     },
     getOpenModal(openmodal) {

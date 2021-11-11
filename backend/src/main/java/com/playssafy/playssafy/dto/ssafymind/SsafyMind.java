@@ -1,12 +1,15 @@
 package com.playssafy.playssafy.dto.ssafymind;
 
 import com.playssafy.playssafy.domain.Quiz.MindDto;
-import com.playssafy.playssafy.dto.waitroom.Participant;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -25,7 +28,7 @@ public class SsafyMind {
     private int[] mindScore; // 팀당 점수(배열 형태)
     private List<String> chat; // 채팅정보
     // private List<Guest[]> teamOrder; // 팀원구성과 게임 플레이 순으로 저장
-    private ArrayList<ArrayList<Participant>> teams; // 팀원 구성 정보
+    private List<Team> teams; // 팀원 구성 정보
     private List<Integer> teamOrder; // 팀 진행 순서
     private int curTeam; // 현재 진행중인 팀
     private List<Integer> playerOrder; // 팀 내 진행 순서
@@ -36,7 +39,9 @@ public class SsafyMind {
         int teamSize = 11;
         teams = new ArrayList<>();
         for (int i = 0; i < teamSize; i++) {
-            teams.add(new ArrayList<>());
+            teams.add(new Team());
+            teams.get(i).setTeamNo(i);
+//            teams.get(i).getMembers().add(new Participant("dummy", "aa", "aa", 0));
         }
         // 기타 동적 리스트 초기화
         quizzes = new ArrayList<>();
@@ -45,6 +50,8 @@ public class SsafyMind {
         teamOrder = new ArrayList<>();
         playerOrder = new ArrayList<>();
     }
+
+
 
 
 //    @Override

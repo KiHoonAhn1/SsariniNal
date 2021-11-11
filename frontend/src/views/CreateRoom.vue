@@ -40,6 +40,7 @@ export default {
       let user = {
         id: '',
         name: '',
+        teamNo: '',
       };
       this.login(user);
       // 로그아웃 상태로 전환
