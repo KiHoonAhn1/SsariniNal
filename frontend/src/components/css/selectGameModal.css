@@ -120,6 +120,10 @@
   float: left;
   margin-top: 4%;
   margin-left: 5%;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .wr-explain-jumpgame-content {
   color: #442323;
@@ -131,4 +135,25 @@
   width: 40%;
   margin-top: -50px;
   /* margin-left: -100px; */
+}
+.count-minus {
+  color: #ffa500;
+  cursor: pointer;
+}
+.count-plus {
+  color: #ffa500;
+  cursor: pointer;
+}
+.count-arrow {
+  transform: rotate(180deg);
+}
+.count-number {
+  color: #f0e9cc;
+  margin-left: 15px;
+  margin-right: 15px;
+  font-size: 2.5rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }

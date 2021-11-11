@@ -38,6 +38,9 @@
               </div>
               <div class="wr-explain-speakgame-num">
                 팀 별 문제 수 :
+								<span class="count-minus" @click="count(1)"><i class="fas fa-play count-arrow"></i></span>
+								<span class="count-number">{{ number }}</span>
+								<span class="count-plus" @click="count(2)"><i class="fas fa-play"></i></span>
               </div>
             </div>
             <div class="wr-explain-speakgame" v-if="speakgame_explain == true">
@@ -52,6 +55,9 @@
               </div>
               <div class="wr-explain-speakgame-num">
                 팀 별 문제 수 :
+								<span class="count-minus" @click="count(1)"><i class="fas fa-play count-arrow"></i></span>
+								<span class="count-number">{{ number }}</span>
+								<span class="count-plus" @click="count(2)"><i class="fas fa-play"></i></span>
               </div>
             </div>
             <div class="wr-explain-jumpgame" v-if="jumpgame_explain == true">
@@ -82,6 +88,7 @@ export default {
       ssafymind_explain: false,
       speakgame_explain: false,
       jumpgame_explain: false,
+			number: 5,
     };
   },
   methods: {
@@ -118,6 +125,16 @@ export default {
       this.jumpgame_explain = true;
       this.$emit('infoJumpGame', this.jumpgame_explain);
     },
+		count(type){
+			if(type === 1){
+				this.number = this.number - 1;
+				if(this.number < 1){
+					this.number = 1;
+				}
+			}else if(type === 2){
+				this.number = this.number + 1;
+			}
+		},
     onModal() {
       this.$emit('getOpenModal', this.openmodal);
     },
