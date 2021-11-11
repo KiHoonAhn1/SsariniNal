@@ -36,7 +36,7 @@
         </div>
         <!-- </div> -->
         <div class="team-group">
-          <div v-for="index in totalTeam" :key="index">
+          <div v-for="index in totalTeam" :key="index" class="line">
             <div
               v-bind:class="'team-group team-group-' + index"
               v-show="room.teamline[index]"

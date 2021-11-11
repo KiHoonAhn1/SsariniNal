@@ -1,3 +1,9 @@
+.ssafymind {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 .ssafymind .canvas {
   width: 1100px;
   height: 760px;
@@ -89,4 +95,13 @@
   50% {
     opacity: 0;
   }
+}
+.paintbucket {
+  cursor: url("../assets/paint.png"), auto;
+}
+.paintbrush {
+  cursor: url("../assets/paint-brush.png") 0 32, auto;
+}
+.painteraser {
+  cursor: url("../assets/eraser-tool.png") 0 32, auto;
 }

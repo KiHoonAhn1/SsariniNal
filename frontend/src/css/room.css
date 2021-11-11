@@ -11,11 +11,22 @@
   height: 85vh;
   background-color: #f0e9cc;
   border-radius: 20px;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .waiting-room .room-left::-webkit-scrollbar {
-  display: none;
+  width: 17px;
+}
+.waiting-room .room-left::-webkit-scrollbar-thumb {
+  background-color: #d6b578;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+.waiting-room .room-left::-webkit-scrollbar-track {
+  background-color: #ddd3a9;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 5px white;
 }
 
 .waiting-room .room-right {
@@ -310,9 +321,13 @@
   margin-bottom: 10px;
 }
 .waiting-room .team-group-extra {
-  padding-top: 20px;
+  padding-top: 10px;
   padding-bottom: 10px;
-  margin-left: 20px;
+  /* margin-left: 20px; */
+}
+.waiting-room .team-group-extra:hover {
+  background-color: #d9d4bf;
+  cursor: pointer;
 }
 
 .waiting-room #game-title {
