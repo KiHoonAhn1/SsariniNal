@@ -1,6 +1,7 @@
 package com.playssafy.playssafy.service;
 
 
+import com.playssafy.playssafy.dto.ssafymind.MindMessage;
 import com.playssafy.playssafy.dto.ssafymind.Point;
 import com.playssafy.playssafy.dto.ssafymind.SsafyMind;
 import com.playssafy.playssafy.dto.ssafymind.Team;
@@ -89,6 +90,26 @@ public class SsafyMindService {
         // 그림 데이터 추가
         ssafyMind.getPoints().add(point);
         ssafyMindRepository.save(ssafyMind);
+    }
+
+    // 4. 정답 여부 확인
+    public boolean answer(String roomId, MindMessage mindMessage) {
+        SsafyMind ssafyMind = ssafyMindRepository.findById(roomId).get();
+
+        // 메세지 스택 저장
+        ssafyMind.getChat().add(mindMessage);
+        // 리스트의 마지막 부분 부터 문제 회수
+        int lastIndex = ssafyMind.getQuizzes().size();
+        if(ssafyMind.getQuizzes().get(lastIndex).equals(mindMessage.getMessage())) {
+            // 마지막 문제를 제거하고
+            ssafyMind.getQuizzes().remove(lastIndex);
+            // 저장한 뒤
+            ssafyMindRepository.save(ssafyMind);
+            // 정답
+            return true;
+        }
+        // 오답
+        return false;
     }
 
 

@@ -1,5 +1,6 @@
 package com.playssafy.playssafy.socketcontroller;
 
+import com.playssafy.playssafy.dto.ssafymind.MindMessage;
 import com.playssafy.playssafy.dto.ssafymind.Point;
 import com.playssafy.playssafy.dto.ssafymind.SsafyMind;
 import com.playssafy.playssafy.dto.waitroom.Participant;
@@ -24,7 +25,7 @@ public class SsafyMindController {
         // 게임 방 정보 소켓으로 반환
         template.convertAndSend("/ssafymind/" + participant.getRoomId(), ssafyMind);
     }
-    
+
     // 2. 싸피 마인드 퇴장
     @MessageMapping(value = "/ssafymind/exit")
     public void exit(Participant participant) {
@@ -46,5 +47,18 @@ public class SsafyMindController {
         template.convertAndSend("/ssafymind/draw/" + roomId, point);
         // 그린 내용 서버에 저장
         ssafyMindService.draw(roomId, point);
+    }
+
+    // 4. 메세지 교환 로직
+    @MessageMapping(value = "/ssafymind/answer/{roomId}")
+    public void answer(@DestinationVariable String roomId, MindMessage mindMessage) {
+        // 우선 메세지 데이터 보내주기
+        template.convertAndSend("/ssafymind/answer/"  + roomId, mindMessage);
+        // 서버에 메세지 스택 저장 및 정답 여부 판별
+        boolean flag = ssafyMindService.answer(roomId, mindMessage);
+        template.convertAndSend("/ssafymind/correct/"  + roomId, flag);
+        // 정답이라면 새롭게 갱신된 방 정보 뿌려주기
+//        if(flag)
+//            template.convertAndSend("/ssafymind/" + roomId,);
     }
 }

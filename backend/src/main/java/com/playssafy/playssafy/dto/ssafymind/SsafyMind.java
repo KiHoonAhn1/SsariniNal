@@ -25,7 +25,7 @@ public class SsafyMind {
     private List<MindDto> quizzes; // 퀴즈 정보 - 팀 수의 배수
     private List<Point> points; // x,y좌표값, 색정보, 굵기
     private int[] mindScore; // 팀당 점수(배열 형태)
-    private List<String> chat; // 채팅정보
+    private List<MindMessage> chat; // 채팅정보
     private List<Team> teams; // 팀원 구성 정보
     private List<Integer> teamOrder; // 팀 진행 순서
     private int curTeam; // 현재 진행중인 팀
