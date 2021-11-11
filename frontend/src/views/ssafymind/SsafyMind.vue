@@ -82,19 +82,25 @@ export default {
     Timer,
     GameOrderModal, // 게임 순서 모달
   },
-  data: function() {
-    return {
-      ordermodal: true,
-      startTime: false,
-      painting: false,
-      clickmouse: false,
-      filling: false,
-      drawData: [], // 그린 좌표들 저장하는 배열
-      colorData: [],
-      saveData: [], // 마우스를 떼었을 때 멈추고 다시 저장하기 위한 배열
-      stompClient: null, // socket
-      room: {}, // 방 정보
-    };
+	data: function() {
+		return {
+			ordermodal: true,
+			startTime: false,
+			painting: false,
+			clickmouse: false,
+			filling: false,
+			drawData:[], // 그린 좌표들 저장하는 배열
+			colorData:[],
+			saveData:[], // 마우스를 떼었을 때 멈추고 다시 저장하기 위한 배열
+			stompClient: null, // socket
+			canvas: null,
+			ctx: {},
+			room: {}, // 방 정보
+			offsetX: 0,
+			offsetY: 0,
+			lineSize: 2.5,
+			color: "rgb(0, 0, 0)",
+			};
   },
   created() {
     this.stompClient = socketConnect(this.onConnected, this.onError);
@@ -121,22 +127,23 @@ export default {
     onMouseMove: function(event) {
       const canvas = document.getElementById('jsCanvas');
       const ctx = canvas.getContext('2d');
-      const x = event.offsetX;
-      const y = event.offsetY;
-      const size = ctx.lineWidth;
+      this.offsetX = event.offsetX;
+      this.offsetY = event.offsetY;
+      this.lineSize = ctx.lineWidth;
       // console.log(x, y)
       // console.log(event)
 
       if (!this.painting) {
         ctx.beginPath(); // 새로운 경로를 만든다. 경로가 생성되었다면, 이후 그리기 명령들은 경로를 구성하고 만드는 데에 사용된다.
-        ctx.moveTo(x, y); // 해당 좌표로 펜을 이동하는 메소드
+        ctx.moveTo(this.offsetX, this.offsetY); // 해당 좌표로 펜을 이동하는 메소드
         // console.log(ctx.beginPath)
       } else {
-        this.strokePath(x, y);
-        ctx.lineTo(x, y); // 현재 위치에서 해당 좌표까지 선 그리기
+        // this.strokePath(x, y);
+        ctx.lineTo(this.offsetX, this.offsetY); // 현재 위치에서 해당 좌표까지 선 그리기
         ctx.stroke(); // 윤곽선을 이용해 선 그리기
         // console.log(x, y)
-        this.drawData.push({ x, y, size });
+        // this.drawData.push({ x, y, size });
+				this.sendDrawMessage();
         this.drawing();
         // console.log(this.drawData)
       }
@@ -173,121 +180,156 @@ export default {
       if (color !== null) {
         ctx.strokeStyle = color;
       }
+			ctx.lineTo(x, y);
+			ctx.stroke();
+			ctx.strokeStyle = currentColor;
+		},
+		drawing: function(){
+			// 실시간으로 그려지나 확인
+			// ctx.clearRect(0, 0, 1100, 760)
+			// ctx.lineWidth = 30;
+			// ctx.strokeStyle = "red";
+			// console.log("saveData 확인", this.saveData.length)
+			if(this.saveData.length > 0){
+				this.saveData.forEach((lookline) => {
+					this.ctx.beginPath()
+					this.ctx.moveTo(lookline[0].x+50, lookline[0].y+50);
+					lookline.forEach((index) => {
+						// console.log('확인',index.x)
+						this.ctx.lineWidth = index.size;
+						// console.log('lookline', index.x+50)
+						this.ctx.lineTo(index.x+50, index.y+50);
+						this.ctx.stroke();
+					})
+					this.ctx.closePath();
+					this.ctx.save()
+				})
+			}
+			// ctx.save()
+			
+			// ctx.restore();
+			// if(this.saveData.length > 0){
+			// 	this.saveData.forEach((lookline) => {
+			// 		ctx.lineWidth = lookline.size;
+			// 		ctx.moveTo(lookline.x+50, lookline.y+50);
+			// 		ctx.lineTo(lookline.x+50, lookline.y+50);
+			// 	})
+			// }
+			// ctx.save()
+			// ctx.beginPath()
 
-      ctx.lineTo(x, y);
-      ctx.stroke();
-      ctx.strokeStyle = currentColor;
-    },
-    drawing: function() {
-      // 실시간으로 그려지나 확인
-      const canvas = document.getElementById('jsCanvas');
-      const ctx = canvas.getContext('2d');
-      // ctx.clearRect(0, 0, 1100, 760)
-      // ctx.lineWidth = 30;
-      // ctx.strokeStyle = "red";
-      // console.log("saveData 확인", this.saveData.length)
-      if (this.saveData.length > 0) {
-        this.saveData.forEach((lookline) => {
-          ctx.lineWidth = lookline.size;
-          console.log('lookline', lookline[0].x + 50);
-          // ctx.beginPath()
-          ctx.moveTo(lookline[0].x + 50, lookline.y + 50);
-          ctx.lineTo(lookline[0].x + 50, lookline.y + 50);
-          // ctx.stroke();
-        });
-      }
-      // ctx.save()
+			// this.drawData.forEach((lookline) => {
+			// 	ctx.lineWidth = lookline.size;
+			// 	ctx.moveTo(lookline.x, lookline.y);
+			// 	ctx.lineTo(lookline.x, lookline.y);
+			// })
+			// ctx.stroke();
+			// ctx.closePath();
+			// ctx.restore();
+		},
+		mouseEnter: function(){
+			if(this.clickmouse){
+				this.painting = true;
+			}else{
+				this.painting = false;
+			}
+		},
+		isMouseDown: function(event){
+			// 그리기 시작
+			this.clickmouse = true;
 
-      // ctx.closePath();
-      // ctx.restore();
-      // if(this.saveData.length > 0){
-      // 	this.saveData.forEach((lookline) => {
-      // 		ctx.lineWidth = lookline.size;
-      // 		ctx.moveTo(lookline.x+50, lookline.y+50);
-      // 		ctx.lineTo(lookline.x+50, lookline.y+50);
-      // 	})
-      // }
-      // ctx.save()
-      // ctx.beginPath()
-
-      // this.drawData.forEach((lookline) => {
-      // 	ctx.lineWidth = lookline.size;
-      // 	ctx.moveTo(lookline.x, lookline.y);
-      // 	ctx.lineTo(lookline.x, lookline.y);
-      // })
-      // ctx.stroke();
-      // ctx.closePath();
-      // ctx.restore();
-    },
-    mouseEnter: function() {
-      if (this.clickmouse) {
-        this.painting = true;
-      } else {
-        this.painting = false;
-      }
-    },
-    isMouseDown: function() {
-      // 그리기 시작
-      this.clickmouse = true;
-    },
-    isMouseUp: function() {
-      // 그리기 종료
-      this.clickmouse = false;
-
-      console.log('여기서부터 4개 확인');
-      console.log(this.drawData);
-      console.log(this.drawData.length);
-      console.log(this.saveData);
-      console.log(this.saveData.length);
-      if (this.drawData && this.drawData.length > 0) {
-        this.saveData[this.saveData.length] = this.drawData; // 그리는 거 저장하겠다
-        this.drawData = []; // 초기화
-      }
-    },
-    handleColorClick: function(event) {
-      const canvas = document.getElementById('jsCanvas');
-      const ctx = canvas.getContext('2d');
-      const color = event.target.style.backgroundColor;
-      ctx.strokeStyle = color;
-      ctx.fillStyle = color;
-      // this.colorData.push({color});
-      // console.log(this.colorData)
-    },
-    handleRangeChange: function(event) {
-      const canvas = document.getElementById('jsCanvas');
-      const ctx = canvas.getContext('2d');
-      const size = event.target.value;
-      ctx.lineWidth = size;
-    },
-    handlePaintModeClick: function() {
-      const canvas = document.getElementById('jsCanvas');
-      if (this.filling === false) {
-        // canvas.classList.remove(`painteraser`);
-        canvas.classList.remove(`paintbrush`);
-        canvas.classList.add(`paintbucket`);
-        this.filling = true;
-      }
-    },
-    handlePaletteModeClick: function() {
-      const canvas = document.getElementById('jsCanvas');
-      if (this.filling === true) {
-        // canvas.classList.remove(`painteraser`);
-        canvas.classList.remove(`paintbucket`);
-        canvas.classList.add(`paintbrush`);
-        this.filling = false;
-      }
-    },
-    handleCanvasClick: function() {
-      const canvas = document.getElementById('jsCanvas');
-      const ctx = canvas.getContext('2d');
-      if (this.filling) {
-        // this.fill();
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-    },
-    // fill: function(){
-    // 	const canvas = document.getElementById("jsCanvas");
-    // 	const ctx = canvas.getContext("2d");
+			this.offsetX = event.offsetX;
+      this.offsetY = event.offsetY;
+			this.ctx.beginPath();
+			this.ctx.moveTo(this.offsetX, this.offsetY);
+			this.ctx.lineTo(this.offsetX, this.offsetY);
+			this.ctx.stroke();
+			this.sendDrawMessage();
+		},
+		isMouseUp: function(){
+			// 그리기 종료
+			this.clickmouse = false;
+			
+			// console.log('여기서부터 4개 확인')
+			// console.log(this.drawData)
+			// console.log(this.drawData.length)
+			// console.log(this.saveData)
+			// console.log(this.saveData.length)
+			if(this.drawData && this.drawData.length > 0){
+				this.saveData[this.saveData.length] = this.drawData; // 그리는 거 저장하겠다
+				this.drawData = []; // 초기화
+			}
+		},
+		// 데이터 받아와서 그림 그리기
+		getPoint: function(x, y, size, color, fill, painting){
+			// 펜 굵기 설정
+			this.ctx.lineWidth = size;
+			// color 적용
+			if(this.color != color){
+				this.handleColorClick(color)
+			}
+			// 그림그리는 함수
+			if(!painting){
+				this.ctx.beginPath(); 
+				this.ctx.moveTo(x, y);
+				// console.log(ctx.beginPath)
+			}else{
+				this.ctx.lineTo(x, y);
+				this.ctx.stroke();
+				// console.log(x, y)
+				this.drawing();
+				// console.log(this.drawData)
+			}
+			// 채워지면 전체 캔버스 색깔 채우기
+			if(fill == true){
+				this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+			}
+		},
+		handleColorClick: function(color){
+			console.log("색깔", color)
+			const canvas = document.getElementById("jsCanvas");
+			const ctx = canvas.getContext("2d");
+			ctx.strokeStyle = color;
+			ctx.fillStyle = color;
+			this.color = color;
+			// this.colorData.push({color});
+			// console.log(this.colorData)
+		},
+		handleRangeChange: function(event){
+			const canvas = document.getElementById("jsCanvas");
+			const ctx = canvas.getContext("2d");
+			const size = event.target.value;
+			ctx.lineWidth = size;
+		},
+		handlePaintModeClick: function(){
+			const canvas = document.getElementById("jsCanvas");
+			if(this.filling === false){
+				// canvas.classList.remove(`painteraser`);
+				canvas.classList.remove(`paintbrush`);
+				canvas.classList.add(`paintbucket`);
+				this.filling = true;
+			}
+		},
+		handlePaletteModeClick: function(){
+			const canvas = document.getElementById("jsCanvas");
+			if(this.filling === true){
+				// canvas.classList.remove(`painteraser`);
+				canvas.classList.remove(`paintbucket`);
+				canvas.classList.add(`paintbrush`);
+				this.filling = false;
+			}
+		},
+		handleCanvasClick: function(){
+			const canvas = document.getElementById("jsCanvas");
+			const ctx = canvas.getContext("2d");
+			if(this.filling){
+				// this.fill();
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+			}
+		},
+		// fill: function(){
+		// 	const canvas = document.getElementById("jsCanvas");
+		// 	const ctx = canvas.getContext("2d");
 
     // 	var color = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     // 	var currentColor = ctx.fillStyle;
@@ -308,6 +350,7 @@ export default {
       // canvas.classList.remove(`paintbrush`);
       // canvas.classList.add(`painteraser`);
       ctx.strokeStyle = 'white';
+			this.color = 'rgb(255, 255, 255)'
       // ctx.lineWidth = 30;
       this.handlePaletteModeClick();
     },
@@ -353,6 +396,8 @@ export default {
       const paintmode = document.getElementById('jsMode-paint'); // 색 채우기 시 사용
       const palettemode = document.getElementById('jsMode-palette'); // 펜 바꾸기 시 사용
 
+			this.canvas = canvas;
+			this.ctx = ctx;
       const INITIAL_COLOR = 'black';
       canvas.width = 1100;
       canvas.height = 760;
@@ -367,7 +412,10 @@ export default {
       ctx.lineCap = 'round';
 
       // 색깔을 가지고 있는 배열값을 받아오자
-      Array.from(colors).forEach((color) => color.addEventListener('click', this.handleColorClick));
+      Array.from(colors).forEach((color) => color.addEventListener('click', () => {
+				const backgroundColor = color.style.backgroundColor;
+				this.handleColorClick(backgroundColor);
+			}));
 
       if (range) {
         range.addEventListener('input', this.handleRangeChange);
@@ -434,12 +482,23 @@ export default {
     },
     sendDrawMessage() {
       // 보내는 객체 여기다가 넣기
-      this.stompClient.send(`/pub/ssafymind/draw/${this.getRoomId}`, {}, JSON.stringify());
+      this.stompClient.send(
+				`/pub/ssafymind/draw/${this.getRoomId}`,
+				{}, 
+				JSON.stringify({
+					x: this.offsetX,
+					y: this.offsetY,
+					size: this.lineSize,
+					color: this.color,
+					fillFlag: this.filling,
+					painting : this.painting,
+				}));
     },
     onDrawMessageReceived(payload) {
       const data = JSON.parse(payload.body);
       console.log(data);
       // 여기에 실시간으로 그리는 로직 작성
+
     },
     test() {
       this.stompClient.send(
