@@ -228,7 +228,7 @@ export default {
                 this.dinos2.push(dino); // 팀원수 확인해서 속성넣은 객체리스트로 만들어주기
             });
 
-            let animation;
+            // let animation;
             ///////////////////////////// 장애물 생성 ////////////////////////////////
             let cactusarr = []; //1팀 장애물 리스트
             let cactusarr2 = []; //2팀 장애물 리스트
@@ -296,9 +296,9 @@ export default {
             // 1초에 60번 실행할 함수
             const frame = (timestamp) => {
                 // requestAnimationFrame(frame) //frame을 1초에 60번 실행해줘
-                // requestAnimationFrame(frame); //frame을 1초에 60번 실행해줘
+                requestAnimationFrame(frame); //frame을 1초에 60번 실행해줘
 
-                animation = requestAnimationFrame(frame); //frame을 1초에 60번 실행해줘
+                // animation = requestAnimationFrame(frame); //frame을 1초에 60번 실행해줘
                 ctx.clearRect(0, 0, canvas.width, canvas.height); //canvas 지워줘(잔상 안 남게)
                 ctx2.clearRect(0, 0, canvas2.width, canvas2.height); //canvas2 지워줘(잔상 안 남게)
 
@@ -400,12 +400,12 @@ export default {
                         if (dino.me == 0) {
                             // 점프
                             if (this.users2[i].jump == true) {
-                                this.dinos2[i].y -= 4; //점프속도
+                                this.dinos2[i].y -= 5; //점프속도
                             }
                             // 착지
                             if (this.users2[i].jump == false) {
                                 if (dino.y < 220) {
-                                    this.dinos2[i].y += 4; //착지속도
+                                    this.dinos2[i].y += 5; //착지속도
                                 }
                             }
                             // 점프 중지
@@ -415,12 +415,12 @@ export default {
                         } else {
                             // 점프
                             if (this.users2[i].jump == true) {
-                                this.dinos2[i].y -= 4; //점프속도
+                                this.dinos2[i].y -= 5; //점프속도
                             }
                             // 착지
                             if (this.users2[i].jump == false) {
                                 if (dino.y < 200) {
-                                    this.dinos2[i].y += 4; //착지속도
+                                    this.dinos2[i].y += 5; //착지속도
                                 }
                             }
                             // 점프 중지
@@ -442,8 +442,8 @@ export default {
                 const ssazipbg2 = document.getElementById('ssazipbg2');
                 if (dino.x <= cactus.x + cactus.width) {
                     if (xDiff < -10 && yDiff < -10) {
-                        cancelAnimationFrame(animation); //게임중단
-                        console.log(xDiff);
+                        // cancelAnimationFrame(animation); //게임중단
+                        // console.log(xDiff);
                         ssazipbg.style.animation = 'paused';
                         ssazipbg2.style.animation = 'paused';
                         // this.status = false
