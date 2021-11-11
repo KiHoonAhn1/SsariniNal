@@ -1,7 +1,7 @@
 <template>
   <div>
 		<Header v-bind:gameTitle="'싸집이 점프 게임'"/>
-
+	  <SSazipjumpModal/>
     <div style="display:flex; justify-content:center">
       <!-- 좌측 게임 -->
       <div class="ssazip-game-outer-container">

@@ -1,4 +1,5 @@
 import Header from '@/components/common/Header.vue';
+import SSazipjumpModal from '@/components/ssazipjump/SSazipjumpModal.vue';
 import './../css/ssazip-jump.css'
 import './ssazipjump.js'
 
@@ -38,6 +39,7 @@ export default {
   },
   components: {
     Header,
+    SSazipjumpModal,
   },
   methods: {
     drawSsazipgame(){

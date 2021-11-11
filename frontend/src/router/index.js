@@ -13,6 +13,8 @@ import SSazipJump from '@/views/SSazipJump.vue';
 import SSazipJumpTemp from '@/views/ssazipjump/SSazipJumpTemp.vue';
 import SSazipJumpSeop from '@/views/ssazipjump/SSazipJumpSeop.vue';
 import SsafyMind from '@/views/ssafymind/SsafyMind.vue';
+import HeeSeop from '@/views/HeeSeop.vue';
+
 
 Vue.use(VueRouter);
 
@@ -91,6 +93,11 @@ const routes = [
     path: '/ssazipjumpseop',
     name: 'SSazipJumpSeop',
     component: SSazipJumpSeop,
+  },
+  {
+    path: '/heeseop',
+    name: 'HeeSeop',
+    component: HeeSeop,
   },
 ];
 
