@@ -11,6 +11,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 @Controller
 @RequiredArgsConstructor
 public class SsafyMindController {
@@ -50,15 +53,40 @@ public class SsafyMindController {
     }
 
     // 4. 메세지 교환 로직
-    @MessageMapping(value = "/ssafymind/answer/{roomId}")
+    @MessageMapping(value = "/ssafymind/message/{roomId}")
     public void answer(@DestinationVariable String roomId, MindMessage mindMessage) {
         // 우선 메세지 데이터 보내주기
-        template.convertAndSend("/ssafymind/answer/"  + roomId, mindMessage);
+        template.convertAndSend("/ssafymind/message/"  + roomId, mindMessage);
         // 서버에 메세지 스택 저장 및 정답 여부 판별
         boolean flag = ssafyMindService.answer(roomId, mindMessage);
         template.convertAndSend("/ssafymind/correct/"  + roomId, flag);
         // 정답이라면 새롭게 갱신된 방 정보 뿌려주기
-//        if(flag)
-//            template.convertAndSend("/ssafymind/" + roomId,);
+        if(flag) {
+            template.convertAndSend("/ssafymind/" + roomId, ssafyMindService.read(roomId));
+        }
+    }
+
+    // 5. 시간 경과 로직
+    @MessageMapping(value = "/ssafymind/time/{setTime}")
+    public void time(String roomId, @DestinationVariable int setTime) {
+        // 타이머 시작
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            // 문제당 주어진 시간초
+            int cnt = setTime;
+            @Override
+            public void run() {
+                // 서버 시간 데이터 변경
+                boolean flag = ssafyMindService.time(roomId, cnt--);
+                if(!flag) {
+                    timer.cancel();
+                    return;
+                }
+                // 시간 전송
+                template.convertAndSend("/ssafymind/time/" + roomId, cnt);
+            }
+        };
+        // 1초마다 서버에 시간 전송
+        timer.schedule(timerTask, 0, 1000);
     }
 }

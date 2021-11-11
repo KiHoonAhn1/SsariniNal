@@ -1,99 +1,110 @@
 <template>
   <div class="ssafymind-left">
-		<div id="questionTeam-title">문제 내는 팀</div>
-		<img class="team-img" id="" src="~@/assets/team8.png" alt="" />
-		<div class="team-members-group">
-			<span class="team-members">권희은</span>
-			<span class="team-members">차은채</span>
-			<span class="team-members">안기훈</span>
-			<span class="team-members">김태현</span>
-			<span class="team-members myturn">이장섭</span>
-		</div>
-		<SpeakingTimer v-if="game === 'speak'" />
-		<ProgressBar v-else />
-		<div class="next-team-block">
-			<div class="next-team-ready">
-				다음 팀 준비하세요~!
-			</div>
-			<img class="team-img" id="" src="~@/assets/team2.png" alt="" />
-		</div>
-		<div class="ssafymind-score">
-			<div class="ssafymind-score-line">
-				<!-- <img class="ssafymind-img" id="" src="~@/assets/onetop.png" alt="" />
+    <div id="questionTeam-title">문제 내는 팀</div>
+    <img
+      class="team-img"
+      id=""
+      :src="require(`../assets/team${teamOrder[0]}.png`)"
+      alt=""
+      v-if="teamOrder != null"
+    />
+    <div class="team-members-group">
+      <span class="team-members">권희은</span>
+      <span class="team-members">차은채</span>
+      <span class="team-members">안기훈</span>
+      <span class="team-members">김태현</span>
+      <span class="team-members myturn">이장섭</span>
+    </div>
+    <SpeakingTimer v-if="game === 'speak'" />
+    <ProgressBar v-else />
+    <div class="next-team-block">
+      <div class="next-team-ready" v-if="teamOrder != null && teamOrder.length > 1">
+        다음 팀 준비하세요~!
+      </div>
+      <img
+        class="team-img"
+        id=""
+        :src="require(`../assets/team${teamOrder[1]}.png`)"
+        alt=""
+        v-if="teamOrder != null && teamOrder.length > 1"
+      />
+      <div class="next-team-ready" v-else>
+        끝!
+      </div>
+    </div>
+    <div class="ssafymind-score">
+      <div class="ssafymind-score-line">
+        <!-- <img class="ssafymind-img" id="" src="~@/assets/onetop.png" alt="" />
 				<img class="ssafymind-img" id="" src="~@/assets/twotop.png" alt="" />
 				<img class="ssafymind-img" id="" src="~@/assets/threetop.png" alt="" /> -->
-				<div class="winner-block">
-					<span class="winner winner-one">1등</span>
-					<span class="winner-team">1팀</span>
-					<span class="winner-score winner-one">30점</span>
-				</div>
-				<div class="winner-block">
-					<span class="winner winner-two">2등</span>
-					<span class="winner-team">2팀</span>
-					<span class="winner-score winner-two">3500점</span>
-				</div>
-				<div class="winner-block">
-					<span class="winner winner-three">3등</span>
-					<span class="winner-team">3팀</span>
-					<span class="winner-score winner-three">350점</span>
-				</div>
-				<div class="winner-block">
-					<span class="winner">4등</span>
-					<span class="winner-team">4팀</span>
-					<span class="winner-score">350점</span>
-				</div>
-				<div class="winner-block">
-					<span class="winner">5등</span>
-					<span class="winner-team">5팀</span>
-					<span class="winner-score">350점</span>
-				</div>
-				<div class="winner-block">
-					<span class="winner">6등</span>
-					<span class="winner-team">6팀</span>
-					<span class="winner-score">350점</span>
-				</div>
-				<div class="winner-block">
-					<span class="winner">7등</span>
-					<span class="winner-team">7팀</span>
-					<span class="winner-score">350점</span>
-				</div>
-				<div class="winner-block">
-					<span class="winner">8등</span>
-					<span class="winner-team">8팀</span>
-					<span class="winner-score">350점</span>
-				</div>
-				<div class="winner-block">
-					<span class="winner">9등</span>
-					<span class="winner-team">9팀</span>
-					<span class="winner-score">350점</span>
-				</div>
-				<div class="winner-block">
-					<span class="winner">10등</span>
-					<span class="winner-team">10팀</span>
-					<span class="winner-score">3050점</span>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="winner-block">
+          <span class="winner winner-one">1등</span>
+          <span class="winner-team">1팀</span>
+          <span class="winner-score winner-one">30점</span>
+        </div>
+        <div class="winner-block">
+          <span class="winner winner-two">2등</span>
+          <span class="winner-team">2팀</span>
+          <span class="winner-score winner-two">3500점</span>
+        </div>
+        <div class="winner-block">
+          <span class="winner winner-three">3등</span>
+          <span class="winner-team">3팀</span>
+          <span class="winner-score winner-three">350점</span>
+        </div>
+        <div class="winner-block">
+          <span class="winner">4등</span>
+          <span class="winner-team">4팀</span>
+          <span class="winner-score">350점</span>
+        </div>
+        <div class="winner-block">
+          <span class="winner">5등</span>
+          <span class="winner-team">5팀</span>
+          <span class="winner-score">350점</span>
+        </div>
+        <div class="winner-block">
+          <span class="winner">6등</span>
+          <span class="winner-team">6팀</span>
+          <span class="winner-score">350점</span>
+        </div>
+        <div class="winner-block">
+          <span class="winner">7등</span>
+          <span class="winner-team">7팀</span>
+          <span class="winner-score">350점</span>
+        </div>
+        <div class="winner-block">
+          <span class="winner">8등</span>
+          <span class="winner-team">8팀</span>
+          <span class="winner-score">350점</span>
+        </div>
+        <div class="winner-block">
+          <span class="winner">9등</span>
+          <span class="winner-team">9팀</span>
+          <span class="winner-score">350점</span>
+        </div>
+        <div class="winner-block">
+          <span class="winner">10등</span>
+          <span class="winner-team">10팀</span>
+          <span class="winner-score">3050점</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import "@/components/css/game-status.css";
+import '@/components/css/game-status.css';
 import ProgressBar from '@/components/ssafymind/ProgressBar.vue';
 import SpeakingTimer from '@/components/common/SpeakingTimer.vue';
 
 export default {
   name: 'GameStatus',
-	components: {
+  components: {
     ProgressBar,
-		SpeakingTimer
+    SpeakingTimer,
   },
-	props: [
-		'game'
-	],
-}
+  props: ['game', 'teamOrder'],
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

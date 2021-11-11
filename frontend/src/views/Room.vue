@@ -436,6 +436,8 @@ export default {
           host: this.room.host,
           exist: this.room.teamline,
           gameType: this.room.gameType,
+          // 팀당 문제 개수 설정
+          quizCnt: 3,
         },
       })
         .then(() => {

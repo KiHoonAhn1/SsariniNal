@@ -10,7 +10,7 @@
   position: absolute;
   height: 100%;
   background-color: #cd5069;
-  /* animation: progress-animation 7s linear infinite; */
+  animation: progress-animation 7s linear infinite;
   border-radius: 10px;
 }
 

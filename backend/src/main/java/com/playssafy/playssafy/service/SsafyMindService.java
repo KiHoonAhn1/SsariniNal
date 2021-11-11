@@ -1,10 +1,7 @@
 package com.playssafy.playssafy.service;
 
 
-import com.playssafy.playssafy.dto.ssafymind.MindMessage;
-import com.playssafy.playssafy.dto.ssafymind.Point;
-import com.playssafy.playssafy.dto.ssafymind.SsafyMind;
-import com.playssafy.playssafy.dto.ssafymind.Team;
+import com.playssafy.playssafy.dto.ssafymind.*;
 import com.playssafy.playssafy.dto.waitroom.InitGame;
 import com.playssafy.playssafy.dto.waitroom.Participant;
 import com.playssafy.playssafy.repository.SsafyMindRepository;
@@ -21,6 +18,8 @@ public class SsafyMindService {
 
     // 0. 게임방 생성 메서드
     public void createSsafyMind(InitGame initGame) {
+        if(!ssafyMindRepository.findById(initGame.getRoomId()).isEmpty())
+            return;
         SsafyMind ssafyMind = new SsafyMind();
 
         // 방 ID 초기화
@@ -47,10 +46,18 @@ public class SsafyMindService {
             teams.set(b, temp);
         }
 
-        // 최종 결정된 순서 넣기
-        for (Integer i : teams) {
-            ssafyMind.getTeamOrder().add(i);
+        // 최종 결정된 순서 넣기(문제 개수 만큼)
+        for(int i = 0; i < initGame.getQuizCnt(); i++) {
+            for (Integer team : teams) {
+                ssafyMind.getTeamOrder().add(team);
+            }
         }
+
+        // 테스트 문제 리스트 ////////
+        ssafyMind.getQuizzes().add(new Quiz(1, "아미타불", "아미타불"));
+        ssafyMind.getQuizzes().add(new Quiz(1, "원시천존", "원시천존"));
+        ssafyMind.getQuizzes().add(new Quiz(1, "무량수불", "무량수불"));
+
 
         ssafyMindRepository.save(ssafyMind);
     }
@@ -93,16 +100,22 @@ public class SsafyMindService {
     }
 
     // 4. 정답 여부 확인
-    public boolean answer(String roomId, MindMessage mindMessage) {
+    public synchronized boolean answer(String roomId, MindMessage mindMessage) {
         SsafyMind ssafyMind = ssafyMindRepository.findById(roomId).get();
 
         // 메세지 스택 저장
         ssafyMind.getChat().add(mindMessage);
+        ssafyMindRepository.save(ssafyMind);
         // 리스트의 마지막 부분 부터 문제 회수
-        int lastIndex = ssafyMind.getQuizzes().size();
-        if(ssafyMind.getQuizzes().get(lastIndex).equals(mindMessage.getMessage())) {
+        int lastIndex = ssafyMind.getQuizzes().size() - 1;
+        if(ssafyMind.getQuizzes().get(lastIndex).getAnswer().equals(mindMessage.getMessage())) {
             // 마지막 문제를 제거하고
             ssafyMind.getQuizzes().remove(lastIndex);
+            // 다음 팀으로 옮기고
+            ssafyMind.getTeamOrder().remove(0);
+            // 그린 그림 정보 삭제하고
+            ssafyMind.getPoints().clear();
+            System.out.println(ssafyMind.getQuizzes());
             // 저장한 뒤
             ssafyMindRepository.save(ssafyMind);
             // 정답
@@ -111,6 +124,33 @@ public class SsafyMindService {
         // 오답
         return false;
     }
+
+    // 5. 방을 순수하게 읽어오는 로직
+    public SsafyMind read(String roomId) {
+        return ssafyMindRepository.findById(roomId).get();
+    }
+
+    // 6. 1초마다 시간을 갱신하는 로직
+    public synchronized boolean time(String roomId, int cnt) {
+        SsafyMind ssafyMind = ssafyMindRepository.findById(roomId).get();
+//        System.out.println("first : " + ssafyMind.getFirst());
+//        System.out.println(ssafyMind.getCurTime());
+        if(ssafyMind.getFirst() > 0 && ssafyMind.getCurTime() == 90) {
+            ssafyMind.setFirst(ssafyMind.getFirst() - 1);
+            ssafyMindRepository.save(ssafyMind);
+            return false;
+        }
+        if(ssafyMind.getCurTime() == 90)
+            ssafyMind.setFirst(ssafyMind.getFirst() + 1);
+        ssafyMind.setCurTime(cnt);
+        ssafyMindRepository.save(ssafyMind);
+        return true;
+    }
+
+    // 7. 현재 저장된 시간을 가져오는 로직
+//    public synchronized int getTime(String roomId) {
+//        return ssafyMindRepository.findById(roomId).get().getCurTime();
+//    }
 
 
 //    @Autowired//자동주입

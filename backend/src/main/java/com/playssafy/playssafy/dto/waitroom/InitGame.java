@@ -13,4 +13,5 @@ public class InitGame {
     private String host;
     private boolean[] exist; // 열린 팀 정보
     private int gameType; // 게임 타입
+    private int quizCnt; // 퀴즈 개수
 }

@@ -1,6 +1,5 @@
 package com.playssafy.playssafy.dto.ssafymind;
 
-import com.playssafy.playssafy.domain.Quiz.MindDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +21,7 @@ public class SsafyMind {
     //@Id 어노테이션은 JPA와 동일한 역할을 수행합니다. "member:{id}"의 위치에 자동으로 generate 값이 들어갑니다.
     private String roomId; // 방 ID
     private String host; // 방장 정보
-    private List<MindDto> quizzes; // 퀴즈 정보 - 팀 수의 배수
+    private List<Quiz> quizzes; // 퀴즈 정보 - 팀 수의 배수
     private List<Point> points; // x,y좌표값, 색정보, 굵기
     private int[] mindScore; // 팀당 점수(배열 형태)
     private List<MindMessage> chat; // 채팅정보
@@ -31,6 +30,8 @@ public class SsafyMind {
     private int curTeam; // 현재 진행중인 팀
     private List<Integer> playerOrder; // 팀 내 진행 순서
     private int curPlayer; // 현재 진행중인 사람
+    private int curTime; // 현재 시간
+    private int first; // 트리거 최초 시작
 
     public SsafyMind() {
         // 최대 10개 팀에 대응하는 팀 정보를 저장할 리스트 선언해두기
@@ -46,9 +47,8 @@ public class SsafyMind {
         chat = new ArrayList<>();
         teamOrder = new ArrayList<>();
         playerOrder = new ArrayList<>();
+        this.first = 0;
     }
-
-
 
 
 //    @Override
