@@ -395,15 +395,15 @@ export default {
     onError() {},
     // 게임 방 퇴장 소켓 연결 해제 및 게임 방 유저 정보 삭제
     onDisconnect() {
-      this.stompClient.send(
-        '/pub/game/exit',
-        {},
-        JSON.stringify({
-          roomId: this.getRoomId,
-          participantId: this.getUser.id,
-          participantName: this.getUser.name,
-        })
-      );
+      // this.stompClient.send(
+      //   '/pub/game/exit',
+      //   {},
+      //   JSON.stringify({
+      //     roomId: this.getRoomId,
+      //     participantId: this.getUser.id,
+      //     participantName: this.getUser.name,
+      //   })
+      // );
       this.stompClient.disconnect();
     },
     // 팀 번호 변경시 소켓 요청
