@@ -27,11 +27,12 @@ public class SsafyMind {
     private List<MindMessage> chat; // 채팅정보
     private List<Team> teams; // 팀원 구성 정보
     private List<Integer> teamOrder; // 팀 진행 순서
-    private int curTeam; // 현재 진행중인 팀
-    private List<Integer> playerOrder; // 팀 내 진행 순서
+//    private int curTeam; // 현재 진행중인 팀
+//    private List<Integer> playerOrder; // 팀 내 진행 순서
     private int curPlayer; // 현재 진행중인 사람
     private int curTime; // 현재 시간
-    private int first; // 트리거 최초 시작
+    private String timeFlag; // 시간 트리거
+    private int curTeamCnt; // 현재 팀 개수
 
     public SsafyMind() {
         // 최대 10개 팀에 대응하는 팀 정보를 저장할 리스트 선언해두기
@@ -46,8 +47,7 @@ public class SsafyMind {
         points = new ArrayList<>();
         chat = new ArrayList<>();
         teamOrder = new ArrayList<>();
-        playerOrder = new ArrayList<>();
-        this.first = 0;
+//        playerOrder = new ArrayList<>();
     }
 
 

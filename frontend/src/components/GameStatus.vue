@@ -8,12 +8,13 @@
       alt=""
       v-if="teamOrder != null"
     />
-    <div class="team-members-group">
-      <span class="team-members">권희은</span>
-      <span class="team-members">차은채</span>
-      <span class="team-members">안기훈</span>
-      <span class="team-members">김태현</span>
-      <span class="team-members myturn">이장섭</span>
+    <div class="team-members-group" v-if="teamOrder != null">
+      <span v-for="(member, idx) in teams[teamOrder[0]].members" :key="idx">
+        <span class="team-members myturn" v-if="idx == curPlayer">{{
+          member.participantName
+        }}</span>
+        <span class="team-members" v-else>{{ member.participantName }}</span>
+      </span>
     </div>
     <SpeakingTimer v-if="game === 'speak'" />
     <ProgressBar v-else />
@@ -103,7 +104,7 @@ export default {
     ProgressBar,
     SpeakingTimer,
   },
-  props: ['game', 'teamOrder'],
+  props: ['game', 'teamOrder', 'teams', 'curPlayer'],
 };
 </script>
 

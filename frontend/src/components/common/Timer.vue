@@ -31,9 +31,9 @@ export default {
     //   interval = setInterval(timeMinus, 1000);
     // },
   },
-  mounted: function() {
-    this.setTimer();
-  },
+  // mounted: function() {
+  //   this.setTimer();
+  // },
   computed: {
     getSeconds() {
       return this.seconds < 10 ? '0' + this.seconds : this.seconds;

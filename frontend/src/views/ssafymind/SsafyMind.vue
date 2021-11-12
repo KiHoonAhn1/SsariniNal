@@ -1,7 +1,12 @@
 <template>
   <div class="ssafymind" v-on:mousedown="isMouseDown" v-on:mouseup="isMouseUp">
-    <!-- <button @click="sendTimeTrigger()">눌러</button> -->
-    <GameOrderModal v-if="ordermodal == true" @getCloseModal="getCloseModal" />
+    <GameOrderModal
+      v-if="ordermodal == true"
+      @getCloseModal="getCloseModal"
+      v-bind:teamOrder="room.teamOrder"
+      v-bind:teamCnt="room.curTeamCnt"
+      v-on:sendGameStartTrigger="sendGameStartTrigger"
+    />
     <!-- <div class="room-title">
       <span id="game-title">싸피마인드</span>
     </div> -->
@@ -10,7 +15,11 @@
       v-bind:host="room.host"
       v-on:onDisconnect="onDisconnect()"
     />
-    <GameStatus v-bind:teamOrder="room.teamOrder" />
+    <GameStatus
+      v-bind:teamOrder="room.teamOrder"
+      v-bind:teams="room.teams"
+      v-bind:curPlayer="room.curPlayer"
+    />
     <div class="ssafymind-center">
       <div class="question-word" v-if="room.quizzes != null">
         {{ room.quizzes[room.quizzes.length - 1].problem }}
@@ -75,7 +84,9 @@
           id="send-ans"
         />
         <div v-for="(msg, idx) in room.chat" :key="idx">
-          <p id="chat-block"><strong>{{ msg.name }}</strong> : {{ msg.message }}</p>
+          <p id="chat-block">
+            <strong>{{ msg.name }}</strong> : {{ msg.message }}
+          </p>
         </div>
       </div>
     </div>
@@ -114,8 +125,9 @@ export default {
       stompClient: null, // socket
       room: {}, // 방 정보
       message: '', // 보낼 메세지
-      minutes: '',
-      seconds: '',
+      minutes: '', // 분
+      seconds: '', // 초
+      timeReceiveFlag: false, // 시간 수신 메세지 잠시 무시
       canvas: null,
       ctx: {},
       offsetX: 0,
@@ -123,6 +135,7 @@ export default {
       lineSize: 2.5,
       color: 'rgb(0, 0, 0)',
       beginPath: true,
+      temp: 0,
     };
   },
   created() {
@@ -134,13 +147,13 @@ export default {
   destroyed() {
     this.onDisconnect();
   },
-  updated(){
+  updated() {
     this.scrollDown();
   },
   methods: {
-    startTimer(startTime) {
-      this.startTime = startTime;
-    },
+    // startTimer(startTime) {
+    //   this.startTime = startTime;
+    // },
     getCloseModal(ordermodal) {
       this.ordermodal = ordermodal;
     },
@@ -209,41 +222,41 @@ export default {
       if (color !== null) {
         ctx.strokeStyle = color;
       }
-			ctx.lineTo(x, y);
-			ctx.stroke();
-			ctx.strokeStyle = currentColor;
-		},
-		drawing: function(){
-			// 실시간으로 그려지나 확인
-			// ctx.clearRect(0, 0, 1100, 760)
-			// console.log("saveData 확인", this.saveData.length)
-			if(this.saveData.length > 0){
-				this.saveData.forEach((lookline) => {
-					this.ctx.beginPath()
-					this.ctx.moveTo(lookline[0].x+50, lookline[0].y+50);
-					lookline.forEach((index) => {
-						// console.log('확인',index.x)
-						this.ctx.lineWidth = index.size;
-						// console.log('lookline', index.x+50)
-						this.ctx.lineTo(index.x+50, index.y+50);
-						this.ctx.stroke();
-					})
-					this.ctx.closePath();
-					this.ctx.save()
-				})
-			}
-			// ctx.save()
-			
-			// ctx.restore();
-			// if(this.saveData.length > 0){
-			// 	this.saveData.forEach((lookline) => {
-			// 		ctx.lineWidth = lookline.size;
-			// 		ctx.moveTo(lookline.x+50, lookline.y+50);
-			// 		ctx.lineTo(lookline.x+50, lookline.y+50);
-			// 	})
-			// }
-			// ctx.save()
-			// ctx.beginPath()
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.strokeStyle = currentColor;
+    },
+    drawing: function() {
+      // 실시간으로 그려지나 확인
+      // ctx.clearRect(0, 0, 1100, 760)
+      // console.log("saveData 확인", this.saveData.length)
+      if (this.saveData.length > 0) {
+        this.saveData.forEach((lookline) => {
+          this.ctx.beginPath();
+          this.ctx.moveTo(lookline[0].x + 50, lookline[0].y + 50);
+          lookline.forEach((index) => {
+            // console.log('확인',index.x)
+            this.ctx.lineWidth = index.size;
+            // console.log('lookline', index.x+50)
+            this.ctx.lineTo(index.x + 50, index.y + 50);
+            this.ctx.stroke();
+          });
+          this.ctx.closePath();
+          this.ctx.save();
+        });
+      }
+      // ctx.save()
+
+      // ctx.restore();
+      // if(this.saveData.length > 0){
+      // 	this.saveData.forEach((lookline) => {
+      // 		ctx.lineWidth = lookline.size;
+      // 		ctx.moveTo(lookline.x+50, lookline.y+50);
+      // 		ctx.lineTo(lookline.x+50, lookline.y+50);
+      // 	})
+      // }
+      // ctx.save()
+      // ctx.beginPath()
 
       // this.drawData.forEach((lookline) => {
       // 	ctx.lineWidth = lookline.size;
@@ -263,9 +276,9 @@ export default {
     },
     isMouseDown: function(event) {
       // 그리기 시작
-			// 내 차례일 때 canDraw == ture, name 비교해서
-			// canDraw == false 일때, 다른 사람일 때 그림 못그리게
-			// return 시키기
+      // 내 차례일 때 canDraw == ture, name 비교해서
+      // canDraw == false 일때, 다른 사람일 때 그림 못그리게
+      // return 시키기
       this.clickmouse = true;
 
       this.offsetX = event.offsetX;
@@ -388,13 +401,13 @@ export default {
       event.preventDefault();
     },
     handleSave: function() {
-      const canvas = document.getElementById("jsCanvas");
+      const canvas = document.getElementById('jsCanvas');
       const image = canvas.toDataURL();
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       // const imageName = prompt("그림 이름 지어줭");
       link.href = image;
       // link.download = imageName;
-      link.download = "내가그린기린그림";
+      link.download = '내가그린기린그림';
       link.click();
       // console.log(image);
     },
@@ -409,7 +422,7 @@ export default {
       this.canvas = canvas;
       this.ctx = ctx;
       const INITIAL_COLOR = 'black';
-			console.log(INITIAL_COLOR)
+      console.log(INITIAL_COLOR);
       canvas.width = 1100;
       canvas.height = 760;
       // canvas.width = window.innerWidth;
@@ -464,6 +477,11 @@ export default {
       );
       // 시간 정보 교환 채널
       this.stompClient.subscribe('/ssafymind/time/' + this.getRoomId, this.onTimeMessageReceived);
+      // 플레이어 교환 정보 응답 채널
+      this.stompClient.subscribe(
+        '/ssafymind/change/player/' + this.getRoomId,
+        this.onTeamChangeMessageReceived
+      );
       this.stompClient.send(
         '/pub/ssafymind/enter',
         {},
@@ -474,7 +492,7 @@ export default {
           teamNo: this.getUser.teamNo,
         })
       );
-      this.test();
+      // this.test();
     },
     onMesseageReceived(payload) {
       if (payload.body == 'exit') {
@@ -487,10 +505,10 @@ export default {
       }
       const data = JSON.parse(payload.body);
       this.room = data;
-			console.log('포인트를 알고싶다고')
+      console.log('포인트를 알고싶다고');
       console.log(data);
       // 여기에 받은 데이터를 기반으로 그리고 있는 그림 초기화하는 로직 구현
-			// console.log(data.points)
+      // console.log(data.points)
       // console.log(data.points.length)
 
       // for(let index in data.points){
@@ -550,10 +568,10 @@ export default {
       // console.log(data);
       // 여기에 실시간으로 그리는 로직 작성
 
-			this.ctx.lineWidth = data.size;
-			this.ctx.strokeStyle = data.color;
-			this.ctx.fillStyle = data.color;
-			if (data.beginPath) {
+      this.ctx.lineWidth = data.size;
+      this.ctx.strokeStyle = data.color;
+      this.ctx.fillStyle = data.color;
+      if (data.beginPath) {
         this.ctx.beginPath();
         this.ctx.moveTo(data.x, data.y);
         // console.log(ctx.beginPath)
@@ -562,9 +580,9 @@ export default {
         this.ctx.stroke();
       }
 
-			if(data.fillFlag){
-				this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-			}
+      if (data.fillFlag) {
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      }
     },
     /**
      * 메세지 보내기, 받기
@@ -583,11 +601,7 @@ export default {
     },
     onAnswerMessageReceived(payload) {
       const data = JSON.parse(payload.body);
-      console.log(data);
       this.room.chat.push(data);
-
-      // const chat = document.getElementById('chat-block');
-      // chat.classList.add(`ans-block`);
     },
     /**
      * 정답 여부 수신
@@ -595,19 +609,55 @@ export default {
     onCorrectMessageReceived(payload) {
       console.log(payload.body);
       const flag = JSON.parse(payload.body);
-      if (flag) alert('정답입니다!');
+      console.log(this.getUser.name);
+      if (flag) {
+        // 정답이라면, 다음 게임이 시작된다는 정보 알려주기
+        alert('정답입니다!');
+        // 시간 정지 메세지 띄우고, 모달 다시 띄우기
+        if (this.room.host == this.getUser.id) {
+          this.sendTimeTrigger('stop');
+        }
+        this.ordermodal = true;
+      }
     },
     /**
      * 시간 트리거 발동, 수신
      */
-    sendTimeTrigger() {
-      // this.stompClient.send('/pub/ssafymind/time', {}, 'stop');
-      this.stompClient.send(`/pub/ssafymind/time/${90}`, {}, this.getRoomId);
+    sendTimeTrigger(flag) {
+      this.stompClient.send(`/pub/ssafymind/time/${flag}`, {}, this.getRoomId);
     },
     onTimeMessageReceived(payload) {
+      // 현재 시간 수신이 거부중인 경우 수신 받지 않기
       const time = JSON.parse(payload.body);
+      // if (this.timeReceiveFlag && time < 88) {
+      //   this.timeReceiveFlag = false;
+      //   return;
+      // }
+      // 10초 단위로 서버에 플레이어 변경 메세지 전송
+      if (time != 0 && time != 90 && time % 5 == 0 && this.room.host == this.getUser.id)
+        this.sendTeamChangeTrigger();
+      if (time <= 0) {
+        // 시간 내에 맞추지 못했다면 다음 문제로
+        alert('아깝습니다!');
+        if (this.room.host == this.getUser.id) this.sendTimeTrigger('stop');
+        return;
+      }
       this.minutes = parseInt(time / 60);
       this.seconds = time % 60;
+    },
+    // 팀 변경 트리거 송수신
+    sendTeamChangeTrigger() {
+      this.stompClient.send(`/pub/ssafymind/change/player`, {}, this.getRoomId);
+    },
+    onTeamChangeMessageReceived(payload) {
+      const curPlayer = JSON.parse(payload.body);
+      this.room.curPlayer = curPlayer;
+      console.log(curPlayer);
+    },
+    // 게임 시작 트리거
+    sendGameStartTrigger() {
+      this.sendTimeTrigger('start');
+      // 게임 시작시 왼쪽 화면에 시간 흐르는 JavaSciprt 추가
     },
     scrollDown() {
       const scrollbox = document.getElementById('chat-box');
@@ -631,7 +681,7 @@ export default {
           roomId: this.getRoomId,
           participantId: 2,
           participantName: '김태현2',
-          teamNo: '2',
+          teamNo: '1',
         })
       );
       this.stompClient.send(
@@ -641,7 +691,7 @@ export default {
           roomId: this.getRoomId,
           participantId: 3,
           participantName: '김태현3',
-          teamNo: '3',
+          teamNo: '1',
         })
       );
       this.stompClient.send(
@@ -651,7 +701,7 @@ export default {
           roomId: this.getRoomId,
           participantId: 4,
           participantName: '김태현4',
-          teamNo: '3',
+          teamNo: '1',
         })
       );
     },
