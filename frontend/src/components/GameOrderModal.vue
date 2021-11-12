@@ -23,7 +23,9 @@
               <img id="team-num-img" src="~@/assets/team9.png" alt="" />
               <img id="team-num-img" src="~@/assets/team10.png" alt="" /> -->
             </span>
-            <button class="start-game-btn" @click="startModal">시작</button>
+            <button class="start-game-btn" @click="startModal" v-if="host == this.getUser.id">
+              시작
+            </button>
           </div>
         </div>
       </div>
@@ -32,14 +34,18 @@
 </template>
 <script>
 import '@/components/css/gameOrderModal.css';
+import { mapGetters } from 'vuex';
 export default {
   name: 'GameOrderModal',
-  props: ['teamOrder', 'teamCnt'],
+  props: ['teamOrder', 'teamCnt', 'host'],
   data: function() {
     return {
       ordermodal: false,
       startTime: false,
     };
+  },
+  computed: {
+    ...mapGetters(['getUser']),
   },
   methods: {
     startModal() {

@@ -5,6 +5,7 @@
       @getCloseModal="getCloseModal"
       v-bind:teamOrder="room.teamOrder"
       v-bind:teamCnt="room.curTeamCnt"
+      v-bind:host="room.host"
       v-on:sendGameStartTrigger="sendGameStartTrigger"
     />
     <!-- <div class="room-title">
@@ -482,6 +483,11 @@ export default {
         '/ssafymind/change/player/' + this.getRoomId,
         this.onTeamChangeMessageReceived
       );
+      // 모달 정보 교환
+      this.stompClient.subscribe(
+        '/ssafymind/close/modal/' + this.getRoomId,
+        this.onModalMessageReceived
+      );
       this.stompClient.send(
         '/pub/ssafymind/enter',
         {},
@@ -601,24 +607,17 @@ export default {
     },
     onAnswerMessageReceived(payload) {
       const data = JSON.parse(payload.body);
-      this.room.chat.push(data);
-    },
-    /**
-     * 정답 여부 수신
-     */
-    onCorrectMessageReceived(payload) {
-      console.log(payload.body);
-      const flag = JSON.parse(payload.body);
-      console.log(this.getUser.name);
-      if (flag) {
-        // 정답이라면, 다음 게임이 시작된다는 정보 알려주기
+      // 정답인 경우
+      if (data.correct) {
         alert('정답입니다!');
         // 시간 정지 메세지 띄우고, 모달 다시 띄우기
         if (this.room.host == this.getUser.id) {
+          this.sendNextProblemTrigger();
           this.sendTimeTrigger('stop');
         }
         this.ordermodal = true;
       }
+      this.room.chat.push(data);
     },
     /**
      * 시간 트리거 발동, 수신
@@ -629,18 +628,20 @@ export default {
     onTimeMessageReceived(payload) {
       // 현재 시간 수신이 거부중인 경우 수신 받지 않기
       const time = JSON.parse(payload.body);
-      // if (this.timeReceiveFlag && time < 88) {
-      //   this.timeReceiveFlag = false;
-      //   return;
-      // }
       // 10초 단위로 서버에 플레이어 변경 메세지 전송
-      if (time != 0 && time != 90 && time % 5 == 0 && this.room.host == this.getUser.id)
+      if (time != 0 && time != 90 && time % 10 == 0 && this.room.host == this.getUser.id)
         this.sendTeamChangeTrigger();
       if (time <= 0) {
         // 시간 내에 맞추지 못했다면 다음 문제로
         alert('아깝습니다!');
-        if (this.room.host == this.getUser.id) this.sendTimeTrigger('stop');
-        return;
+        if (this.room.host == this.getUser.id) {
+          // 다음 문제 이동
+          this.sendNextProblemTrigger();
+          // 시간 정지
+          this.sendTimeTrigger('stop');
+        }
+        // 문제 모달 띄우기
+        this.ordermodal = true;
       }
       this.minutes = parseInt(time / 60);
       this.seconds = time % 60;
@@ -654,10 +655,26 @@ export default {
       this.room.curPlayer = curPlayer;
       console.log(curPlayer);
     },
+    // 문제 변경 트리거
+    sendNextProblemTrigger() {
+      this.stompClient.send(`/pub/ssafymind/next/problem`, {}, this.getRoomId);
+    },
     // 게임 시작 트리거
     sendGameStartTrigger() {
+      // 모달 닫기 메세지 전송
+      this.sendCloseModalMessage();
+      // 타이머 시작
       this.sendTimeTrigger('start');
       // 게임 시작시 왼쪽 화면에 시간 흐르는 JavaSciprt 추가
+      // 캔버스 초기화
+    },
+    // 전체 모달 닫기
+    sendCloseModalMessage() {
+      this.stompClient.send(`/pub/ssafymind/close/modal`, {}, this.getRoomId);
+    },
+    onModalMessageReceived(payload) {
+      const flag = JSON.parse(payload.body);
+      this.ordermodal = flag;
     },
     scrollDown() {
       const scrollbox = document.getElementById('chat-box');

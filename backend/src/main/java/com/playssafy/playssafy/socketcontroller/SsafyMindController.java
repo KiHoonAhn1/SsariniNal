@@ -55,15 +55,16 @@ public class SsafyMindController {
     // 4. 메세지 교환 로직
     @MessageMapping(value = "/ssafymind/message/{roomId}")
     public void answer(@DestinationVariable String roomId, MindMessage mindMessage) {
+        mindMessage = ssafyMindService.answer(roomId, mindMessage);
         // 우선 메세지 데이터 보내주기
         template.convertAndSend("/ssafymind/message/" + roomId, mindMessage);
         // 서버에 메세지 스택 저장 및 정답 여부 판별
-        boolean flag = ssafyMindService.answer(roomId, mindMessage);
+//        boolean flag = ssafyMindService.answer(roomId, mindMessage);
         // 정답이라면 새롭게 갱신된 방 정보 뿌려주기
-        if (flag) {
-            template.convertAndSend("/ssafymind/correct/" + roomId, flag);
-            template.convertAndSend("/ssafymind/" + roomId, ssafyMindService.read(roomId));
-        }
+//        if (mindMessage.isCorrect()) {
+//            template.convertAndSend("/ssafymind/correct/" + roomId, flag);
+//            template.convertAndSend("/ssafymind/" + roomId, ssafyMindService.read(roomId));
+//        }
     }
 
     // 5. 시간 경과 로직
@@ -108,5 +109,18 @@ public class SsafyMindController {
     public void changePlayer(String roomId) {
         int curPlayer = ssafyMindService.changePlayer(roomId);
         template.convertAndSend("/ssafymind/change/player/" + roomId, curPlayer);
+    }
+
+    // 7. 모달 닫기
+    @MessageMapping(value = "/ssafymind/close/modal")
+    public void closeModal(String roomId) {
+        template.convertAndSend("/ssafymind/close/modal/" + roomId, false);
+    }
+
+    // 8. 다음 문제 갱신, 팀 및 순서 변경
+    @MessageMapping(value = "/ssafymind/next/problem")
+    public void nextProblem(String roomId) {
+        SsafyMind ssafyMind = ssafyMindService.nextProblem(roomId);
+        template.convertAndSend("/ssafymind/" + roomId, ssafyMind);
     }
 }

@@ -113,30 +113,24 @@ public class SsafyMindService {
     }
 
     // 4. 정답 여부 확인
-    public synchronized boolean answer(String roomId, MindMessage mindMessage) {
+    public synchronized MindMessage answer(String roomId, MindMessage mindMessage) {
         SsafyMind ssafyMind = ssafyMindRepository.findById(roomId).get();
 
-        // 메세지 스택 저장
-        ssafyMind.getChat().add(mindMessage);
-        ssafyMindRepository.save(ssafyMind);
-        // 리스트의 마지막 부분 부터 문제 회수
+        // 정답 확인, 리스트의 마지막 부분 부터 문제 회수
         int lastIndex = ssafyMind.getQuizzes().size() - 1;
         if(ssafyMind.getQuizzes().get(lastIndex).getAnswer().equals(mindMessage.getMessage())) {
-            // 마지막 문제를 제거하고
-            ssafyMind.getQuizzes().remove(lastIndex);
-            // 다음 팀으로 옮기고
-            ssafyMind.getTeamOrder().remove(0);
-            // 해당 팀의 첫 사람을 가리키는 인덱스 초기화
-            ssafyMind.setCurPlayer(0);
-            // 그린 그림 정보 삭제하고
-            // ssafyMind.getPoints().clear();
-            // 저장한 뒤
+            // 현재 문제의 상태를 바꾸고
+            mindMessage.setCorrect(true);
+            // 메세지 스택에 저장
+            ssafyMind.getChat().add(mindMessage);
             ssafyMindRepository.save(ssafyMind);
-            // 정답
-            return true;
+            // 메세지 반환
+            return mindMessage;
         }
         // 오답
-        return false;
+        ssafyMind.getChat().add(mindMessage);
+        ssafyMindRepository.save(ssafyMind);
+        return mindMessage;
     }
 
     // 5. 방을 순수하게 읽어오는 로직
@@ -149,13 +143,6 @@ public class SsafyMindService {
         SsafyMind ssafyMind = ssafyMindRepository.findById(roomId).get();
         if(ssafyMind.getTimeFlag().equals("stop"))
             return false;
-//        if(ssafyMind.getFirst() > 0 && ssafyMind.getCurTime() == 90) {
-//            ssafyMind.setFirst(ssafyMind.getFirst() - 1);
-//            ssafyMindRepository.save(ssafyMind);
-//            return false;
-//        }
-//        if(ssafyMind.getCurTime() == 90)
-//            ssafyMind.setFirst(ssafyMind.getFirst() + 1);
         ssafyMind.setCurTime(cnt);
         ssafyMindRepository.save(ssafyMind);
         return true;
@@ -183,6 +170,20 @@ public class SsafyMindService {
         ssafyMindRepository.save(ssafyMind);
         // 번호 전송
         return curPlayer;
+    }
+
+    // 8. 다음 문제로 이동, 동시에 플레이어 순서 및 팀 순서 변경
+    public synchronized SsafyMind nextProblem(String roomId) {
+        SsafyMind ssafyMind = ssafyMindRepository.findById(roomId).get();
+        int lastIndex = ssafyMind.getQuizzes().size() - 1;
+        // 마지막 문제를 제거하고
+        ssafyMind.getQuizzes().remove(lastIndex);
+        // 다음 팀으로 옮기고
+        ssafyMind.getTeamOrder().remove(0);
+        // 해당 팀의 첫 사람을 가리키는 인덱스 초기화
+        ssafyMind.setCurPlayer(0);
+        // 저장
+        return ssafyMindRepository.save(ssafyMind);
     }
 
     // 7. 현재 저장된 시간을 가져오는 로직
