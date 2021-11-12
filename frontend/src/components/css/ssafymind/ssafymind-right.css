@@ -7,3 +7,26 @@
   margin-top: -15px;
   margin-left: 1%;
 }
+#chat-box {
+  margin-top: 20px;
+  width: 100%;
+  height: 91%;
+  overflow: scroll;
+}
+#chat-box::-webkit-scrollbar {
+  display: none;
+}
+#chat-block {
+  background-color: #d7d8d1;
+  text-align: left;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+  width: 91.8%;
+  margin-left: 2.7%;
+}
+.ans-block {
+  background-color: #9eacdd;
+  color: white;
+}

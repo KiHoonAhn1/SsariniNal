@@ -1,6 +1,6 @@
 <template>
   <div class="ssafymind" v-on:mousedown="isMouseDown" v-on:mouseup="isMouseUp">
-    <button @click="sendTimeTrigger()">눌러</button>
+    <!-- <button @click="sendTimeTrigger()">눌러</button> -->
     <GameOrderModal v-if="ordermodal == true" @getCloseModal="getCloseModal" />
     <!-- <div class="room-title">
       <span id="game-title">싸피마인드</span>
@@ -66,15 +66,16 @@
     </div>
     <!-- <SsafymindRight /> -->
     <div class="ssafymind-right">
-      <div>
+      <div id="chat-box">
         <input
           type="text"
-          placeholder="메세지를 입력하세요"
+          placeholder="정답을 입력하세요"
           v-model="message"
           @keyup.enter="sendAnswerMessage"
+          id="send-ans"
         />
         <div v-for="(msg, idx) in room.chat" :key="idx">
-          <p>{{ msg.name }} : {{ msg.message }}</p>
+          <p id="chat-block"><strong>{{ msg.name }}</strong> : {{ msg.message }}</p>
         </div>
       </div>
     </div>
@@ -132,6 +133,9 @@ export default {
   },
   destroyed() {
     this.onDisconnect();
+  },
+  updated(){
+    this.scrollDown();
   },
   methods: {
     startTimer(startTime) {
@@ -259,6 +263,9 @@ export default {
     },
     isMouseDown: function(event) {
       // 그리기 시작
+			// 내 차례일 때 canDraw == ture, name 비교해서
+			// canDraw == false 일때, 다른 사람일 때 그림 못그리게
+			// return 시키기
       this.clickmouse = true;
 
       this.offsetX = event.offsetX;
@@ -483,22 +490,28 @@ export default {
 			console.log('포인트를 알고싶다고')
       console.log(data);
       // 여기에 받은 데이터를 기반으로 그리고 있는 그림 초기화하는 로직 구현
-      // for(this.room.points)
-			if(data.points.length > 0){
-				data.points.forEach((lookline) => {
-					this.ctx.beginPath()
-					this.ctx.moveTo(lookline[0].x, lookline[0].y);
-					lookline.forEach((index) => {
-						// console.log('확인',index.x)
-						this.ctx.lineWidth = index.size;
-						// console.log('lookline', index.x+50)
-						this.ctx.lineTo(index.x, index.y);
-						this.ctx.stroke();
-					})
-					this.ctx.closePath();
-					this.ctx.save()
-				})
-			}
+			// console.log(data.points)
+      // console.log(data.points.length)
+
+      // for(let index in data.points){
+      //   // console.log(data.points[index].x, data.points[index].y)
+      //   this.ctx.lineWidth = data.points[index].size;
+      //   this.ctx.strokeStyle = data.points[index].color;
+      //   this.ctx.fillStyle = data.points[index].color;
+
+      //   if (data.points[index].beginPath) {
+      //   this.ctx.beginPath();
+      //   this.ctx.moveTo(data.points[index].x, data.points[index].y);
+      //     // console.log(ctx.beginPath)
+      //   } else {
+      //     this.ctx.lineTo(data.points[index].x, data.points[index].y);
+      //     this.ctx.stroke();
+      //   }
+
+      //   if(data.points[index].fillFlag){
+      //     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      //   }
+      // }
     },
     // 게임 방 퇴장 소켓 연결 해제 및 게임 방 유저 정보 삭제
     onDisconnect() {
@@ -572,6 +585,9 @@ export default {
       const data = JSON.parse(payload.body);
       console.log(data);
       this.room.chat.push(data);
+
+      // const chat = document.getElementById('chat-block');
+      // chat.classList.add(`ans-block`);
     },
     /**
      * 정답 여부 수신
@@ -592,6 +608,10 @@ export default {
       const time = JSON.parse(payload.body);
       this.minutes = parseInt(time / 60);
       this.seconds = time % 60;
+    },
+    scrollDown() {
+      const scrollbox = document.getElementById('chat-box');
+      scrollbox.scrollTop = scrollbox.scrollHeight;
     },
     test() {
       this.stompClient.send(
