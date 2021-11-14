@@ -457,7 +457,7 @@ export default {
       else if (this.room.gameType == 2) {
         axios({
           method: 'post',
-          url: `/game/create/ssafymind`,
+          url: `/game/create/speaking`,
           data: {
             roomId: this.room.id,
             host: this.room.host,
