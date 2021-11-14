@@ -13,20 +13,13 @@ public class JumpInfo {
     private String participantId; // 참가자의 고유 ID
     private String participantName; // 참가자의 이름
     private int teamNo; // 참가자 소속 팀 번호
-    private boolean obstacleflag;
-    private Integer[] xbArr;
-    private Integer[] xbArrType;
+    private boolean obstacleflag;//장애물 시작 플레그
+    private Integer[] xbArr;//장애물 x위치 어레이
+    private Integer[] xbArrType;//장애물 타입 어레이
     private int type;//데이터 정보 타입
-    private boolean[] buserPresent1;
-    private boolean[] buserPresent2;
+    //참가 여부 어레이
+    private boolean[] beUserPresent1;
+    private boolean[] beUserPresent2;//참가 여부 어레이
     private boolean bGameStopFlag;//충돌 시 게임 중단 플레그
 
-//    @Override
-//    public String toString() {
-//        return "JumpInfo{" +
-//                "roomId='" + roomId + '\'' +
-//                ", jumpArr1=" + Arrays.toString(jumpArr1) +
-//                ", jumpArr2=" + Arrays.toString(jumpArr2) +
-//                '}';
-//    }
 }

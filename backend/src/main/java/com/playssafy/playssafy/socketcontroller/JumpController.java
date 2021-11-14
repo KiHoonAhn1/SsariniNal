@@ -21,30 +21,39 @@ import java.util.TimerTask;
  */
 @Controller
 @RequiredArgsConstructor
-@RestController
-@RequestMapping("/")
+//@RestController
+//@RequestMapping("/")
 public class JumpController {
 //    @Autowired
 //    private JumpService jumpService;
 
     private final SimpMessagingTemplate template;
-//    private final GameRoomService gameRoomService; // 게임 방 저장소
-
+    //1.마스터에게 초기값 요청
+    @MessageMapping(value = "/game/jump/enter/reqToMaster")
+    public void needEnviroment(JumpInfo jumpInfo) {
+    System.out.println("입장 전 정보 요청");
+    System.out.println(jumpInfo.toString());
+    template.convertAndSend("/game/jumpgame/" + jumpInfo.getRoomId(), jumpInfo);
+    }
+    //7.현 상태 중계 마스터로부터
+    @MessageMapping(value = "/game/jump/state")
+    public void broadcastState(JumpInfo jumpInfo) {
+        System.out.println("현 상태전송");
+        System.out.println(jumpInfo.toString());
+        template.convertAndSend("/game/jumpgame/" + jumpInfo.getRoomId(), jumpInfo);
+    }
+    //입장
+    @MessageMapping(value = "/game/jump/enter")
+    public void sendEnter(JumpInfo jumpInfo) {
+        System.out.println("입장");
+        System.out.println(jumpInfo.toString());
+        template.convertAndSend("/game/jumpgame/" + jumpInfo.getRoomId(), jumpInfo);
+    }
     //점프 값 중계
     @MessageMapping(value = "/game/jump/data")
     public void sendJumpInfo(JumpInfo jumpInfo) {
         System.out.println("데이터");
         System.out.println(jumpInfo.toString());
-//        System.out.println(jumpInfo.getClass().getSimpleName());
-        template.convertAndSend("/game/jumpgame/" + jumpInfo.getRoomId(), jumpInfo);
-    }
-
-    //점프 값 중계
-    @MessageMapping(value = "/game/jump/enter")
-    public void sendEnter(JumpInfo jumpInfo) {
-        System.out.println("입장");
-        System.out.println(jumpInfo.toString());
-//        System.out.println(jumpInfo.getClass().getSimpleName());
         template.convertAndSend("/game/jumpgame/" + jumpInfo.getRoomId(), jumpInfo);
     }
 
@@ -63,6 +72,7 @@ public class JumpController {
 //        System.out.println(jumpInfo.toString());
         template.convertAndSend("/game/jumpgame/" + jumpInfo.getRoomId(), jumpInfo);
     }
+
 
     //유저 입장
 //    @MessageMapping(value = "/game/jump/enter")
