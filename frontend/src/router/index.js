@@ -15,7 +15,6 @@ import SSazipJumpSeop from '@/views/ssazipjump/SSazipJumpSeop.vue';
 import SsafyMind from '@/views/ssafymind/SsafyMind.vue';
 import HeeSeop from '@/views/HeeSeop.vue';
 
-
 Vue.use(VueRouter);
 
 const routes = [
@@ -50,7 +49,7 @@ const routes = [
     component: CreateRoom,
   },
   {
-    path: '/speaking',
+    path: '/speaking/:roomId',
     name: 'SpeakingGame',
     component: SpeakingGame,
   },

@@ -27,8 +27,6 @@ public class SsafyMind {
     private List<MindMessage> chat; // 채팅정보
     private List<Team> teams; // 팀원 구성 정보
     private List<Integer> teamOrder; // 팀 진행 순서
-//    private int curTeam; // 현재 진행중인 팀
-//    private List<Integer> playerOrder; // 팀 내 진행 순서
     private int curPlayer; // 현재 진행중인 사람
     private int curTime; // 현재 시간
     private String timeFlag; // 시간 트리거
@@ -47,33 +45,5 @@ public class SsafyMind {
         points = new ArrayList<>();
         chat = new ArrayList<>();
         teamOrder = new ArrayList<>();
-//        playerOrder = new ArrayList<>();
     }
-
-//    @Override
-//    public String toString() {
-//        return "SsafyMind{" +
-//                "roomCode=" + roomCode +
-//                ", quizzes=" + quizzes +
-//                ", points=" + points +
-//                ", mindScore=" + mindScore +
-//                ", chat=" + chat +
-//                ", teamOrder=" + teamOrder +
-//                ", playTeamIdx=" + playTeamIdx +
-//                ", playerIdx=" + playerIdx +
-//                ", quizIdx=" + quizIdx +
-//                '}';
-//    }
-
-//    public SsafyMind(Long roomCode, List<MindDto> quizzes, List<String[]> points, HashMap<Integer, Integer> mindScore, List<String[]> chat, List<Guest[]> teamOrder, int playTeamIdx, int playerIdx, int quizIdx) {
-//        this.roomCode = roomCode;
-//        this.quizzes = quizzes;
-//        this.points = points;
-//        this.mindScore = new int[11]; // 10개의 팀에 대한 배열
-//        this.chat = chat;
-//        this.teamOrder = teamOrder;
-//        this.playTeamIdx = playTeamIdx;
-//        this.playerIdx = playerIdx;
-//        this.quizIdx = quizIdx;
-//    }
 }

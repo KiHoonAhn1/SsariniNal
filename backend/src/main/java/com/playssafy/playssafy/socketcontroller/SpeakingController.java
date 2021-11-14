@@ -1,8 +1,8 @@
 package com.playssafy.playssafy.socketcontroller;
 
-import com.playssafy.playssafy.dto.speaking.Talking;
 import com.playssafy.playssafy.dto.speaking.SpeakMessage;
 import com.playssafy.playssafy.dto.speaking.Speaking;
+import com.playssafy.playssafy.dto.speaking.Talking;
 import com.playssafy.playssafy.dto.waitroom.Participant;
 import com.playssafy.playssafy.service.SpeakingService;
 import lombok.RequiredArgsConstructor;
@@ -56,5 +56,4 @@ public class SpeakingController {
         // 말을 서버에 저장
         // speakingService.answer(roomId, speakMessage);
     }
-
 }
