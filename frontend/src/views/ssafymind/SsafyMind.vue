@@ -149,7 +149,7 @@ export default {
     this.onDisconnect();
   },
   updated() {
-    this.scrollDown();
+    this.scrollDown();//채팅방 자동 스크롤
   },
   methods: {
     // startTimer(startTime) {
@@ -164,7 +164,7 @@ export default {
     startPainting: function() {
       this.painting = true;
     },
-    onMouseMove: function(event) {
+    onMouseMove: function(event) {//그리기, 보이진 않음
       const canvas = document.getElementById('jsCanvas');
       const ctx = canvas.getContext('2d');
       this.offsetX = event.offsetX;
@@ -214,7 +214,7 @@ export default {
       // ctx.stroke();
       // ctx.closePath();
     },
-    strokePath: function(x, y) {
+    strokePath: function(x, y) {//안씀 통신에 xy 좌표 보내주려 했던 것
       const canvas = document.getElementById('jsCanvas');
       const ctx = canvas.getContext('2d');
       var color = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
@@ -227,7 +227,7 @@ export default {
       ctx.stroke();
       ctx.strokeStyle = currentColor;
     },
-    drawing: function() {
+    drawing: function() {//안씀 통신에 실시간으로 확인하려고 했던 것
       // 실시간으로 그려지나 확인
       // ctx.clearRect(0, 0, 1100, 760)
       // console.log("saveData 확인", this.saveData.length)
@@ -268,14 +268,14 @@ export default {
       // ctx.closePath();
       // ctx.restore();
     },
-    mouseEnter: function() {
+    mouseEnter: function() {//클릭 하는 순간을 감지
       if (this.clickmouse) {
         this.painting = true;
       } else {
         this.painting = false;
       }
     },
-    isMouseDown: function(event) {
+    isMouseDown: function(event) {//아마도 내 그림 그림 보기용
       // 그리기 시작
       // 내 차례일 때 canDraw == ture, name 비교해서
       // canDraw == false 일때, 다른 사람일 때 그림 못그리게
@@ -290,7 +290,7 @@ export default {
       this.ctx.stroke();
       this.sendDrawMessage();
     },
-    isMouseUp: function() {
+    isMouseUp: function() {//그리기 종료
       // 그리기 종료
       this.clickmouse = false;
 
@@ -304,7 +304,7 @@ export default {
         this.drawData = []; // 초기화
       }
     },
-    // 데이터 받아와서 그림 그리기
+    // 데이터 받아와서 그림 그리기 => 통신해서 그림을 그리기 위한
     getPoint: function(x, y, size, color, fill, painting) {
       // 펜 굵기 설정
       this.ctx.lineWidth = size;
@@ -398,7 +398,7 @@ export default {
       // ctx.lineWidth = 30;
       this.handlePaletteModeClick();
     },
-    handleCM: function(event) {
+    handleCM: function(event) {//오른쪽 마우스 클릭 방지
       event.preventDefault();
     },
     handleSave: function() {

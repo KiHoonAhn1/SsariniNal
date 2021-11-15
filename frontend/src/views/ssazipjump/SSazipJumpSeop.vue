@@ -151,6 +151,7 @@ export default {
             enteredUser2: 0,
             gameStopFlag: false,
             receivedGameStopFlag: false,
+            animationOnFlag: false, //반복 에니매이션 동작 여부 플레그
         };
     },
     components: {
@@ -415,6 +416,7 @@ export default {
 
             const frame = (timestamp) => {
                 animation = requestAnimationFrame(frame); //frame을 1초에 60번 실행해줘 실행해줘
+                this.animationOnFlag = true;
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height); //canvas 지워줘(잔상 안 남게)
                 ctx2.clearRect(0, 0, canvas2.width, canvas2.height); //canvas2 지워줘(잔상 안 남게)
@@ -637,9 +639,15 @@ export default {
                 }
                 // console.log(this.receivedGameStopFlag);
                 if (this.receivedGameStopFlag) {
+                    console.log('=============== stop ani');
+                    console.log('=============== stop ani');
+                    console.log('=============== stop ani');
+                    console.log('=============== stop ani');
+
                     const ssazipbg = document.getElementById('ssazipbg');
                     const ssazipbg2 = document.getElementById('ssazipbg2');
                     cancelAnimationFrame(animation);
+                    this.animationOnFlag = false;
                     ssazipbg.style.animation = 'paused';
                     ssazipbg2.style.animation = 'paused';
                 }
@@ -655,6 +663,12 @@ export default {
                 // const ssazipbg2 = document.getElementById('ssazipbg2');
                 if (dino.x <= cactus.x + cactus.width) {
                     if (xDiff < -10 && yDiff < -10) {
+                        console.log('=======충돌');
+                        console.log('=======충돌');
+
+                        console.log('=======충돌');
+                        console.log('=======충돌');
+
                         this.gameStopFlag = true;
                         this.stopGame();
                         // cancelAnimationFrame(animation); //게임중단
@@ -718,16 +732,17 @@ export default {
             console.log('=======sending reloading fuc');
             this.reloadFlag = true;
             this.drawObFlag = false;
-            console.log(this.receivedArr);
-
             this.receivedArr = [];
-            console.log(this.receivedArr);
-
             this.receivedArrType = [];
             this.xArr = [];
             this.xbArrType = [];
             document.getElementById('ssazipbg').style.animationPlayState = 'paused';
             document.getElementById('ssazipbg2').style.animationPlayState = 'paused';
+            if (!this.animationOnFlag) {
+                console.log('============re animation');
+                this.receivedGameStopFlag=false;
+                this.drawSsazipgameStart();
+            }
             // this.$router.go();
 
             this.stompClient.send(
@@ -1039,7 +1054,7 @@ export default {
         //플레이어 조작
         document.addEventListener('keydown', (e) => {
             //장애물 생성 요청
-            if (e.code === 'KeyA' && !this.drawObFlag) {
+            if (e.code === 'KeyA' && !this.drawObFlag && this.master) {
                 this.drawObFlag = true;
                 document.getElementById('ssazipbg').style.animationPlayState = 'running';
                 document.getElementById('ssazipbg2').style.animationPlayState = 'running';
@@ -1101,7 +1116,7 @@ export default {
 //
 //socket 3. reload(reset) : reset at master, request all player reentering
 //
-//reload(real reload of master) : request reload to all player 
+//reload(real reload of master) : request reload to all player
 </script>
 
 <style></style>
