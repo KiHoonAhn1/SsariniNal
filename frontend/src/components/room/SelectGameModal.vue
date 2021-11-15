@@ -38,9 +38,11 @@
               </div>
               <div class="wr-explain-speakgame-num">
                 팀 별 문제 수 :
-								<span class="count-minus" @click="count(1)"><i class="fas fa-play count-arrow"></i></span>
-								<span class="count-number">{{ number }}</span>
-								<span class="count-plus" @click="count(2)"><i class="fas fa-play"></i></span>
+                <span class="count-minus" @click="count(1)"
+                  ><i class="fas fa-play count-arrow"></i
+                ></span>
+                <span class="count-number">{{ number }}</span>
+                <span class="count-plus" @click="count(2)"><i class="fas fa-play"></i></span>
               </div>
             </div>
             <div class="wr-explain-speakgame" v-if="speakgame_explain == true">
@@ -55,9 +57,11 @@
               </div>
               <div class="wr-explain-speakgame-num">
                 팀 별 문제 수 :
-								<span class="count-minus" @click="count(1)"><i class="fas fa-play count-arrow"></i></span>
-								<span class="count-number">{{ number }}</span>
-								<span class="count-plus" @click="count(2)"><i class="fas fa-play"></i></span>
+                <span class="count-minus" @click="count(1)"
+                  ><i class="fas fa-play count-arrow"></i
+                ></span>
+                <span class="count-number">{{ number }}</span>
+                <span class="count-plus" @click="count(2)"><i class="fas fa-play"></i></span>
               </div>
             </div>
             <div class="wr-explain-jumpgame" v-if="jumpgame_explain == true">
@@ -88,7 +92,7 @@ export default {
       ssafymind_explain: false,
       speakgame_explain: false,
       jumpgame_explain: false,
-			number: 5,
+      number: 3,
     };
   },
   methods: {
@@ -125,18 +129,27 @@ export default {
       this.jumpgame_explain = true;
       this.$emit('infoJumpGame', this.jumpgame_explain);
     },
-		count(type){
-			if(type === 1){
-				this.number = this.number - 1;
-				if(this.number < 1){
-					this.number = 1;
-				}
-			}else if(type === 2){
-				this.number = this.number + 1;
-			}
-		},
+    count(type) {
+      if (type === 1) {
+        this.number = this.number - 1;
+        if (this.number < 1) {
+          this.number = 1;
+          alert('팀별 최소 문제수는 1문제 입니다!');
+        }
+      } else if (type === 2) {
+        this.number = this.number + 1;
+        // 최대 5문제 제한
+        if (this.number > 5) {
+          this.number = 5;
+          alert('팀별 최대 문제수는 5문제 입니다!');
+        }
+      }
+    },
     onModal() {
+      // 모달 닫기
       this.$emit('getOpenModal', this.openmodal);
+      // 선택한 문제 수 전달하기
+      this.$emit('transferNumber', this.number);
     },
   },
 };

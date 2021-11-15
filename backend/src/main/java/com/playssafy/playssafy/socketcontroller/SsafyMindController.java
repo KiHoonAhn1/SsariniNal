@@ -55,16 +55,10 @@ public class SsafyMindController {
     // 4. 메세지 교환 로직
     @MessageMapping(value = "/ssafymind/message/{roomId}")
     public void answer(@DestinationVariable String roomId, MindMessage mindMessage) {
+        // 메세지 정답 여부 판별 및 저장
         mindMessage = ssafyMindService.answer(roomId, mindMessage);
-        // 우선 메세지 데이터 보내주기
+        // 메세지 데이터 보내주기
         template.convertAndSend("/ssafymind/message/" + roomId, mindMessage);
-        // 서버에 메세지 스택 저장 및 정답 여부 판별
-//        boolean flag = ssafyMindService.answer(roomId, mindMessage);
-        // 정답이라면 새롭게 갱신된 방 정보 뿌려주기
-//        if (mindMessage.isCorrect()) {
-//            template.convertAndSend("/ssafymind/correct/" + roomId, flag);
-//            template.convertAndSend("/ssafymind/" + roomId, ssafyMindService.read(roomId));
-//        }
     }
 
     // 5. 시간 경과 로직
@@ -81,7 +75,7 @@ public class SsafyMindController {
             Timer timer = new Timer();
             TimerTask timerTask = new TimerTask() {
                 // 문제당 주어진 시간초
-                int cnt = 90;
+                int cnt = 91;
 
                 @Override
                 public void run() {
@@ -122,5 +116,12 @@ public class SsafyMindController {
     public void nextProblem(String roomId) {
         SsafyMind ssafyMind = ssafyMindService.nextProblem(roomId);
         template.convertAndSend("/ssafymind/" + roomId, ssafyMind);
+    }
+
+    // 9. 게임 종료(점수 누적)
+    @MessageMapping(value = "/ssafymind/end")
+    public void end(String roomId) {
+        // 게임 종료 로직 수행
+        ssafyMindService.end(roomId);
     }
 }

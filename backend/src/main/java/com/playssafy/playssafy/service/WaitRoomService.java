@@ -122,11 +122,4 @@ public class WaitRoomService {
         waitRoom.setGameType(initGame.getGameType());
         waitRoomRepository.save(waitRoom);
     }
-
-//    // 6. 팀 열기
-//    public WaitRoom openTeam(String openTeams, String roomId) {
-//        WaitRoom waitRoom = gameRoomRepository.findById(roomId).get();
-////        waitRoom.setTeamline(openTeams);
-//        return gameRoomRepository.save(waitRoom);
-//    }
 }

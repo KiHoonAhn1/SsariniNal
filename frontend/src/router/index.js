@@ -39,7 +39,7 @@ const routes = [
     component: Room,
   },
   {
-    path: '/rank',
+    path: '/rank/:roomId',
     name: 'Rank',
     component: Rank,
   },

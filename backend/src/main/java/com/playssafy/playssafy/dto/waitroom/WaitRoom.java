@@ -17,12 +17,14 @@ public class WaitRoom {
     private String name; // 게임 방 이름
     private String host; // 방장
     private boolean[] teamline; // 열린 팀 정보
-    private List<Participant> members = new ArrayList<>(); // 유저 정보
+    private List<Participant> members; // 유저 정보
     private int gameType; // 진행중인 게임 정보
     private int[] scores; // 총 점수 정보
 
     // 테스트용 멤버 초기화
     public WaitRoom() {
-
+        members = new ArrayList<>();
+        teamline = new boolean[11];
+        scores = new int[11];
     }
 }
