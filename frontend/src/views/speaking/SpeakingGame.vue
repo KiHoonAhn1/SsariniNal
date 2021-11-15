@@ -151,7 +151,7 @@ export default {
             console.log('파이널', transcript);
           } else {
             interimTranscript += transcript;
-            this.interimTranscript += transcript
+            this.interimTranscript += transcript;
           }
         }
         console.log('파이널', finalTranscript);
@@ -163,7 +163,7 @@ export default {
             sentence: finalTranscript + interimTranscript,
           })
         );
-      }
+      };
 
       speech.onerror = function(event) {
         if (event.error.match(/no-speech|audio-capture|not-allowed/)) {
@@ -171,19 +171,19 @@ export default {
         }
       };
 
-      const record = document.querySelector("#record");
-      record.addEventListener("click", async () => {
+      const record = document.querySelector('#record');
+      record.addEventListener('click', async () => {
         if (this.isRecording) {
           let message = finalTranscript;
           record.src = '/img/mike-off.10e24890.png';
-          
+
           // 마이크 버튼을 눌서 finalTranscript가 없을 때
           if (finalTranscript === this.finalTranscript) {
             message = this.finalTranscript + this.interimTranscript;
           }
-          console.log('-----------------')
-          console.log(message)
-          console.log('-----------------')
+          console.log('-----------------');
+          console.log(message);
+          console.log('-----------------');
 
           await this.stompClient.send(
             `/pub/speaking/answer/${this.getRoomId}`,
@@ -191,10 +191,10 @@ export default {
             JSON.stringify({
               name: '안기훈',
               teamNo: 1,
-              message: 'gd',
+              message: message,
               correct: false,
             })
-          )
+          );
           finalTranscript = '';
           this.finalTranscript = '';
           this.isRecording = false;
@@ -246,16 +246,19 @@ export default {
       this.stompClient.subscribe('/speaking/' + this.getRoomId, this.onMessageReceived);
       // 정답 데이터 채널
       this.stompClient.subscribe(
-        '/pub/speaking/answer/' + this.getRoomId,
+        '/speaking/answer/' + this.getRoomId,
         this.onAnswerMessageReceived
       );
       // 현재 진행 중인 사람의 문장 전송
-      this.stompClient.subscribe('/pub/speaking/talk/' + this.getRoomId, this.onTalkingMessageReceived);
+      this.stompClient.subscribe('/speaking/talk/' + this.getRoomId, this.onTalkingMessageReceived);
       // 플레이어 변경
-      this.stompClient.subscribe('/pub/speaking/change/player/' + this.getRoomId, this.onChangePlayerMessageReceived);
+      this.stompClient.subscribe(
+        '/speaking/change/player/' + this.getRoomId,
+        this.onChangePlayerMessageReceived
+      );
       // 입장 시 데이터 수신
       this.stompClient.send(
-        '/pub/speaking/enter',
+        '/speaking/enter',
         {},
         JSON.stringify({
           roomId: this.getRoomId,
@@ -295,17 +298,17 @@ export default {
       const data = JSON.parse(payload.body);
       const doin = document.querySelector('#doin');
       doin.innerText = data.message;
-      console.log('answer Received---------------------')
-      console.log(data)
-      console.log('answer Received---------------------')
+      console.log('answer Received---------------------');
+      console.log(data);
+      console.log('answer Received---------------------');
     },
     onTalkingMessageReceived(payload) {
-      console.log(this.isRecording)
+      console.log(this.isRecording);
       if (this.isRecording) {
         const data = JSON.parse(payload.body);
         const doin = document.querySelector('#doin');
         doin.innerText = data.sentence;
-        console.log(data.sentence)
+        console.log(data.sentence);
       }
     },
     onChangePlayerMessageReceived(payload) {
@@ -313,7 +316,7 @@ export default {
       console.log(data);
     },
     onError() {},
-        /*  */
+    /*  */
     // 음성 녹음해 blob 파일로 만들기
     /*  */
     getAudio: function() {

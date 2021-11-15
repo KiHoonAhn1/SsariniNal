@@ -49,8 +49,9 @@ public class SpeakingController {
 
     // 4. 결과 문장 전송
     @MessageMapping(value = "/speaking/answer/{roomId}")
-    public synchronized void answer(@DestinationVariable String roomId, SpeakMessage speakMessage) {
+    public void answer(@DestinationVariable String roomId, SpeakMessage speakMessage) {
         speakMessage = speakingService.answer(roomId, speakMessage);
+        System.out.println(speakMessage.isCorrect());
         // 보내주기
         template.convertAndSend("/speaking/answer/" + roomId, speakMessage);
     }
