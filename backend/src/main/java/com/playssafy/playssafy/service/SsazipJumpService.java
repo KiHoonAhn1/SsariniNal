@@ -1,60 +1,76 @@
-//package com.playssafy.playssafy.service;
-//
-//import com.playssafy.playssafy.dto.ssafymind.*;
-//import com.playssafy.playssafy.dto.ssazipjump.SsazipJump;
-//import com.playssafy.playssafy.dto.waitroom.InitGame;
-//import com.playssafy.playssafy.dto.waitroom.Participant;
-//import com.playssafy.playssafy.repository.SsazipJumpRepository;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//@Service
-//public class SsazipJumpService {
-//    @Autowired
-//    private SsazipJumpRepository ssazipJumpRepository;
-//
-//    // 0. 게임방 생성 메서드
-//    public void createSsazipJump(InitGame initGame) {
-//        if(!ssazipJumpRepository.findById(initGame.getRoomId()).isEmpty())
-//            return;
-//        SsazipJump ssazipJump = new SsazipJump();
-//
-//        // 방 ID 초기화
-//        ssazipJump.setRoomId(initGame.getRoomId());
-//        // 방장 정보 추가
-//        ssazipJump.setHost(initGame.getHost());
-//
-//        // 팀 진행 순서 초기화
-//        boolean[] exist = initGame.getExist();
-//        // 현재 팀이 존재한다면, 팀 넣기
-//        List<Integer> teams = new ArrayList<>();
-//        for (int i = 1; i < exist.length; i++) {
-//            if (exist[i])
-//                teams.add(i);
-//        }
-//        // 팀 섞기(100번)
-//        for (int i = 0; i < 100; i++) {
-//            // 임의의 두 인덱스를 지정하고
-//            int a = (int) (Math.random() * teams.size());
-//            int b = (int) (Math.random() * teams.size());
-//            // 교환
-//            int temp = teams.get(a);
-//            teams.set(a, teams.get(b));
-//            teams.set(b, temp);
-//        }
-//
-//        // 최종 결정된 순서 넣기(문제 개수 만큼)
-//        for(int i = 0; i < initGame.getQuizCnt(); i++) {
-//            for (Integer team : teams) {
-//                ssafyMind.getTeamOrder().add(team);
-//            }
-//        }
-//        // 현재 팀 개수 초기화
-//        ssafyMind.setCurTeamCnt(teams.size());
-//
+package com.playssafy.playssafy.service;
+
+import com.playssafy.playssafy.dto.play.JumpInfo;
+import com.playssafy.playssafy.dto.ssafymind.*;
+import com.playssafy.playssafy.dto.ssazipjump.SsazipJump;
+import com.playssafy.playssafy.dto.waitroom.InitGame;
+import com.playssafy.playssafy.dto.waitroom.Participant;
+import com.playssafy.playssafy.repository.SsazipJumpRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class SsazipJumpService {
+    @Autowired
+    private SsazipJumpRepository ssazipJumpRepository;
+
+    // rest 게임방 생성 메서드
+    public void createSsazipJump(InitGame initGame) {
+        if(!ssazipJumpRepository.findById(initGame.getRoomId()).isEmpty())
+            return;
+        SsazipJump ssazipJump = new SsazipJump();
+
+        // 방 ID 초기화
+        ssazipJump.setRoomId(initGame.getRoomId());
+        // 방장 정보 추가
+        ssazipJump.setHost(initGame.getHost());
+
+        //게임 스코어 초기화
+        ssazipJump.setGameScore1(0);
+        ssazipJump.setGameScore2(0);
+
+
+        // 팀 진행 순서 초기화
+        boolean[] exist = initGame.getExist();
+        // 현재 팀이 존재한다면, 팀 넣기
+        List<Integer> teamsNum = new ArrayList<>();
+        for (int i = 1; i < exist.length; i++) {
+            if (exist[i])
+                teamsNum.add(i);
+        }
+
+        // 팀 섞기(100번)
+        for (int i = 0; i < 100; i++) {
+            // 임의의 두 인덱스를 지정하고
+            int a = (int) (Math.random() * teamsNum.size());
+            int b = (int) (Math.random() * teamsNum.size());
+            // 교환
+            int temp = teamsNum.get(a);
+            teamsNum.set(a, teamsNum.get(b));
+            teamsNum.set(b, temp);
+        }
+
+        // 최종 결정된 순서 넣기
+        for(int i = 0; i < teamsNum.size(); i++) {
+            for (Integer team : teamsNum) {
+                ssazipJump.getTeamOrder().add(team);
+            }
+        }
+        // 홀수 팀 수 상황 추가
+        if(teamsNum.size()%2==1){
+            ssazipJump.getTeamOrder().add(-2);
+        }
+
+        //현재 강(라운드 표시)
+        ssazipJump.setRemainRound(ssazipJump.getTeamOrder().size());
+
+        //시작 팀 번호 값 세팅
+        ssazipJump.setTeamIdx1(ssazipJump.getTeamOrder().get(0));
+        ssazipJump.setTeamIdx2(ssazipJump.getTeamOrder().get(1));
+
 //        // 테스트 문제 리스트 ////////
 //        for(int i = 0; i < 20; i++) {
 //            ssafyMind.getQuizzes().add(new Quiz(1, "아미타불", "아미타불"));
@@ -70,21 +86,21 @@
 //        ssafyMind.getTeams().get(2).getMembers().add(new Participant(initGame.getRoomId(), "2", "이장섭2", 2));
 //        ssafyMind.getTeams().get(2).getMembers().add(new Participant(initGame.getRoomId(), "3", "이장섭3", 2));
 //        ssafyMind.getTeams().get(2).getMembers().add(new Participant(initGame.getRoomId(), "4", "이장섭4", 2));
-//
-//
-//        ssafyMindRepository.save(ssafyMind);
-//    }
-//
-//    // 1. 게임방 입장 메서드
-//    public synchronized SsafyMind enter(Participant participant) {
-//        SsafyMind ssafyMind = ssafyMindRepository.findById(participant.getRoomId()).get();
-//        Team team = ssafyMind.getTeams().get(participant.getTeamNo());
-//        if (!team.getMembers().contains(participant))
-//            team.getMembers().add(participant);
-//
-//        // 변경 완료
-//        return ssafyMindRepository.save(ssafyMind);
-//    }
+
+
+        ssazipJumpRepository.save(ssazipJump);
+    }
+
+    // 0. 게임방 입장 메서드
+    public synchronized SsazipJump enter(Participant participant) {
+        SsazipJump ssazipJump = ssazipJumpRepository.findById(participant.getRoomId()).get();
+        Team team = ssazipJump.getTeamsBase().get(participant.getTeamNo());
+        if (!team.getMembers().contains(participant)){
+            team.getMembers().add(participant);
+        }
+        // 변경 완료
+        return ssazipJumpRepository.save(ssazipJump);
+    }
 //
 //    // 2. 게임방 퇴장 메서드
 //    public synchronized SsafyMind exit(Participant participant) {
@@ -185,4 +201,4 @@
 //        // 저장
 //        return ssafyMindRepository.save(ssafyMind);
 //    }
-//}
+}

@@ -1,8 +1,5 @@
 package com.playssafy.playssafy.dto.ssazipjump;
 
-import com.playssafy.playssafy.dto.ssafymind.MindMessage;
-import com.playssafy.playssafy.dto.ssafymind.Point;
-import com.playssafy.playssafy.dto.ssafymind.Quiz;
 import com.playssafy.playssafy.dto.ssafymind.Team;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +11,9 @@ import org.springframework.data.redis.core.RedisHash;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 점핑 게임, 참가자 정보 관리 DTO new
+ */
 @Setter
 @Getter
 @ToString
@@ -31,13 +31,29 @@ public class SsazipJump {
     private String host; // 방장 정보
     private int gameScore1;// 1팀의 선승 값
     private int gameScore2;// 2팀의 선승 값
-    private List<Team> teamsBase; // 팀원 구성 초기 정보, 입장 시 정보
+    private List<Team> teamsBase; // 팀원 구성 초기 정보, 입장 시 정보 Participant 형태
     private List<Integer> teamOrder; // 팀 진행 순서 => 봇은 teamNo =-2
     private List<Integer> teamOrderNext; // 현 라운드에서 승리하여 다음라운드로 올라간 팀
-    private int[] finalScore; // 최종 점수(배열 형태) {1등 팀 번호, 2등 , 3등, 3등}
-    private int remainRound;//남은 라운드 계산 값
-    private int teamIdx1; // 현재 진행 중 팀 1의 인덱스
+    private List<Integer> finalScore; // 최종 점수(배열 형태) {1등 팀 번호, 2등 , 3등, 3등}
+    private int remainRound;//현재 라운드 계산 값
+    private int teamIdx1; // 현재 진행 중 팀 1의 팀 인덱스
     private int teamIdx2;
+
+    //from JumpInfo class
+    private boolean[] jumpArr1; // 점프값 어레이
+    private boolean[] jumpArr2;
+    private boolean reloadflag;
+    private String participantId; // 참가자의 고유 ID
+    private String participantName; // 참가자의 이름
+    private int teamNo; // 참가자 소속 팀 번호
+    private boolean obstacleflag;//장애물 시작 플레그
+    private Integer[] xbArr;//장애물 x위치 어레이
+    private Integer[] xbArrType;//장애물 타입 어레이
+    private int type;//데이터 정보 타입
+    //참가 여부 어레이
+    private boolean[] beUserPresent1;
+    private boolean[] beUserPresent2;//참가 여부 어레이
+    private boolean bGameStopFlag;//충돌 시 게임 중단 플레그
 
 
     public SsazipJump() {
@@ -50,5 +66,9 @@ public class SsazipJump {
         }
         // 동적 리스트 초기화
         teamOrder = new ArrayList<>();
+        teamOrderNext = new ArrayList<>();
+        finalScore = new ArrayList<>();
     }
+
+
 }

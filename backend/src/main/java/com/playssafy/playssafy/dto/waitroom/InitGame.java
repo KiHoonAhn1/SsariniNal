@@ -13,7 +13,7 @@ import javax.persistence.Id;
 public class InitGame {
     @Id
     private String roomId;
-    private String host;
+    private String host;//마스터 아이디
     private boolean[] exist; // 열린 팀 정보
     private int gameType; // 게임 타입
     private int quizCnt; // 퀴즈 개수

@@ -89,7 +89,7 @@ const routes = [
     component: SSazipJumpTemp,
   },
   {
-    path: '/ssazipjumpseop',
+    path: '/ssazipjumpseop/:roomId',
     name: 'SSazipJumpSeop',
     component: SSazipJumpSeop,
   },

@@ -1,13 +1,26 @@
 <template>
     <div>
-        <Header v-bind:gameTitle="'또박또박 말해요'" />
+        <SSazipjumpGuideModal v-if="guideModalOpen == true" @guideModal="guideModal" />
+        <SSazipjumpStartModal v-if="startModalOpen == true" @getCloseModal="closeStartModal" />
+        <SSazipjumpRoundModal v-if="roundModalOpen == true" @getCloseModal="closeRoundModal" />
+        <SSazipjumpRankModal v-if="rankModalOpen == true" @getCloseModal="closeStartModal" />
+        <Header v-bind:gameTitle="'싸집이 점프 게임'" />
+        <button @click="showRound()">dd</button>
         <div style="display:flex; justify-content:center">
             <!-- 좌측 게임 -->
             <div class="ssazip-game-outer-container">
                 <!-- 윗팀 -->
                 <div class="ssazip-game-container">
-                    <div id="ssazipbg" class="ssazip-game-background">
+                    <div id="ssazipbg" class="ssazip-game-background wrap">
                         <canvas id="canvas"></canvas>
+                        <div v-if="showResult">
+                            <div v-if="lose1" class="lose1 chatbox">LOSE</div>
+                            <div v-if="win1" class="win1 chatbox">WIN</div>
+                            <marquee loop="10" v-if="lose1" class="loser1" scrollamount="25">이장섭님이 걸리셨습니다.</marquee>
+                        </div>
+                        <div>
+                            <div class="round1"></div>
+                        </div>
                         <div style="display:none;">
                             <img id="ssazip" class="t" src="@/assets/ssazip-blue.png" />
                         </div>
@@ -28,8 +41,16 @@
                         </div>
                     </div>
                     <!-- 아랫팀 -->
-                    <div id="ssazipbg2" class="ssazip-game-background2">
+                    <div id="ssazipbg2" class="ssazip-game-background2 wrap">
                         <canvas id="canvas2"></canvas>
+                        <div v-if="showResult">
+                            <div v-if="!lose1" class="lose2 chatbox">LOSE</div>
+                            <div v-if="!win1" class="win2 chatbox">WIN</div>
+                            <marquee loop="10" v-if="!lose1" class="loser2" scrollamount="25">이장섭님이 걸리셨습니다.</marquee>
+                        </div>
+                        <div>
+                            <div class="round2"></div>
+                        </div>
                         <div style="display:none;">
                             <img id="ssazip2" class="t" src="@/assets/ssazip-blue.png" />
                         </div>
@@ -51,6 +72,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- 우측 라운드 표시 -->
             <div class="ssazip-round-outer-container">
                 <div class="ssazip-round-container">
@@ -72,7 +94,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="now-playing-game"></div> -->
                 </div>
             </div>
         </div>
@@ -84,6 +105,11 @@ import Header from '@/components/common/Header.vue';
 import '../../css/ssazip-jump.css';
 import { socketConnect } from '@/util/socket-common.js';
 import { mapGetters } from 'vuex';
+
+import SSazipjumpGuideModal from '@/components/ssazipjump/SSazipjumpGuideModal.vue';
+import SSazipjumpStartModal from '@/components/ssazipjump/SSazipjumpStartModal.vue';
+import SSazipjumpRoundModal from '@/components/ssazipjump/SSazipjumpRoundModal.vue';
+import SSazipjumpRankModal from '@/components/ssazipjump/SSazipjumpRankModal.vue';
 
 export default {
     name: 'SSazipJump',
@@ -102,7 +128,8 @@ export default {
                 { userId: '차은채', jump: 0 },
                 { userId: '술희원', jump: 0 },
             ],
-
+            //let murangsubul = {userId : this.member, jump : 0
+            //users1.push(murangsubul)
             users2: [
                 { userId: '안기훈', jump: false },
                 { userId: '꼬륵채', jump: false },
@@ -124,22 +151,18 @@ export default {
             obstacle3: document.getElementById('obstacle3'),
             stompClient: null,
             // 방 정보
-            room: {
-                id: '',
-                name: '',
-                host: '',
-                members: [],
-            },
+            roomNgameInfo: {},
+
             jumpSendArr1: [false, false, false, false, false],
             jumpSendArr2: [false, false, false, false, false],
             receivedJumpArr1: [false, false, false, false, false],
             receivedJumpArr2: [false, false, false, false, false],
             //임의값
             enteredFlag: false, //입장(전체와 연결) 확인 플레그
-            getRoomId: 123,
+            // getRoomId: 123,//dump test
             teamIdx: 2,
             reloadFlag: false,
-            master: false, //방장여부
+            masterKeyFlag: false, //로그인 여부, 방장 체크용
             xArr: [], //마스터 장애물 위치
             xArrType: [], //마스터 장애물 타입
             receivedArr: [], //수신된 장애물 위치
@@ -152,10 +175,34 @@ export default {
             gameStopFlag: false,
             receivedGameStopFlag: false,
             animationOnFlag: false, //반복 에니매이션 동작 여부 플레그
+            hostId: '', //호스트 유저의 이름이 었을껄?
+            battleTeam1: 0, // 진행 될 경기 팀
+            battleTeam2: 0,
+            nextBattleTeam1: 0, //다음 진행 될 경기 팀
+            nextBattleTeam2: 0,
+            nowRoundNum: 1, // 현재 라운드 회차
+            gameScore1: 0, // 현 라운드에서 1팀이 이긴 값
+            gameScore2: 0, // ''
+            loser:'',//걸린이 이름 : 희은이가 지음
+
+            guideModalOpen: true, //게임시작시 첫시작 소개모달
+            startModalOpen: false, //게임시작시 게임방법 안내 모달
+            roundModalOpen: false, //다음 팀 대전표 안내 모달
+            rankModalOpen: false, //종료 결산 모달
+            lose1: false, //1팀이 지면
+            // lose2: true,
+            win1: true, //1팀이 이기면
+            // win2: false,
+            showResult: false, //걸린이 표시
+            roundCnt: 0,
         };
     },
     components: {
         Header,
+        SSazipjumpStartModal,
+        SSazipjumpRoundModal,
+        SSazipjumpRankModal,
+        SSazipjumpGuideModal,
     },
     methods: {
         drawSsazip() {
@@ -216,14 +263,8 @@ export default {
                         dino.height = 70;
                         dino.y = 200;
                     }
-                    // for (let j = 0; j < this.dinos1.length; j++) {
-                    //     if (this.dinos1[j].x == dino.x) {
-                    //         alreadyFlag = true;
-                    //     }
-                    // }
-                    // if (!alreadyFlag) {
                     this.dinos1.push(dino); // 팀원수 확인해서 속성넣은 객체리스트로 만들어주기
-                    // }
+                    
                 }
             });
             this.users2.forEach((user, i) => {
@@ -260,14 +301,7 @@ export default {
                         dino.height = 70;
                         dino.y = 200;
                     }
-                    // for (let j = 0; j < this.dinos2.length; j++) {
-                    //     if (this.dinos2[j].x == dino.x) {
-                    //         alreadyFlag = true;
-                    //     }
-                    // }
-                    // if (!alreadyFlag) {
                     this.dinos2.push(dino); // 팀원수 확인해서 속성넣은 객체리스트로 만들어주기
-                    // }
                 }
             });
         },
@@ -276,105 +310,16 @@ export default {
         ///////////////////////////캔버스 구역/////////////////////////////////////
         ///////////////////////////캔버스 구역/////////////////////////////////////
         drawSsazipgameStart() {
-            // const ssazip = document.getElementById('ssazip');
-            // const ssazip2 = document.getElementById('ssazip2');
-            // const ssazipMe = document.getElementById('ssazipMe');
-            // const ssazipMe2 = document.getElementById('ssazipMe2');
-
             // canvas는 mounted이후에 사용이 가능하다.
             let canvas = document.getElementById('canvas');
             let ctx = canvas.getContext('2d');
             let canvas2 = document.getElementById('canvas2');
             let ctx2 = canvas2.getContext('2d');
 
-            // // 캔버스 크기 지정
-            // canvas.width = 1200;
-            // canvas.height = 350;
-            // canvas2.width = 1200;
-            // canvas2.height = 350;
-
-            // const leftSpace = 50; //싸집이들 왼쪽 공간
-
-            // //예정된 플레이어 값과 참가 값을 통한 다이노(싸집이) 생성
-            // this.users1.forEach((user, i) => {
-            //     if (this.userPresent1[i]) {
-            //         //참여중이라면
-            //         // 캐릭터 속성
-            //         let dino = {
-            //             // 캐릭터 등장 좌표(왼쪽 상단으로부터)
-            //             x: leftSpace + 70 * i,
-            //             y: 220,
-            //             width: 50,
-            //             height: 50,
-            //             idx: i,
-            //             me: 0,
-            //             // 캐릭터 그리기 함수(생성)
-            //             draw() {
-            //                 ctx.fillStyle = 'green';
-            //                 ctx.fillRect(this.x, this.y, this.width, this.height); //위치, 크기
-            //                 if (this.me == 0) {
-            //                     ctx.drawImage(ssazip, this.x, this.y, this.width, this.height);
-            //                 } else {
-            //                     ctx.drawImage(ssazipMe, this.x, this.y, this.width, this.height);
-            //                 }
-            //             },
-            //         };
-            //         if (user.userId == this.userId) {
-            //             //본인과 같은 정보가 있다면 본인정보에 넣어주기
-            //             this.userIdx = i;
-            //             this.userTeam = 1;
-            //             dino.me = 1; //본인 표시
-            //             dino.height = 70;
-            //             dino.y = 200;
-            //         }
-            //         this.dinos1.push(dino); // 팀원수 확인해서 속성넣은 객체리스트로 만들어주기
-            //     }
-            // });
-
-            // this.users2.forEach((user, i) => {
-            //     if (this.userPresent2[i]) {
-            //         // 캐릭터 속성
-            //         let dino = {
-            //             // 캐릭터 등장 좌표(왼쪽 상단으로부터)
-            //             x: leftSpace + 70 * i,
-            //             y: 220,
-            //             width: 50,
-            //             height: 50,
-            //             idx: i,
-            //             me: 0,
-            //             // 캐릭터 그리기 함수(생성)
-            //             draw() {
-            //                 ctx2.fillStyle = 'green';
-            //                 ctx2.fillRect(this.x, this.y, this.width, this.height); //위치, 크기
-            //                 if (this.me == 0) {
-            //                     ctx2.drawImage(ssazip2, this.x, this.y, this.width, this.height);
-            //                 } else {
-            //                     ctx2.drawImage(ssazipMe2, this.x, this.y, this.width, this.height);
-            //                 }
-            //             },
-            //         };
-            //         if (user.userId == this.userId) {
-            //             //본인과 같은 정보가 있다면 본인정보에 넣어주기
-            //             this.userIdx = i;
-            //             this.userTeam = 2;
-            //             dino.me = 1; //본인 표시
-            //             dino.height = 70;
-            //             dino.y = 200;
-            //         }
-            //         this.dinos2.push(dino); // 팀원수 확인해서 속성넣은 객체리스트로 만들어주기
-            //     }
-            // });
-
             let animation;
             let cactusCnt = 0; // 1팀 연속 나온 장애물 개수
-            // let cactusCnt2 = 0; // 2팀 연속 나온 장애물 개수
             const cactusCntArr = [1, 1, 3, 2, 2, 3, 4, 2, 2, 3, 1]; //장애물 1초마다 생성되는 개수 (원소(쉬고)원소(쉬고)...)
             let cactusCntIdx = 0; //1팀 장애물 연속 생성개수 담은 리스트에서 몇번째 연속생성개수 인지 처리해주는 인덱스
-            // let cactusCntIdx2 = 0; //2팀 장애물 연속 생성개수 담은 리스트에서 몇번째 연속생성개수 인지 처리해주는 인덱스
-            // const obstacle1 = document.getElementById('obstacle1'); // eslint-disable-line no-unused-vars
-            // const obstacle2 = document.getElementById('obstacle2'); // eslint-disable-line no-unused-vars
-            // const obstacle3 = document.getElementById('obstacle3'); // eslint-disable-line no-unused-vars
-            // const obstacle4 = document.getElementById('obstacle4'); // eslint-disable-line no-unused-vars
 
             // 장애물 생성기
             class Cactus {
@@ -404,16 +349,12 @@ export default {
                         ctx2.fillRect(this.x, this.y, this.width, this.height);
                         ctx2.drawImage(eval('obstacle' + this.type), this.x, this.y, this.width, this.height);
                     }
-                    // else {
-                    //     (this.x = 0), (this.y = 0);
-                    // }
                 }
             }
 
             //////////////////반복 액션//////////////////
             //////////////////반복 액션//////////////////
             //////////////////반복 액션//////////////////
-
             const frame = (timestamp) => {
                 animation = requestAnimationFrame(frame); //frame을 1초에 60번 실행해줘 실행해줘
                 this.animationOnFlag = true;
@@ -564,78 +505,6 @@ export default {
                         this.dinos2[i].draw(); // 2팀 싸집이들 그려주기
                         userNum2++;
                     });
-                    // //1팀 점프
-                    // this.dinos1.forEach((dino, i) => {
-                    //     if (dino.me == 0) {
-                    //         // 점프
-                    //         if (this.users1[i].jump == true) {
-                    //             this.dinos1[i].y -= 5; //점프속도
-                    //         }
-                    //         // 착지
-                    //         if (this.users1[i].jump == false) {
-                    //             if (dino.y < 220) {
-                    //                 this.dinos1[i].y += 5; //착지속도
-                    //             }
-                    //         }
-                    //         // 점프 중지
-                    //         if (this.dinos1[i].y <= 90) {
-                    //             this.users1[i].jump = false;
-                    //         }
-                    //     } else {
-                    //         //본인시
-                    //         // 점프
-                    //         if (this.users1[i].jump == true) {
-                    //             this.dinos1[i].y -= 5; //점프속도
-                    //         }
-                    //         // 착지
-                    //         if (this.users1[i].jump == false) {
-                    //             if (dino.y < 200) {
-                    //                 this.dinos1[i].y += 5; //착지속도
-                    //             }
-                    //         }
-                    //         // 점프 중지
-                    //         if (this.dinos1[i].y <= 70) {
-                    //             this.users1[i].jump = false;
-                    //         }
-                    //     }
-                    //     this.dinos1[i].draw(); // 1팀 싸집이들 그려주기
-                    // });
-                    // // 2팀 점프
-                    // this.dinos2.forEach((dino, i) => {
-                    //     if (dino.me == 0) {
-                    //         // 점프
-                    //         if (this.users2[i].jump == true) {
-                    //             this.dinos2[i].y -= 5; //점프속도
-                    //         }
-                    //         // 착지
-                    //         if (this.users2[i].jump == false) {
-                    //             if (dino.y < 220) {
-                    //                 this.dinos2[i].y += 5; //착지속도
-                    //             }
-                    //         }
-                    //         // 점프 중지
-                    //         if (this.dinos2[i].y <= 90) {
-                    //             this.users2[i].jump = false;
-                    //         }
-                    //     } else {
-                    //         //본인시
-                    //         // 점프
-                    //         if (this.users2[i].jump == true) {
-                    //             this.dinos2[i].y -= 5; //점프속도
-                    //         }
-                    //         // 착지
-                    //         if (this.users2[i].jump == false) {
-                    //             if (dino.y < 200) {
-                    //                 this.dinos2[i].y += 5; //착지속도
-                    //             }
-                    //         }
-                    //         // 점프 중지
-                    //         if (this.dinos2[i].y <= 70) {
-                    //             this.users2[i].jump = false;
-                    //         }
-                    //     }
-                    //     this.dinos2[i].draw(); // 2팀 싸집이들 그려주기
-                    // });
                 }
                 // console.log(this.receivedGameStopFlag);
                 if (this.receivedGameStopFlag) {
@@ -655,31 +524,123 @@ export default {
             frame();
             // 충돌체크함수
             const checkCollision = (dino, cactus) => {
-                // console.log(dino);
-                // console.log(cactus);
                 let xDiff = cactus.x - (dino.x + dino.width);
                 let yDiff = cactus.y - (dino.y + dino.height);
-                // const ssazipbg = document.getElementById('ssazipbg');
-                // const ssazipbg2 = document.getElementById('ssazipbg2');
                 if (dino.x <= cactus.x + cactus.width) {
                     if (xDiff < -10 && yDiff < -10) {
                         console.log('=======충돌');
                         console.log('=======충돌');
-
-                        console.log('=======충돌');
-                        console.log('=======충돌');
-
                         this.gameStopFlag = true;
                         this.stopGame();
-                        // cancelAnimationFrame(animation); //게임중단
-                        // console.log(xDiff);
-                        // ssazipbg.style.animation = 'paused';
-                        // ssazipbg2.style.animation = 'paused';
-                        // this.status = false
-                        // animation;
                     }
                 }
             };
+        },
+        /////////////////////////////////// method ///////////////////////////////
+        /////////////////////////////////// method ///////////////////////////////
+        /////////////////////////////////// method ///////////////////////////////
+
+        //플레이어 세팅
+        setUsers() {
+            console.log('플레이어 세팅');
+
+            let teamIdx1 = this.room.teamIdx1;
+            let teamIdx2 = this.room.teamIdx2;
+            console.log(teamIdx1 + ' ' + teamIdx2);
+            if (teamIdx1 != -2) {
+                for (let i = 0; i < this.room.teamsBase[teamIdx1].members.length; i++) {
+                    console.log(i + '번 플레이어');
+                    console.log(this.room.teamsBase[teamIdx1].members[i].participantName);
+                    let mem = { userId: this.room.teamsBase[teamIdx1].members[i].participantName, jump: false };
+                    this.users1.push(mem);
+                }
+            }
+            if (teamIdx2 != -2) {
+                for (let i = 0; i < this.room.teamsBase[teamIdx2].members.length; i++) {
+                    let mem = { userId: this.room.teamsBase[teamIdx2].members[i].participantName, jump: false };
+                    this.users2.push(mem);
+                }
+            }
+            this.reqState();
+        },
+        ////////////////////// modal method //////////////////////////
+        ////////////////////// modal method //////////////////////////
+        ////////////////////// modal method //////////////////////////
+
+        guideModal() {
+            this.guideModalOpen = false;
+            this.startModalOpen = true;
+        },
+
+        showRound() {
+            //시작 전 라운드와 1, 2, 3 표시
+            //round 표시함수
+            const round1 = document.querySelector('.round1');
+            const round2 = document.querySelector('.round2');
+            round1.innerText = 'ROUND1';
+            round2.innerText = 'ROUND1';
+            if (round1.style.opacity == 0) {
+                //투명도
+                round1.style.opacity = 1;
+                round2.style.opacity = 1;
+                // this.roundCnt = 3
+
+                setTimeout(function() {
+                    round1.style.opacity = 0;
+                    round2.style.opacity = 0;
+                }, 1500); // ROUND 뜨고 사라지는 시간
+                setTimeout(function() {
+                    round1.innerText = 3;
+                    round2.innerText = 3;
+                    round1.style.opacity = 1;
+                    round2.style.opacity = 1;
+                }, 2000);
+                setTimeout(function() {
+                    round1.style.opacity = 0;
+                    round2.style.opacity = 0;
+                }, 2500); // 3 뜨고 사라지는 시간
+                setTimeout(function() {
+                    round1.innerText = 2;
+                    round2.innerText = 2;
+                    round1.style.opacity = 1;
+                    round2.style.opacity = 1;
+                }, 3000);
+                setTimeout(function() {
+                    round1.style.opacity = 0;
+                    round2.style.opacity = 0;
+                }, 3500); // 2 뜨고 사라지는 시간
+                setTimeout(function() {
+                    round1.innerText = 1;
+                    round2.innerText = 1;
+                    round1.style.opacity = 1;
+                    round2.style.opacity = 1;
+                }, 4000);
+                setTimeout(function() {
+                    round1.style.opacity = 0;
+                    round2.style.opacity = 0;
+                }, 4500); // 1 뜨고 사라지는 시간
+                setTimeout(function() {
+                    round1.innerText = 'START';
+                    round2.innerText = 'START';
+                    round1.style.opacity = 1;
+                    round2.style.opacity = 1;
+                }, 5000);
+                setTimeout(function() {
+                    round1.style.opacity = 0;
+                    round2.style.opacity = 0;
+                }, 5500); // 시작 뜨고 사라지는 시간
+
+                //게임시작
+                //-------
+            }
+        },
+        closeStartModal(open) {
+            this.startModalOpen = open;
+            this.roundModalOpen = true;
+            this.rankModalOpen = open;
+        },
+        closeRoundModal(open) {
+            this.roundModalOpen = open;
         },
 
         ////////////////////////////////////Socket 요청들/////////////////////////////////////////////////
@@ -687,47 +648,76 @@ export default {
         ////////////////////////////////////Socket 요청들/////////////////////////////////////////////////
         //1.게임 방 입장 : 정보 구독 및 유저 정보 전송
         onConnected() {
-            // 입장 전 정보 요청
+            //0. 초기 정보 요청
+            console.log('==============this room code is ' + this.getRoomId);
+
+            // 구독
             this.stompClient.subscribe('/game/jumpgame/' + this.getRoomId, this.onMessageReceived);
-            //마스터 새로고침시 플레이어도 새로고침
-            if (this.master) {
+
+            //마스터 새로고침시, 입장 시 플레이어도 새로고침
+            if (this.masterKeyFlag) {
+                //마스터가 생성시 나머지 새로고침 요청
                 this.reloadingPlay();
             }
+
             console.log('=========conn start');
+            //방과 게임에 대한 정보 요청
+            this.stompClient.send(
+                '/pub/game/jump/enter/reqInfoRoomNGame',
+                {},
+                JSON.stringify({
+                    roomId: this.getRoomId,
+                    participantId: this.getUser.id,
+                    participantName: this.getUser.name,
+                    teamNo: this.getUser.teamNo,
+                    type: 0, //정보요청 타입
+                })
+            );
+            console.log('onconnected');
+        },
+        //1.입장 전//유저들의 장애물과 유저 상태 정보 요청
+        reqState() {
             this.stompClient.send(
                 '/pub/game/jump/enter/reqToMaster',
                 {},
                 JSON.stringify({
                     roomId: this.getRoomId,
-                    // participantId: this.getUser.id,
-                    // participantName: this.getUser.name,
-                    // aPresent: this.jumpSendArr1,
-                    // jumpArr1: this.jumpSendArr1,
-                    // jUmpArr2: this.jumpSendArr1,
-                    // bUserPresent2: this.userPresent2,
-                    // teamNo: 0,
                     type: 1, //정보요청 타입
                 })
             );
-            console.log('onconnected');
         },
-        //점프 명령어 전송
-        jumping() {
-            console.log('=======jummping');
-            // console.log(this.jumpSendArr1);
-            // console.log(this.jumpSendArr2);
+
+        //7.현 상태 송출 by master
+        sendState() {
+            console.log('=======sendState');
             this.stompClient.send(
-                '/pub/game/jump/data',
+                '/pub/game/jump/state',
                 {},
                 JSON.stringify({
                     roomId: this.getRoomId,
-                    jumpArr1: this.jumpSendArr1,
-                    jumpArr2: this.jumpSendArr2,
-                    type: 2, //점프 데이터
+                    beUserPresent1: this.userPresent1,
+                    beUserPresent2: this.userPresent2,
+                    obstacleflag: this.drawObFlag,
+                    type: 7,
                 })
             );
         },
-        //재시작 => 마스터 화면은 초기화, 플레이어는 재 접속
+        //5.입장
+        entering() {
+            console.log('=======entering');
+            this.stompClient.send(
+                '/pub/game/jump/enter',
+                {},
+                JSON.stringify({
+                    roomId: this.getRoomId,
+                    beUserPresent1: this.userPresent1,
+                    beUserPresent2: this.userPresent2,
+                    type: 5,
+                })
+            );
+        },
+        ///////////////////////////////////////////////////
+        //3. 재시작 => 마스터 화면은 초기화, 플레이어는 재 접속
         reloading() {
             console.log('=======sending reloading fuc');
             this.reloadFlag = true;
@@ -740,7 +730,7 @@ export default {
             document.getElementById('ssazipbg2').style.animationPlayState = 'paused';
             if (!this.animationOnFlag) {
                 console.log('============re animation');
-                this.receivedGameStopFlag=false;
+                this.receivedGameStopFlag = false;
                 this.drawSsazipgameStart();
             }
             // this.$router.go();
@@ -757,8 +747,8 @@ export default {
                 })
             );
         },
+        // 3.마스터가 새로고침 누를때 플레이어 재 접속
         reloadingPlay() {
-            //마스터가 새로고침 누를때 플레이어 재 접속
             this.reloadFlag = true;
             this.stompClient.send(
                 '/pub/game/jump/data',
@@ -772,7 +762,25 @@ export default {
                 })
             );
         },
-        //장애물 송신
+        ///////////////////////////////////
+        //2. 점프 명령어 전송
+        jumping() {
+            console.log('=======jummping');
+            // console.log(this.jumpSendArr1);
+            // console.log(this.jumpSendArr2);
+            this.stompClient.send(
+                '/pub/game/jump/data',
+                {},
+                JSON.stringify({
+                    roomId: this.getRoomId,
+                    jumpArr1: this.jumpSendArr1,
+                    jumpArr2: this.jumpSendArr2,
+                    type: 2, //점프 데이터
+                })
+            );
+        },
+        /////////////////////////////
+        //4. 장애물 송신
         sendObstaclePosition() {
             console.log('ooooooooooooooooo');
             this.stompClient.send(
@@ -787,20 +795,8 @@ export default {
                 })
             );
         },
-        //입장
-        entering() {
-            console.log('=======entering');
-            this.stompClient.send(
-                '/pub/game/jump/enter',
-                {},
-                JSON.stringify({
-                    roomId: this.getRoomId,
-                    beUserPresent1: this.userPresent1,
-                    beUserPresent2: this.userPresent2,
-                    type: 5,
-                })
-            );
-        },
+        //////////////////////////////////////
+        //6. 게임 정지
         stopGame() {
             console.log('=======gameStopFlag');
             this.gameStopFlag = true;
@@ -815,37 +811,34 @@ export default {
             );
             this.gameStopFlag = false;
         },
-        //7.현 상태 송출
-        sendState() {
-            console.log('=======sendState');
-            this.stompClient.send(
-                '/pub/game/jump/state',
-                {},
-                JSON.stringify({
-                    roomId: this.getRoomId,
-                    beUserPresent1: this.userPresent1,
-                    beUserPresent2: this.userPresent2,
-                    obstacleflag: this.drawObFlag,
-                    type: 7,
-                })
-            );
-        },
-        // 메세지 수신
-        // 메세지 수신
-        // 메세지 수신
+
+        ////////////////////// 메세지 수신 ///////////////////
+        ////////////////////// 메세지 수신 ///////////////////
+        ////////////////////// 메세지 수신 ///////////////////
         onMessageReceived(payload) {
             let info = JSON.parse(payload.body);
             console.log('======got mes=========');
-            //1.정보 요청 수신시 ( 마스터만 )
-            if (info.type == 1 && this.master) {
-                console.log('======got mes 마스터 정보 요청에 대한 수신=========');
-                this.sendState();
 
+            //0. 방, 게임 정보 수신
+            if (info.type == 0) {
+                console.log('======got mes 방, 게임 정보 수신=========');
+                this.room = info;
+                console.log(this.room);
+                this.hostId = this.room.host;
+                this.setUsers();
+            }
+
+            //1.정보 요청 수신시 ( 마스터만 )
+            if (info.type == 1 && this.masterKeyFlag) {
+                console.log('======got mes 마스터의 정보 요청에 대한 수신=========');
+                this.sendState();
                 return;
             }
-            //7.현 상태 수신
+            //7.유저 기존 상태 수신 (입장 전 과정)
+            console.log('this.enteredFlag 입장여부');
+            console.log(this.enteredFlag);
             if (info.type == 7 && !this.enteredFlag) {
-                console.log('======got mes 현 상태 마스터로부터 수신=========');
+                console.log('======got mes 기존 상태 마스터로부터 수신=========');
                 this.enteredFlag = true;
                 this.userPresent1 = info.beUserPresent1;
                 this.userPresent2 = info.beUserPresent2;
@@ -855,13 +848,14 @@ export default {
                     if (this.users1[i].userId == this.getUser.name) {
                         this.userPresent1[i] = true; //참가 확인 어레이
                         this.teamIdx = 1; //팀 선정
-                        this.entering();
+
                         // 유저 개인 메세지
                         let idx = 1;
                         for (let i = 0; i < this.userPresent1.length; i++) {
                             if (this.userPresent1[i]) idx++;
                         }
                         console.log('1팀의 ' + idx + '번째 유저입니다');
+                        this.entering();
                     }
                 }
                 if (this.teamIdx == 2) {
@@ -880,38 +874,25 @@ export default {
                     }
                 }
             }
-            //새로운 유저 입장
+
+            //5. 새로운 유저 입장
             if (info.type == 5) {
                 this.userPresent1 = info.beUserPresent1;
                 this.userPresent2 = info.beUserPresent2;
                 this.drawSsazip();
             }
 
-            //게임 정지
-            if (info.type == 6) {
-                // this.receivedGameStopFlag = info.BgameStopFlag;
-                this.receivedGameStopFlag = true;
-            }
-
             //3.리로드
             if (info.reloadflag && info.type == 3) {
                 this.reloadFlag = false;
-                if (!this.master) this.$router.go();
+                if (!this.masterKeyFlag) this.$router.go();
                 // this.userPresent1 = info.beUserPresent1;
                 // this.userPresent2 = info.beUserPresent2;
                 // this.drawSsazip();
                 return;
             }
-            if (info.type == 4) {
-                //장애물 생성
-                this.receivedArr = info.xbArr;
-                this.receivedArrType = info.xbArrType;
-                return;
-            }
-            if (info.obstacleflag && !this.drawFlag) {
-                this.drawFlag = true;
-            }
 
+            //2. 점핑데이터
             if (info.type == 2) {
                 //점프
                 this.receivedJumpArr1 = info.jumpArr1;
@@ -938,6 +919,23 @@ export default {
                         // this.users2[i].jump = this.jumpsss2[i];
                     }
                 }
+            }
+
+            //4. 장애물
+            if (info.type == 4) {
+                //장애물 생성
+                this.receivedArr = info.xbArr;
+                this.receivedArrType = info.xbArrType;
+                return;
+            }
+            if (info.obstacleflag && !this.drawFlag) {
+                this.drawFlag = true;
+            }
+
+            //6.게임 정지
+            if (info.type == 6) {
+                // this.receivedGameStopFlag = info.BgameStopFlag;
+                this.receivedGameStopFlag = true;
             }
 
             if (payload.body == 'exit') {
@@ -998,8 +996,8 @@ export default {
         // // 소켓 연결
         // this.stompClient = socketConnect(this.onConnected, this.onError);
         // 방정보 초기화
-        this.room.id = this.getRoomId;
-        this.master = this.getIsLogin;
+        // this.room.id = this.getRoomId;
+        this.masterKeyFlag = this.getIsLogin;
         this.userId = this.getUser.name;
     },
     mounted() {
@@ -1008,42 +1006,6 @@ export default {
 
         // 소켓 연결
         this.stompClient = socketConnect(this.onConnected, this.onError);
-        // //팀 선정
-        // for (let i = 0; i < this.users1.length; i++) {
-        //     if (this.users1[i].userId == this.getUser.name) {
-        //         this.teamIdx = 1;
-        //         break;
-        //     }
-        // }
-        // //초기 플레이어 확인 절차
-        // for (let i = 0; i < this.users1.length; i++) {
-        //     if (this.users1[i].userId == this.getUser.name) {
-        //         this.userPresent1[i] = true; //참가 확인 어레이
-        //         this.teamIdx = 1; //팀 선정
-        //         this.entering();
-        //         // this.users1[i].jump = false;
-        //         // 유저 개인 메세지
-        //         let idx = 1;
-        //         for (let i = 0; i < this.userPresent1.length; i++) {
-        //             if (this.userPresent1[i]) idx++;
-        //         }
-        //         console.log('1팀의 ' + idx + '번째 유저입니다');
-        //     }
-        // }
-        // for (let i = 0; i < this.users2.length; i++) {
-        //     if (this.users2[i].userId == this.getUser.name) {
-        //         this.userPresent2[i] = true; //참가 확인 어레이
-        //         this.teamIdx = 2; //팀 선정
-        //         this.entering();
-        //         // this.users2[i].jump = false;
-        //         // 유저 개인 메세지
-        //         let idx = 1;
-        //         this.userPresent2.forEach((a) => {
-        //             if (a) idx++;
-        //         });
-        //         console.log('2팀의 ' + idx + '번째 유저입니다');
-        //     }
-        // }
 
         // 캔버스 반복 생성 시작
         if (!this.startFlag) {
@@ -1054,7 +1016,7 @@ export default {
         //플레이어 조작
         document.addEventListener('keydown', (e) => {
             //장애물 생성 요청
-            if (e.code === 'KeyA' && !this.drawObFlag && this.master) {
+            if (e.code === 'KeyA' && !this.drawObFlag && this.masterKeyFlag) {
                 this.drawObFlag = true;
                 document.getElementById('ssazipbg').style.animationPlayState = 'running';
                 document.getElementById('ssazipbg2').style.animationPlayState = 'running';
@@ -1068,7 +1030,9 @@ export default {
                 }
             }
             //착지해야만 점프가능
-            if (this.startFlag) {
+            console.log('userPlayIdx');
+            console.log(this.userPlayIdx);
+            if (this.startFlag && this.userPlayIdx != -1) {
                 if (this.teamIdx == 1) {
                     if (this.dinos1[this.userPlayIdx].y == 200) {
                         if (e.code === 'Space') {
@@ -1093,30 +1057,45 @@ export default {
     },
     updated: {},
     computed: {
-        // ...mapGetters(['getRoomId']),
+        ...mapGetters(['getRoomId']),
         ...mapGetters(['getUser', 'getIsLogin']),
     },
 };
+
+
+
 ///////////////////////////routine memo/////////////////////
 ///////////////////////////routine memo/////////////////////
 ///////////////////////////routine memo/////////////////////
 //각 숫자는 전송시 넣어지는 타입
 //
-//created
-//mounted -> socket connecting, drawing repeatly
-//socket 1. request environment to master
-//socket 7. response to all -> new user entering
+//(when enter this page)
+//created() -> set room.id, masterKeyFlag, userId
+//
+//mounted() -> onconnected() : subscribe, reload after master, socket connecting( getting room & game info by type 0, getting obstacle & player present by type 1)
+//          -> start drawing repeatly
+//
+//socket 0. request room data, game data
+//socket 1. request obstacle, player state to master
+//socket 7. response to all from master -> user get state before enter
 //socket 5. entering and remake dinos list at all
 //
-//start => button 'a' by master
+//(when reset by master : key 'enter')
+//socket 3. reload(reset) : reset at master, request all player to reEnter
 //
+//(when reload by master)
+//reload(real reload of master) : request reload to all player
 //
+//(when user jump)
 //socket 2. jumping : catch button pushed by player and broadcast
 //    catch jumping signal and jump
 //
-//socket 3. reload(reset) : reset at master, request all player reentering
+//(when master start making obstacle)
+//socket 4.start => button 'a' by master
 //
-//reload(real reload of master) : request reload to all player
+//(when someone crushed obstacle)
+//socket 6. stop => to all
+//
 </script>
 
 <style></style>

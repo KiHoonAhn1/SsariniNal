@@ -5,6 +5,7 @@ import com.playssafy.playssafy.dto.waitroom.Participant;
 import com.playssafy.playssafy.dto.waitroom.WaitRoom;
 import com.playssafy.playssafy.service.SpeakingService;
 import com.playssafy.playssafy.service.SsafyMindService;
+import com.playssafy.playssafy.service.SsazipJumpService;
 import com.playssafy.playssafy.service.WaitRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ public class WaitRoomRestController {
     private final WaitRoomService waitRoomService;
     private final SsafyMindService ssafyMindService;
     private final SpeakingService speakingService;
+    private final SsazipJumpService ssazipJumpService;
 
 
     /**
@@ -45,16 +47,7 @@ public class WaitRoomRestController {
         // ssafymind 게임방 생성
         ssafyMindService.createSsafyMind(initGame);
     }
-    /**
-     * 싸집이 점프 게임 방 생성
-     */
-    @PostMapping(value = "/create/ssazipjump")
-    public void createSsazipJump(@RequestBody InitGame initGame) {
-        // 현재 게임 방 게임 타입 정보 갱신 로직 추가
-        waitRoomService.changeGame(initGame);
-        // ssafymind 게임방 생성
-        ssafyMindService.createSsafyMind(initGame);
-    }
+
 
     /**
      * 또박또박 말해요 게임 방 생성
@@ -70,4 +63,12 @@ public class WaitRoomRestController {
     /**
      * 싸집이 점프 게임 방 생성
      */
+    @PostMapping(value = "/create/ssazipjump")
+    public void createSsazipJump(@RequestBody InitGame initGame) {
+        System.out.println("checker111111111111111111111111111");
+        // 현재 게임 방 게임 타입 정보 갱신 로직 추가
+        waitRoomService.changeGame(initGame);
+        // ssafymind 게임방 생성
+        ssazipJumpService.createSsazipJump(initGame);
+    }
 }
