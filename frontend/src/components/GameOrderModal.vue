@@ -1,6 +1,22 @@
 <template>
   <div class="game-order-modal">
     <div class="show-team-dialog">
+      <!-- <img src="~@/assets/ssafymindBeforeStart.png" id="ssafymind-before-start-img" alt="" v-show="explainmodal == true"> -->
+      <!-- <GameExplainModal/> -->
+      <div class="game-explain-modal" v-show="explainmodal == true">
+        <div class="game-explain-dialog">
+          <div class="game-explain-content">
+            <div class="modal-body">
+              <div class="game-explain-explainbox">
+                <img src="~@/assets/ssafymindBeforeStart.png" id="ssafymind-explain-img" alt="">
+                <button class="understand-btn" @click="closeExplainModal">
+                  알겠습니다!
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="show-team-content">
         <div class="modal-body">
           <div class="show-team-explainbox">
@@ -34,14 +50,21 @@
 </template>
 <script>
 import '@/components/css/gameOrderModal.css';
+import '@/components/css/gameExplainModal.css';
+// import GameExplainModal from '@/components/GameExplainModal';
 import { mapGetters } from 'vuex';
 export default {
   name: 'GameOrderModal',
+  components:{
+    // GameExplainModal
+  },
   props: ['teamOrder', 'teamCnt', 'host'],
   data: function() {
     return {
       ordermodal: false,
       startTime: false,
+      getProgressBar: false,
+      explainmodal: true,
     };
   },
   computed: {
@@ -52,8 +75,19 @@ export default {
       this.$emit('getCloseModal', this.ordermodal);
       this.$emit('startTimer', this.startTime);
       this.$emit('sendGameStartTrigger');
+      this.$emit('getProgressBar', this.getProgressBar);
     },
+    // closeImg: function(){
+    //   console.log('나 안보이니?')
+    //   setTimeout(this.explainmodal = false, 3000);
+    // },
+    closeExplainModal: function(){
+      this.explainmodal = false;
+    }
   },
+  mounted: function(){
+    // this.closeImg();
+  }
 };
 </script>
 <style>

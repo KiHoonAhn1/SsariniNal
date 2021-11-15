@@ -1,4 +1,4 @@
-.ssafymind-left .progress {
+/* .ssafymind-left .progress {
   background-color: white;
   height: 20px;
   width: 92%;
@@ -21,4 +21,20 @@
   100% {
     width: 0%;
   }
+} */
+
+#progress {
+  background-color: white;
+  height: 20px;
+  width: 90%;
+  position: relative;
+  border-radius: 10px;
+  margin-left: 5%;
+}
+#progress-bar {
+  position: absolute;
+  width: 0%;
+  height: 100%;
+  background-color: #cd5069;
+  border-radius: 10px;
 }

@@ -78,7 +78,7 @@
   margin-top: 3.5%;
   margin-left: 1.4%;
   -webkit-user-drag: none;
-  /* animation: blink-effect 0.5s step-end infinite; */
+  animation: blink-effect 0.5s step-end infinite;
 }
 .question-word {
   position: absolute;
@@ -104,18 +104,4 @@
 }
 .painteraser {
   cursor: url("../assets/eraser-tool.png") 0 32, auto;
-}
-
-/* 채팅방 관련 */
-#send-ans {
-  width: 335px;
-  height: 38px;
-  border-radius: 10px;
-  position: fixed;
-  bottom: 26px;
-  right: 30px;
-  border: 3px solid #9eacdd;
-}
-#send-ans:focus {
-  outline: none;
 }

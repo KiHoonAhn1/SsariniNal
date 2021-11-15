@@ -7,8 +7,8 @@
 }
 
 .game-order-modal .show-team-content {
-  width: 700px;
-  height: 340px;
+  width: 36.5%;
+  height: 36.4vh;
   margin-top: 240px;
   margin-left: 28%;
   padding: 50px 70px 20px 70px;
@@ -54,4 +54,8 @@
 }
 #team-num-img {
   margin-right: 14px;
+}
+#ssafymind-before-start-img {
+  width: 53%;
+  margin-top: 3%;
 }

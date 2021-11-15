@@ -7,8 +7,20 @@
   margin-top: -15px;
   margin-left: 1%;
 }
+#send-ans {
+  width: 335px;
+  height: 38px;
+  border-radius: 10px;
+  position: fixed;
+  bottom: 28px;
+  right: 30px;
+  border: 3px solid #9eacdd;
+}
+#send-ans:focus {
+  outline: none;
+}
 #chat-box {
-  margin-top: 20px;
+  margin-top: 10px;
   width: 100%;
   height: 91%;
   overflow: scroll;
@@ -16,8 +28,8 @@
 #chat-box::-webkit-scrollbar {
   display: none;
 }
-#chat-block {
-  background-color: #d7d8d1;
+.chat-block {
+  background-color: #c3bfad;
   text-align: left;
   padding-left: 10px;
   padding-top: 5px;
@@ -26,7 +38,44 @@
   width: 91.8%;
   margin-left: 2.7%;
 }
-.ans-block {
-  background-color: #9eacdd;
+#ans-block {
+  background-color: #cd5069;
   color: white;
+  text-align: left;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+  width: 91.8%;
+  margin-left: 2.7%;
+}
+.ssafymind-right #team-1 {
+  background-color: #e87869;
+}
+.ssafymind-right #team-2 {
+  background-color: #f8c662;
+}
+.ssafymind-right #team-3 {
+  background-color: #eedb6a;
+}
+.ssafymind-right #team-4 {
+  background-color: #c8db7e;
+}
+.ssafymind-right #team-5 {
+  background-color: #74b563;
+}
+.ssafymind-right #team-6 {
+  background-color: #c4d8d3;
+}
+.ssafymind-right #team-7 {
+  background-color: #85aee1;
+}
+.ssafymind-right #team-8 {
+  background-color: #787c96;
+}
+.ssafymind-right #team-9 {
+  background-color: #eebbdd;
+}
+.ssafymind-right #team-10 {
+  background-color: #ae7dca;
 }

@@ -100,6 +100,13 @@
 .ssafymind-left .team-img {
   width: 15.5%;
 }
+#ssazip-group {
+  width: 80%;
+}
+.next-team-ready #end {
+  margin-top: 4.8%;
+  margin-left: 2%;
+}
 
 @media screen and (max-height: 900px) {
   .ssafymind-left .ssafymind-score-line {
