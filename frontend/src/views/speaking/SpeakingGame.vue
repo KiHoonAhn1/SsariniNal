@@ -87,8 +87,7 @@ export default {
   destroyed() {
     this.onDisconnect();
   },
-  watch: {
-  },
+  watch: {},
   computed: {
     ...mapGetters(['getUser', 'getRoomId']),
   },
@@ -158,12 +157,12 @@ export default {
           `/speaking/talk/${this.getRoomId}`,
           {},
           JSON.stringify({
-            sentence: finalTranscript + interimTranscript
+            sentence: finalTranscript + interimTranscript,
           })
         );
         final_span.innerHTML = finalTranscript;
         interim_span.innerHTML = interimTranscript;
-      }
+      };
 
       speech.onerror = function(event) {
         if (event.error.match(/no-speech|audio-capture|not-allowed/)) {
@@ -171,8 +170,8 @@ export default {
         }
       };
 
-      const record = document.querySelector("#record");
-      record.addEventListener("click", () => {
+      const record = document.querySelector('#record');
+      record.addEventListener('click', () => {
         if (this.isRecording) {
           record.src = '/img/mike-off.10e24890.png';
           // record.src = 'http://localhost:3000/img/mike-off.10e24890.png'
@@ -180,7 +179,7 @@ export default {
           //   this.userAnswer.push(finalTranscript);
           // }
           this.stompClient.send(
-            `/speaking/answer/${this.getRoomId}`,
+            `/pub/speaking/answer/${this.getRoomId}`,
             {},
             JSON.stringify({
               name: '안기훈',
@@ -308,7 +307,7 @@ export default {
           })
           .catch((err) => {
             console.log('The following error occurred: ' + err);
-          })
+          });
       }
     },
     /**
@@ -338,7 +337,7 @@ export default {
       this.stompClient.subscribe('/speaking/talk/' + this.getRoomId, this.onTalkingMessageReceived);
       // 입장 시 데이터 수신
       this.stompClient.send(
-        '/speaking/enter',
+        '/pub/speaking/enter',
         {},
         JSON.stringify({
           roomId: this.getRoomId,
@@ -347,12 +346,7 @@ export default {
           teamNo: this.getUser.teamNo,
         })
       );
-      console.log(
-          this.getRoomId,
-          this.getUser.id,
-          this.getUser.name,
-          this.getUser.teamNo,
-      )
+      console.log(this.getRoomId, this.getUser.id, this.getUser.name, this.getUser.teamNo);
     },
     onMessageReceived(payload) {
       if (payload.body === 'exit') {
@@ -385,13 +379,13 @@ export default {
       const doin = document.querySelector('#doin');
       doin.innerText = data.message;
       // doin.innerText = data.message.replace(/ /g,"");
-      console.log(data)
+      console.log(data);
     },
     onTalkingMessageReceived(payload) {
       const data = JSON.parse(payload.body);
       const doin = document.querySelector('#doin');
       doin.innerText = data.sentence;
-      console.log(data.sentence)
+      console.log(data.sentence);
     },
     onError() {},
   },

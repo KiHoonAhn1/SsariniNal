@@ -44,7 +44,7 @@ public class SpeakingController {
     @MessageMapping(value = "/speaking/talk/{roomId}")
     public void talk(@DestinationVariable String roomId, Talking talking) {
         // 중간 결과를 전송
-        template.convertAndSend("/speaking/talk" + roomId, talking);
+        template.convertAndSend("/speaking/talk/" + roomId, talking);
     }
 
     // 4. 결과 문장 전송
@@ -52,7 +52,7 @@ public class SpeakingController {
     public void answer(@DestinationVariable String roomId, SpeakMessage speakMessage) {
         speakMessage = speakingService.answer(roomId, speakMessage);
         // 보내주기
-        template.convertAndSend("/speaking/answer" + roomId, speakMessage);
+        template.convertAndSend("/speaking/answer/" + roomId, speakMessage);
     }
 
     // 5. 플레이어 변경
