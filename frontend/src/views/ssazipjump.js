@@ -1,4 +1,5 @@
 import Header from '@/components/common/Header.vue';
+import SSazipjumpGuideModal from '@/components/ssazipjump/SSazipjumpGuideModal.vue';
 import SSazipjumpStartModal from '@/components/ssazipjump/SSazipjumpStartModal.vue';
 import SSazipjumpRoundModal from '@/components/ssazipjump/SSazipjumpRoundModal.vue';
 import SSazipjumpRankModal from '@/components/ssazipjump/SSazipjumpRankModal.vue';
@@ -12,6 +13,7 @@ export default {
       fTime: 0,
       otime: 0,
       ofTime: 0,
+      guideModalOpen:true, //게임시작시 첫시작 소개모달
       startModalOpen:false, //게임시작시 게임방법 안내 모달
       roundModalOpen:false, //다음 팀 대전표 안내 모달
       rankModalOpen:false,
@@ -52,8 +54,13 @@ export default {
     SSazipjumpStartModal,
     SSazipjumpRoundModal,
     SSazipjumpRankModal,
+    SSazipjumpGuideModal,
   },
   methods: {
+    guideModal(){
+      this.guideModalOpen = false
+      this.startModalOpen = true
+    },
     showRound(){  //round 표시함수
       const round1 = document.querySelector('.round1')
       const round2 = document.querySelector('.round2')
@@ -112,8 +119,11 @@ export default {
     },
     closeStartModal(open) {
       this.startModalOpen = open;
-      this.roundModalOpen = open;
+      this.roundModalOpen = true;
       this.rankModalOpen = open;
+    },
+    closeRoundModal(open) {
+      this.roundModalOpen = open;
     },
     drawSsazipgame(){
       // 싸집이 이미지 선언

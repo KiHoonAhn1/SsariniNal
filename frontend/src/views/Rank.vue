@@ -118,6 +118,9 @@ export default {
       else this.$router.push('/');
     },
   },
+  beforeRouteLeave(){
+    this.$confetti.stop();
+  }
 };
 </script>
 

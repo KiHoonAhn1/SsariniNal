@@ -155,8 +155,8 @@
 /* 게임 후 결과 모달 */
 .ssazip-start-modal .show-rank-modal {
   width: 500px;
-  height: 450px;
-  margin-top: 200px;
+  height: 550px;
+  margin-top: 150px;
   margin-left: 33%;
   padding: 50px 70px 20px 70px;
   border-radius: 40px;
@@ -167,7 +167,7 @@
   background-color: #f3dba3;
   border-radius: 20px;
   width: 110%;
-  height: 300px;
+  height: 390px;
   margin-top: -10%;
   margin-left: -5%;
 }
@@ -221,4 +221,23 @@
 }
 .show-rank-explainbox .round-team-container {
   padding-top: 20px;
+}
+
+/* 가이드 모달 */
+.ssazip-guide-btn {
+  background-color: #cd5069;
+  position: absolute;
+  width: 180px;
+  height: 6vh;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.7rem;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  right: 335px;
+  bottom: 50px;
+  /* margin-top:-150px; */
+  padding-bottom: 4px;
 }

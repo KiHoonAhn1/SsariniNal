@@ -1,7 +1,8 @@
 <template>
   <div>
+    <SSazipjumpGuideModal v-if="guideModalOpen == true" @guideModal="guideModal" />
     <SSazipjumpStartModal v-if="startModalOpen == true" @getCloseModal="closeStartModal" />
-    <SSazipjumpRoundModal v-if="roundModalOpen == true" @getCloseModal="closeStartModal" />
+    <SSazipjumpRoundModal v-if="roundModalOpen == true" @getCloseModal="closeRoundModal" />
     <SSazipjumpRankModal v-if="rankModalOpen == true" @getCloseModal="closeStartModal" />
 		<Header v-bind:gameTitle="'싸집이 점프 게임'"/>
     <button @click="showRound()">dd</button>

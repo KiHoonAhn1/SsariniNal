@@ -21,7 +21,11 @@
 								<img class="rank-team-individual2" src="~@/assets/threetop.png" alt="" />
 								<span class="rank-team-name">1팀</span>
 								<span class="rank-team-score">350점</span>
-
+							</div>
+							<div>
+								<img class="rank-team-individual2" src="~@/assets/threetop.png" alt="" />
+								<span class="rank-team-name">1팀</span>
+								<span class="rank-team-score">350점</span>
 							</div>
 					
 						</div>

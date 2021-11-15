@@ -4,7 +4,7 @@
 			<div class="show-team-content">
 				<div class="modal-body">
 					<div class="show-team-explainbox">
-						<div class="welcome">싸집이 점프게임에 오신 여러분을 환영합니다!</div>
+						<div class="welcome">게임 조작법은 다음과 같습니다!</div>
 						<span class="guide">스페이스바를 눌러 장애물을 피하세요.</span>
 						<div>
 							<img class="ssazip-guide box bounce-7" src="~@/assets/ssazipguide.png" alt="" />
