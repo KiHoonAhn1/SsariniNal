@@ -1,6 +1,8 @@
 import Header from '@/components/common/Header.vue';
+import SSazipjumpStartModal from '@/components/ssazipjump/SSazipjumpStartModal.vue';
+import SSazipjumpRoundModal from '@/components/ssazipjump/SSazipjumpRoundModal.vue';
+import SSazipjumpRankModal from '@/components/ssazipjump/SSazipjumpRankModal.vue';
 import './../css/ssazip-jump.css'
-import './ssazipjump.js'
 
 export default {
   name: "SSazipJump",
@@ -10,6 +12,15 @@ export default {
       fTime: 0,
       otime: 0,
       ofTime: 0,
+      startModalOpen:false, //게임시작시 게임방법 안내 모달
+      roundModalOpen:false, //다음 팀 대전표 안내 모달
+      rankModalOpen:false,
+      lose1: false, //1팀이 지면
+      // lose2: true,
+      win1: true, //1팀이 이기면
+      // win2: false,
+      showResult:false,
+      roundCnt: 0,
       users:[
         {userId: '이장섭', jump:0},
         {userId: '권희은', jump:0},
@@ -38,8 +49,72 @@ export default {
   },
   components: {
     Header,
+    SSazipjumpStartModal,
+    SSazipjumpRoundModal,
+    SSazipjumpRankModal,
   },
   methods: {
+    showRound(){  //round 표시함수
+      const round1 = document.querySelector('.round1')
+      const round2 = document.querySelector('.round2')
+      round1.innerText='ROUND1'
+      round2.innerText='ROUND1'
+      if (round1.style.opacity == 0) {
+        round1.style.opacity = 1
+        round2.style.opacity = 1
+        // this.roundCnt = 3
+        
+        setTimeout(function(){
+          round1.style.opacity = 0
+          round2.style.opacity = 0
+        },1500); // ROUND 뜨고 사라지는 시간
+        setTimeout(function(){
+          round1.innerText = 3
+          round2.innerText = 3
+          round1.style.opacity = 1
+          round2.style.opacity = 1
+        },2000);
+        setTimeout(function(){
+          round1.style.opacity = 0
+          round2.style.opacity = 0
+        },2500); // 3 뜨고 사라지는 시간
+        setTimeout(function(){
+          round1.innerText = 2
+          round2.innerText = 2
+          round1.style.opacity = 1
+          round2.style.opacity = 1
+        },3000);
+        setTimeout(function(){
+          round1.style.opacity = 0
+          round2.style.opacity = 0
+        },3500); // 2 뜨고 사라지는 시간
+        setTimeout(function(){
+          round1.innerText = 1
+          round2.innerText = 1
+          round1.style.opacity = 1
+          round2.style.opacity = 1
+        },4000);
+        setTimeout(function(){
+          round1.style.opacity = 0
+          round2.style.opacity = 0
+        },4500); // 1 뜨고 사라지는 시간
+        setTimeout(function(){
+          round1.innerText = 'START'
+          round2.innerText = 'START'
+          round1.style.opacity = 1
+          round2.style.opacity = 1
+        },5000);
+        setTimeout(function(){
+          round1.style.opacity = 0
+          round2.style.opacity = 0
+        },5500); // 시작 뜨고 사라지는 시간
+      }
+    },
+    closeStartModal(open) {
+      this.startModalOpen = open;
+      this.roundModalOpen = open;
+      this.rankModalOpen = open;
+    },
     drawSsazipgame(){
       // 싸집이 이미지 선언
       const ssazip = document.getElementById("ssazip")
@@ -350,9 +425,10 @@ export default {
           if (xDiff < -10 && yDiff < -10){
             cancelAnimationFrame(animation) //게임중단
             console.log(xDiff)
-            ssazipbg.style.animation = 'paused';
+            ssazipbg.style.animationPlayState = 'running';
             ssazipbg2.style.animation = 'paused';
-            // this.status = false
+          
+            // this.showResult = true //결과 띄워주기
           }
         }
       }
@@ -388,5 +464,7 @@ export default {
         }
       }
     })
+
+    
   }
 }

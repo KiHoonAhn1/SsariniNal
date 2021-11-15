@@ -75,6 +75,98 @@
   100% {background-position:-1200px center;}
 }
 
+/* 게임결과표시 */
+.lose1{
+  position: absolute;
+  top: 100px;
+  left: 350px;
+  font-size: 280px;
+  color: red;
+  font-weight: bold;
+}
+.win1{
+  position: absolute;
+  top: 100px;
+  left: 450px;
+  font-size: 280px;
+  color: rgb(38, 0, 255);
+  font-weight: bold;
+}
+.lose2{
+  position: absolute;
+  top: 470px;
+  left: 350px;
+  font-size: 280px;
+  color: red;
+  font-weight: bold;
+}
+.win2{
+  position: absolute;
+  top: 470px;
+  left: 450px;
+  font-size: 280px;
+  color: rgb(38, 0, 255);
+  font-weight: bold;
+}
+
+.loser1 {
+  position: absolute;
+  top: 400px;
+  left: 130px;
+  width: 1200px;
+  font-size: 40px;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+.loser2 {
+  position: absolute;
+  top: 775px;
+  left: 130px;
+  width: 1200px;
+  font-size: 40px;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+.wrap {text-align: center; margin-top: 20px;}
+.chatbox {animation: motion 0.3s linear 0s infinite alternate; margin-top: 0;}
+        
+@keyframes motion {
+	0% {margin-top: 0px;}
+	100% {margin-top: 10px;}
+}
+
+/* Round 표시 */
+.round1{
+  position: absolute;
+  top: 130px;
+  left: 130px;
+  width:1200px;
+  font-size: 200px;
+  color: red;
+  font-weight: bold;
+  opacity: 0;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+.round2{
+  position: absolute;
+  top: 470px;
+  left: 130px;
+  width:1200px;
+  font-size: 200px;
+  color: red;
+  font-weight: bold;
+  opacity: 0;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
 
 
 
