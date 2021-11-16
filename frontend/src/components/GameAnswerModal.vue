@@ -26,13 +26,13 @@
 						<span class="team">팀</span>
 						<span class="score">+100점</span>
 						<button class="start-game-btn" @click="startModal" v-if="host == this.getUser.id">
-							다음
+							다음{{this.teamOrder.length}}
 						</button>
-						<div v-if="teamOrder.length == 1">
-							<button class="start-game-btn" @click="startModal" v-if="host == this.getUser.id">
+						<!-- <div v-if="teamOrder.length == 1">
+							<button class="start-game-btn" @click="goBackModal" v-if="host == this.getUser.id">
 								결과
 							</button>
-						</div>
+						</div> -->
           </div>
         </div>
       </div>
@@ -64,6 +64,10 @@ export default {
       this.$emit('sendGameStartTrigger');
       this.$emit('getProgressBar', this.getProgressBar);
     },
+		goBackModal(){
+			this.$emit('getCloseAnsModal', this.answermodal);
+			this.$emit('onMesseageReceived');
+		},
 		quizzAnswer(){
 			console.log('퀴즈가 나오는가')
 			console.log(this.teamOrder)

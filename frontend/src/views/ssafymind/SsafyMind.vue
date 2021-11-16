@@ -7,6 +7,7 @@
       v-if="rankmodal == true"
       @getCloseRankModal="getCloseRankModal"
       v-bind:host="room.host"
+      v-on:sendGoWaitingRoomTrigger="sendGoWaitingRoomTrigger"
     />
     <GameOrderModal
       v-if="ordermodal == true"
@@ -26,6 +27,7 @@
       v-bind:quizzes="room.quizzes"
       v-bind:chat="room.chat"
       v-on:sendGameStartTrigger="sendGameStartTrigger"
+      v-on:onMesseageReceived="onMesseageReceived"
     />
     <!-- <div class="room-title">
       <span id="game-title">싸피마인드</span>
@@ -238,7 +240,7 @@ export default {
       answermodal: false,
       canDraw: true, // 내 차례일때만 그림 그리기
       // explainmodal: false,
-      rankmodal: true,
+      rankmodal: false, // 대기실로 돌아가기 위한 랭킹 모달
       progressbarMsg: 'start',
     };
   },
@@ -477,6 +479,7 @@ export default {
       ctx.lineWidth = size;
     },
     handlePaintModeClick: function() {
+      this.rankmodal = true;
       const canvas = document.getElementById('jsCanvas');
       if (this.filling === false) {
         // canvas.classList.remove(`painteraser`);
@@ -720,6 +723,7 @@ export default {
         }
 
         // 게임 종료 모달
+        // this.rankmodal = true;
       }
       console.log('포인트를 알고싶다고');
       console.log(data);
@@ -800,7 +804,9 @@ export default {
       }
 
       if (data.fillFlag) {
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        if(data.beginPath == false){
+          this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
       }
     },
     /**
@@ -917,6 +923,11 @@ export default {
       const scrollbox = document.getElementById('chat-box');
       scrollbox.scrollTop = scrollbox.scrollHeight;
     },
+    // 대기실로 돌아가는 트리거
+    // sendGoWaitingRoomTrigger(){
+    //   this.onMesseageReceived(payload);
+    //   console.log(payload)
+    // },
     test() {
       this.stompClient.send(
         '/pub/ssafymind/enter',

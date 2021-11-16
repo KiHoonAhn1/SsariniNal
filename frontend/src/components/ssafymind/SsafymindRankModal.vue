@@ -50,7 +50,10 @@ export default {
 	methods: {
 		closeModal(){
 			this.$emit("getCloseRankModal", this.rankmodal);
-      // this.$emit('sendGoWaitingRoomTrigger');
+      this.$emit('onMesseageReceived');
+      // console.log('onMesseageReceived')
+      console.log('모달 왜 안닫히노')
+      this.$emit('sendGoWaitingRoomTrigger');
 		}
 	},
 }
