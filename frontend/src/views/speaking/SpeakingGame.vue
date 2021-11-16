@@ -258,7 +258,7 @@ export default {
       );
       // 입장 시 데이터 수신
       this.stompClient.send(
-        '/speaking/enter',
+        '/pub/speaking/enter',
         {},
         JSON.stringify({
           roomId: this.getRoomId,
@@ -298,9 +298,9 @@ export default {
       const data = JSON.parse(payload.body);
       const doin = document.querySelector('#doin');
       doin.innerText = data.message;
-      console.log(data)
+      console.log(data);
       if (data.correct) {
-        console.log(data)
+        console.log(data);
         this.stompClient.send('/pub/speaking/change/player', {}, this.getRoomId);
       }
     },
@@ -314,11 +314,11 @@ export default {
       }
     },
     onChangePlayerMessageReceived(payload) {
-      console.log(payload)
-      console.log(payload)
-      console.log(payload)
-      console.log(payload)
-      console.log(payload)
+      console.log(payload);
+      console.log(payload);
+      console.log(payload);
+      console.log(payload);
+      console.log(payload);
       const data = JSON.parse(payload.body);
       console.log(data);
       console.log(data);
