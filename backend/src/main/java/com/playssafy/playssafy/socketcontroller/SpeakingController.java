@@ -63,9 +63,9 @@ public class SpeakingController {
     }
 
     // 6. 다음 문제
-    @MessageMapping(value = "/speaking/next/problem")
-    public void nextProblem(String roomId) {
-        Speaking speaking = speakingService.nextProblem(roomId);
+    @MessageMapping(value = "/speaking/next/team")
+    public void nextTeam(String roomId) {
+        Speaking speaking = speakingService.nextTeam(roomId);
         template.convertAndSend("/speaking/" + roomId, speaking);
     }
 }

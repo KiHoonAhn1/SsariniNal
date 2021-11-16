@@ -141,8 +141,8 @@ public class SpeakingService {
         return curPlayer;
     }
 
-    // 5. 다음 문제로 이동
-    public synchronized Speaking nextProblem(String roomId) {
+    // 5. 다음 팀으로 이동
+    public synchronized Speaking nextTeam(String roomId) {
         Speaking speaking = speakGameRepository.findById(roomId).get();
         int lastIndex = speaking.getQuizzes().size() - 1;
         // 마지막 문제를 제거하고
