@@ -12,6 +12,7 @@ import Chat from '@/views/temp/ChatRoom.vue';
 import SSazipJump from '@/views/SSazipJump.vue';
 import SSazipJumpTemp from '@/views/ssazipjump/SSazipJumpTemp.vue';
 import SSazipJumpSeop from '@/views/ssazipjump/SSazipJumpSeop.vue';
+import SSazipJumpHee from '@/views/ssazipjump/SSazipJumpHee.vue';
 import SsafyMind from '@/views/ssafymind/SsafyMind.vue';
 import HeeSeop from '@/views/HeeSeop.vue';
 
@@ -92,6 +93,11 @@ const routes = [
     path: '/ssazipjumpseop/:roomId',
     name: 'SSazipJumpSeop',
     component: SSazipJumpSeop,
+  },
+  {
+    path: '/ssazipjumphee/:roomId',
+    name: 'SSazipJumpHee',
+    component: SSazipJumpHee,
   },
   {
     path: '/heeseop',

@@ -30,7 +30,8 @@
 					
 						</div>
 					</div>
-					<button class="ssazip-rank-game-btn" @click="startModal">대기실로</button>
+					<button v-if="userId==hostId" class="ssazip-rank-game-btn" @click="startModal">대기실로</button>
+					<!-- <button v-if="userId!=hostId" class="ssazip-rank-game-btn">곧 대기실로 이동</button> -->
 				</div>
 			</div>
 		</div>
@@ -41,6 +42,8 @@
 import '@/components/css/ssazipjump/ssazipjump-modal.css'
 export default {
 	name: 'SSazipjumpRankModal',
+	props: ['userId', 'hostId'],
+
 	data: function(){
     return{
 			open : false,

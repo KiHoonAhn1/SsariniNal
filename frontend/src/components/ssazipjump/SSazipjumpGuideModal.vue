@@ -7,7 +7,7 @@
 						<div class="welcome">
 							<img style="width:700px; margin-top:-20px;" src="~@/assets/ssazipjump-guide.png" alt="" />
 						</div>
-						<button class="ssazip-guide-btn" @click="startModal">다음</button>
+						<button v-if="userId==hostId" class="ssazip-guide-btn" @click="startModal">다음</button>
 					</div>
 				</div>
 			</div>
@@ -18,6 +18,7 @@
 import '@/components/css/ssazipjump/ssazipjump-modal.css'
 export default {
 	name: 'SSazipjumpGuideModal',
+	props: ['userId', 'hostId'],
 	data: function(){
     return{
 			open : false,

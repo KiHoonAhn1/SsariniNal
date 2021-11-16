@@ -139,7 +139,7 @@
 /* Round 표시 */
 .round1{
   position: absolute;
-  top: 130px;
+  top: 160px;
   left: 130px;
   width:1200px;
   font-size: 200px;
@@ -154,7 +154,7 @@
 }
 .round2{
   position: absolute;
-  top: 470px;
+  top: 530px;
   left: 130px;
   width:1200px;
   font-size: 200px;
@@ -212,8 +212,57 @@
   font-size: 24px;
   font-weight: bold;
 }
+.ssazip-round-item-title{
+  color:#FFFFFF;
+  margin-top: 1vh;
+  font-size: 24px;
+  font-weight: bold;
+}
+.ssazip-rounds-container{
+  margin-top: 20px;
+}
+.current-round-team-individual{
+  width: 65px;
+}
+.ssazip-vs{
+  position: relative;
+  top: -20px; 
+  right: 0px;
+  font-size: 50px;
+  display: inline;
+  font-weight: bold;
+  color:white;
+}
+.ssazip-league{
+  position: relative;
+  top: -10px; 
+  right: 0px;
+  font-size: 30px;
+  /* display: inline-block; */
+  font-weight: bold;
+  color:#92817C;
+}
 
-
+/* 최하단 라운드별 점수 */
+.ssazip-score-container{
+  margin-top: 10px;
+}
+.team-round-score{
+  font-size: 70px;
+  font-weight: bold;
+  color: #CD5069;
+}
+.team-round-team{
+  font-size: 40px;
+}
+.ssazip-round-score-teams{
+  position: relative;
+  top: 0px; 
+  right: 0px;
+  font-size: 20px;
+  font-weight: bold;
+  color:#FFFFFF;
+}
 
 
 .temp {

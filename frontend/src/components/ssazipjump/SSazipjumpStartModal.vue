@@ -12,7 +12,8 @@
 							<img class="ssazip-spacebar" src="~@/assets/spacebar.png" alt="" />
 							<img class="ssazip-spacebar2 blinking" src="~@/assets/spacebar.png" alt="" />
 						</div>
-						<button class="start-game-btn" @click="startModal">시작</button>
+						<button v-if="userId==hostId" class="start-game-btn" @click="startModal">시작</button>
+						<button v-if="userId!=hostId" class="start-game-btn">준비!!</button>
 					</div>
 				</div>
 			</div>
@@ -23,6 +24,7 @@
 import '@/components/css/ssazipjump/ssazipjump-modal.css'
 export default {
 	name: 'SSazipjumpStartModal',
+	props: ['userId', 'hostId'],
 	data: function(){
     return{
 			open : false,
