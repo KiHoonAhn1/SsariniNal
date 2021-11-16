@@ -1,0 +1,71 @@
+/* 게임 후 결과 모달 */
+.ssafymind-rank-modal .show-rank-modal {
+  width: 500px;
+  height: 450px;
+  margin-top: 200px;
+  margin-left: 32.5%;
+  padding: 50px 70px 20px 70px;
+  border-radius: 40px;
+  background-color: #9eacdd;
+  position: absolute;
+  z-index: 5;
+}
+.ssafymind-rank-modal .show-rank-explainbox {
+  background-color: #f3dba3;
+  border-radius: 20px;
+  width: 110%;
+  height: 300px;
+  margin-top: -10%;
+  margin-left: -5%;
+}
+.ssafymind-rank-modal .congratulation {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-top: -3%;
+  /* padding-top: -10%; */
+}
+.ssafymind-rank-modal .ssazip-rank-game-btn {
+  background-color: #cd5069;
+  /* position: absolute; */
+  width: 180px;
+  height: 6vh;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.7rem;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  /* right: 335px;
+    bottom: 100px; */
+  margin-top: 20px;
+  padding-bottom: 4px;
+}
+.ssafymind-rank-modal .rank-team-individual {
+  width: 70px;
+  /* height:100px; */
+  margin-right: 90px;
+}
+.ssafymind-rank-modal .rank-team-individual2 {
+  width: 60px;
+  /* height:100px; */
+  margin-right: 90px;
+  margin-left: 10px;
+}
+.ssafymind-rank-modal .rank-team-name {
+  position: relative;
+  font-weight: bold;
+  font-size: 40px;
+  top: -20px;
+}
+.ssafymind-rank-modal .rank-team-score {
+  position: relative;
+  font-weight: bold;
+  font-size: 40px;
+  top: -20px;
+  margin-left: 60px;
+  color: #cd5069;
+}
+.ssafymind-rank-modal .show-rank-explainbox .round-team-container {
+  padding-top: 20px;
+}
