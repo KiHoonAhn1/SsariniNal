@@ -112,9 +112,18 @@ public class SpeakingService {
         speakMessage.setCorrect(false);
 
         int lastIndex = speaking.getQuizzes().size() - 1;
+<<<<<<< HEAD
+        speakMessage.setMessage(speaking.getQuizzes().get(lastIndex).getAnswer());
+
+        System.out.println("==================");
+            System.out.println(speaking.getQuizzes().get(lastIndex).getAnswer());
+        System.out.println(speakMessage.getMessage().replaceAll(" ",""));
+=======
+>>>>>>> a26706f07aa27e94679496b559b1d943bf260c57
         if(speaking.getQuizzes().get(lastIndex).getAnswer().equals(speakMessage.getMessage().replaceAll(" ",""))) {
             System.out.println("here");
             // 정답으로 상태를 바꿔주고
+            System.out.println("뚜둥");
             speakMessage.setCorrect(true);
             speakGameRepository.save(speaking);
             return speakMessage;

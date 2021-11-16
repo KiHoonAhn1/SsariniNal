@@ -436,6 +436,11 @@ export default {
             //     console.log('게임이 선택되지 않았습니다.');
             //     return;
             // }
+            //방장만 시작 가능
+            if(this.getUser.name != this.room.host){
+                console.log("방장이 아닙니다")
+                return;
+            }
             if (!this.noParticipantChecker()) {
                 console.log('참여 팀이 없습니다.');
                 return;

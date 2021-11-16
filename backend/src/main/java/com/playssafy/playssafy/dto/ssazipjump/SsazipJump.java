@@ -1,6 +1,7 @@
 package com.playssafy.playssafy.dto.ssazipjump;
 
 import com.playssafy.playssafy.dto.ssafymind.Team;
+import com.playssafy.playssafy.dto.waitroom.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,13 +32,17 @@ public class SsazipJump {
     private String host; // 방장 정보
     private int gameScore1;// 1팀의 선승 값
     private int gameScore2;// 2팀의 선승 값
-    private List<Team> teamsBase; // 팀원 구성 초기 정보, 입장 시 정보 Participant 형태
+    private List<Team> teamsMember; // 팀별 팀원 구성 초기 정보, idx=0 은 공란, 멤버스는 participants
     private List<Integer> teamOrder; // 팀 진행 순서 => 봇은 teamNo =-2
     private List<Integer> teamOrderNext; // 현 라운드에서 승리하여 다음라운드로 올라간 팀
     private List<Integer> finalScore; // 최종 점수(배열 형태) {1등 팀 번호, 2등 , 3등, 3등}
     private int remainRound;//현재 라운드 계산 값
     private int teamIdx1; // 현재 진행 중 팀 1의 팀 인덱스
     private int teamIdx2;
+    private boolean masterCreatedFlag;//마스터의 선 입장 확인용
+    // 팀스맴버는 1팀부터 10팀까지 파티스펜트리스트 정 배열
+    // 팀 오더는 이번 라운드 진행될 팀 번호 (ex, 4 2 1 3)=> 4강이며 4,2이 배틀, 1,3이 배틀
+    // 팀 인덱스는 팀 오더를 가리키는 값, 인덱스
 
     //from JumpInfo class
     private boolean[] jumpArr1; // 점프값 어레이
@@ -53,16 +58,17 @@ public class SsazipJump {
     //참가 여부 어레이
     private boolean[] beUserPresent1;
     private boolean[] beUserPresent2;//참가 여부 어레이
-    private boolean bGameStopFlag;//충돌 시 게임 중단 플레그
+    private boolean beGameStopFlag;//충돌 시 게임 중단 플레그
+    private String lastEntering;//최근 입장자
 
 
     public SsazipJump() {
         // 최대 10개 팀에 대응하는 팀 정보를 저장할 리스트 선언해두기
         int teamSize = 11;
-        teamsBase = new ArrayList<>();
+        teamsMember = new ArrayList<>();
         for (int i = 0; i < teamSize; i++) {
-            teamsBase.add(new Team());
-            teamsBase.get(i).setTeamNo(i);
+            teamsMember.add(new Team());
+            teamsMember.get(i).setTeamNo(i);
         }
         // 동적 리스트 초기화
         teamOrder = new ArrayList<>();

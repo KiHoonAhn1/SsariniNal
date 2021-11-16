@@ -138,8 +138,8 @@ export default {
                 { userId: '박용미', jump: 0 },
             ],
             //참여 중 여부 확인 어레이
-            userPresent1: [false, false, false, false, false],
-            userPresent2: [false, false, false, false, false],
+            userPresent1: [false, false, false, false, false, false],
+            userPresent2: [false, false, false, false, false, false],
             dinos1: [],
             dinos2: [],
             userId: '안기훈',
@@ -160,9 +160,10 @@ export default {
             //임의값
             enteredFlag: false, //입장(전체와 연결) 확인 플레그
             // getRoomId: 123,//dump test
-            teamIdx: 2,
+            teamIdx: 3,
             reloadFlag: false,
             masterKeyFlag: false, //로그인 여부, 방장 체크용
+            masterCreatedFlag: false, //마스터가 선 입장 여부 체크
             xArr: [], //마스터 장애물 위치
             xArrType: [], //마스터 장애물 타입
             receivedArr: [], //수신된 장애물 위치
@@ -183,9 +184,11 @@ export default {
             nowRoundNum: 1, // 현재 라운드 회차
             gameScore1: 0, // 현 라운드에서 1팀이 이긴 값
             gameScore2: 0, // ''
-            loser:'',//걸린이 이름 : 희은이가 지음
+            loser: '', //걸린이 이름 : 희은이가 지음
+            isRegistryed: false, //db 등록여부 파악
 
-            guideModalOpen: true, //게임시작시 첫시작 소개모달
+            // guideModalOpen: true, //게임시작시 첫시작 소개모달
+            guideModalOpen: false,
             startModalOpen: false, //게임시작시 게임방법 안내 모달
             roundModalOpen: false, //다음 팀 대전표 안내 모달
             rankModalOpen: false, //종료 결산 모달
@@ -264,7 +267,6 @@ export default {
                         dino.y = 200;
                     }
                     this.dinos1.push(dino); // 팀원수 확인해서 속성넣은 객체리스트로 만들어주기
-                    
                 }
             });
             this.users2.forEach((user, i) => {
@@ -536,6 +538,7 @@ export default {
                 }
             };
         },
+
         /////////////////////////////////// method ///////////////////////////////
         /////////////////////////////////// method ///////////////////////////////
         /////////////////////////////////// method ///////////////////////////////
@@ -544,24 +547,93 @@ export default {
         setUsers() {
             console.log('플레이어 세팅');
 
-            let teamIdx1 = this.room.teamIdx1;
-            let teamIdx2 = this.room.teamIdx2;
-            console.log(teamIdx1 + ' ' + teamIdx2);
-            if (teamIdx1 != -2) {
-                for (let i = 0; i < this.room.teamsBase[teamIdx1].members.length; i++) {
+            console.log(this.room.teamIdx1 + ' ' + this.room.teamIdx2);
+
+            //배틀 할 팀
+            let teamNum1 = this.room.teamOrder[this.room.teamIdx1];
+            let teamNum2 = this.room.teamOrder[this.room.teamIdx2];
+
+            // let teamIdx1 = this.room.teamIdx1;
+            // let teamIdx2 = this.room.teamIdx2;
+            this.users1 = [];
+            this.users2 = [];
+            console.log(teamNum1 + ' ' + teamNum2);
+            if (teamNum1 != -2) {
+                console.log('1팀 수 ' + this.room.teamsMember[teamNum1].members.length);
+
+                for (let i = 0; i < this.room.teamsMember[teamNum1].members.length; i++) {
                     console.log(i + '번 플레이어');
-                    console.log(this.room.teamsBase[teamIdx1].members[i].participantName);
-                    let mem = { userId: this.room.teamsBase[teamIdx1].members[i].participantName, jump: false };
+                    console.log(this.room.teamsMember[teamNum1].members[i].participantName);
+                    let mem = { userId: this.room.teamsMember[teamNum1].members[i].participantName, jump: false };
                     this.users1.push(mem);
                 }
             }
-            if (teamIdx2 != -2) {
-                for (let i = 0; i < this.room.teamsBase[teamIdx2].members.length; i++) {
-                    let mem = { userId: this.room.teamsBase[teamIdx2].members[i].participantName, jump: false };
+            if (teamNum2 != -2) {
+                console.log('2팀 수 ' + this.room.teamsMember[teamNum2].members.length);
+                for (let i = 0; i < this.room.teamsMember[teamNum2].members.length; i++) {
+                    console.log(i + '번 플레이어');
+                    console.log(this.room.teamsMember[teamNum2].members[i].participantName);
+
+                    let mem = { userId: this.room.teamsMember[teamNum2].members[i].participantName, jump: false };
                     this.users2.push(mem);
                 }
             }
-            this.reqState();
+            // this.broadcastToUser();
+
+            //
+            // //마스터가 아니라면  플레이어 여부 확인과 등록 필요
+            if (!this.masterKeyFlag) {
+                this.isPlayer();
+            } else {
+                this.drawSsazip();
+            }
+        },
+        isPlayer() {
+            // this.userPresent1 = info.beUserPresent1;
+            // this.userPresent2 = info.beUserPresent2;
+            //플레이어 여부 확인
+            for (let i = 0; i < this.users1.length; i++) {
+                if (this.users1[i].userId == this.getUser.name) {
+                    if (this.userPresent1[i]) {
+                        //이미 등록 되어있다면
+                        this.drawSsazip();
+                    }
+                    this.userPresent1[i] = true; //참가 확인 어레이, 플레이어 값
+                    this.teamIdx = 1; //팀 선정
+                    // 유저 개인 메세지
+                    let idx = 1;
+                    for (let i = 0; i < this.userPresent1.length; i++) {
+                        if (this.userPresent1[i]) idx++;
+                    }
+                    console.log('1팀의 ' + idx + '번째 유저입니다');
+                    this.playerReg();
+                }
+            }
+            if (this.teamIdx != 1) {
+                for (let i = 0; i < this.users2.length; i++) {
+                    if (this.users2[i].userId == this.getUser.name) {
+                        if (this.userPresent2[i]) {
+                            //이미 등록 되어있다면
+                            this.drawSsazip();
+                        }
+                        this.userPresent2[i] = true; //참가 확인 어레이, 플레이어 값
+                        this.teamIdx = 2; //팀 선정
+                        // 유저 개인 메세지
+                        let idx = 1;
+                        for (let i = 0; i < this.userPresent1.length; i++) {
+                            if (this.userPresent2[i]) idx++;
+                        }
+                        console.log('1팀의 ' + idx + '번째 유저입니다');
+                        this.playerReg();
+                    }
+                }
+            }
+        },
+        unLoadEvent: function(event) {
+            if (this.canLeaveSite) return;
+
+            event.preventDefault();
+            event.returnValue = '';
         },
         ////////////////////// modal method //////////////////////////
         ////////////////////// modal method //////////////////////////
@@ -646,7 +718,7 @@ export default {
         ////////////////////////////////////Socket 요청들/////////////////////////////////////////////////
         ////////////////////////////////////Socket 요청들/////////////////////////////////////////////////
         ////////////////////////////////////Socket 요청들/////////////////////////////////////////////////
-        //1.게임 방 입장 : 정보 구독 및 유저 정보 전송
+        //0.게임 방 입장 : 정보 구독 및 유저 정보 전송
         onConnected() {
             //0. 초기 정보 요청
             console.log('==============this room code is ' + this.getRoomId);
@@ -654,34 +726,149 @@ export default {
             // 구독
             this.stompClient.subscribe('/game/jumpgame/' + this.getRoomId, this.onMessageReceived);
 
+            // db 정보 요청 (master act)
+            if (this.masterKeyFlag) {
+                this.stompClient.send(
+                    '/pub/game/jump/enter/reqInfoRoomNGame',
+                    {},
+                    JSON.stringify({
+                        roomId: this.getRoomId,
+                        type: 0, //정보요청 타입
+                    })
+                );
+            }
+            // 11.db 등록 요청 (user act)
+            else {
+                this.stompClient.send(
+                    '/pub/game/jump/enter/reg/user',
+                    {},
+                    JSON.stringify({
+                        roomId: this.getRoomId,
+                        participantId: this.getUser.id,
+                        participantName: this.getUser.name,
+                        beUserPresent1: this.userPresent1,
+                        beUserPresent2: this.userPresent2,
+                        teamNo: this.getUser.teamNo,
+                        type: 11, //정보요청 타입
+                    })
+                );
+            }
             //마스터 새로고침시, 입장 시 플레이어도 새로고침
             if (this.masterKeyFlag) {
                 //마스터가 생성시 나머지 새로고침 요청
                 this.reloadingPlay();
             }
+            //로그인 상태라면
+            // this.masterKeyFlag = this.getIsLogin;
 
-            console.log('=========conn start');
-            //방과 게임에 대한 정보 요청
+            // // 마스터의 방과 게임에 대한 정보 요청
+            // ㅊ
+            //     console.log('=========conn start');
+
+            //     this.stompClient.send(
+            //         '/pub/game/jump/enter/reqInfoRoomNGame',
+            //         {},
+            //         JSON.stringify({
+            //             roomId: this.getRoomId,
+            //             participantId: this.getUser.id,
+            //             participantName: this.getUser.name,
+            //             teamNo: this.getUser.teamNo,
+            //             type: 0, //정보요청 타입
+            //         })
+            //     );
+            //     console.log('onconnected');
+            // } else {
+            //     //게임 생성 여부 파악
+            //     this.stompClient.send(
+            //         '/pub/game/jump/enter/registry',
+            //         {},
+            //         JSON.stringify({
+            //             roomId: this.getRoomId,
+            //             participantId: this.getUser.id,
+            //             participantName: this.getUser.name,
+            //             teamNo: this.getUser.teamNo,
+            //             lastEntering: this.getUser.name,
+            //             type: 11, //정보요청 타입
+            //         })
+            //     );
+            // }
+        },
+        //12. 플레이어로 등록 및 송출
+        playerReg() {
             this.stompClient.send(
-                '/pub/game/jump/enter/reqInfoRoomNGame',
+                '/pub/game/jump/enter/play',
                 {},
                 JSON.stringify({
                     roomId: this.getRoomId,
                     participantId: this.getUser.id,
                     participantName: this.getUser.name,
+                    beUserPresent1: this.userPresent1,
+                    beUserPresent2: this.userPresent2,
                     teamNo: this.getUser.teamNo,
-                    type: 0, //정보요청 타입
+                    type: 12, //정보요청 타입
                 })
             );
-            console.log('onconnected');
         },
-        //1.입장 전//유저들의 장애물과 유저 상태 정보 요청
-        reqState() {
+
+        //1. 게임 방 퇴장 소켓 연결 해제 및 게임 방 유저 정보 삭제
+        onDisconnect() {
             this.stompClient.send(
-                '/pub/game/jump/enter/reqToMaster',
+                '/pub/jump/exit',
                 {},
                 JSON.stringify({
                     roomId: this.getRoomId,
+                    participantId: this.getUser.id,
+                    participantName: this.getUser.name,
+                })
+            );
+
+            if (this.userPlayIdx != -1) {
+                if (this.teamIdx == 1) {
+                    for (let i = 0; i < this.users1.length; i++) {
+                        if (this.users1[i].userId == this.getUser.name) {
+                            this.userPresent1[i] = false; //참가 확인 어레이, 플레이어 값
+                            this.playerReg();
+                        }
+                    }
+                }
+                if (this.teamIdx == 2) {
+                    for (let i = 0; i < this.users2.length; i++) {
+                        if (this.users2[i].userId == this.getUser.name) {
+                            this.userPresent2[i] = false; //참가 확인 어레이, 플레이어 값
+                            this.playerReg();
+                        }
+                    }
+                }
+            }
+            this.stompClient.disconnect();
+            this.$router.push('/room/' + this.getRoomId);
+        },
+        // //1.입장 전//유저들의 장애물과 유저 상태 정보 요청
+        // reqState() {
+        //     this.stompClient.send(
+        //         '/pub/game/jump/enter/reqToMaster',
+        //         {},
+        //         JSON.stringify({
+        //             roomId: this.getRoomId,
+        //             type: 1, //정보요청 타입
+        //         })
+        //     );
+        // },
+
+        //1. 방 세팅, 장애물 생성, 새 유저 입장, 정지 시 유저에게 송출
+        broadcastToUser() {
+            this.stompClient.send(
+                '/pub/game/jump/broc/base',
+                {},
+                JSON.stringify({
+                    roomId: this.getRoomId,
+                    beUserPresent1: this.userPresent1,
+                    beUserPresent2: this.userPresent2,
+                    obstacleflag: this.drawObFlag,
+                    xbArr: this.xArr,
+                    xbArrType: this.xArrType,
+                    beGameStopFlag: this.gameStopFlag,
+
                     type: 1, //정보요청 타입
                 })
             );
@@ -713,6 +900,7 @@ export default {
                     beUserPresent1: this.userPresent1,
                     beUserPresent2: this.userPresent2,
                     type: 5,
+                    lastEntering: this.getUser.name,
                 })
             );
         },
@@ -812,6 +1000,26 @@ export default {
             this.gameStopFlag = false;
         },
 
+        //10. 방장 퇴장 게임 방 퇴장 소켓 연결 해제 및 게임 방 유저 정보 삭제
+        onDisconnectByMaster() {
+            this.stompClient.send(
+                '/pub/ssafymind/exit',
+                {},
+                JSON.stringify({
+                    roomId: this.getRoomId,
+                    participantId: this.getUser.id,
+                    participantName: this.getUser.name,
+                    type: 10,
+                })
+            );
+            this.stompClient.disconnect();
+            this.$router.push('/room/' + this.getRoomId);
+        },
+
+        ////////////////////// 메세지 수신 ///////////////////
+        ////////////////////// 메세지 수신 ///////////////////
+        ////////////////////// 메세지 수신 ///////////////////
+
         ////////////////////// 메세지 수신 ///////////////////
         ////////////////////// 메세지 수신 ///////////////////
         ////////////////////// 메세지 수신 ///////////////////
@@ -819,68 +1027,141 @@ export default {
             let info = JSON.parse(payload.body);
             console.log('======got mes=========');
 
-            //0. 방, 게임 정보 수신
-            if (info.type == 0) {
-                console.log('======got mes 방, 게임 정보 수신=========');
+            //0. 마스터의 정보 수신 (only master)
+            if (info.type == 0 && info.host == this.getUser.name) {
+                console.log('======마스터 got : 방, 게임 정보 수신=========');
                 this.room = info;
                 console.log(this.room);
                 this.hostId = this.room.host;
+                // this.setUsersByMaster();
                 this.setUsers();
             }
-
-            //1.정보 요청 수신시 ( 마스터만 )
-            if (info.type == 1 && this.masterKeyFlag) {
-                console.log('======got mes 마스터의 정보 요청에 대한 수신=========');
-                this.sendState();
-                return;
-            }
-            //7.유저 기존 상태 수신 (입장 전 과정)
-            console.log('this.enteredFlag 입장여부');
-            console.log(this.enteredFlag);
-            if (info.type == 7 && !this.enteredFlag) {
-                console.log('======got mes 기존 상태 마스터로부터 수신=========');
-                this.enteredFlag = true;
+            //11. 유저의 등록 정보 수신
+            if (info.type == 11) {
+                console.log('======got : 등록 후 방 정보 수신=========');
+                this.room = info;
+                console.log(this.room);
+                this.hostId = this.room.host;
                 this.userPresent1 = info.beUserPresent1;
                 this.userPresent2 = info.beUserPresent2;
-                this.obstacleflag = info.obstacleflag;
-                //입장자에 대한 플레이어 조건 확인 절차
-                for (let i = 0; i < this.users1.length; i++) {
-                    if (this.users1[i].userId == this.getUser.name) {
-                        this.userPresent1[i] = true; //참가 확인 어레이
-                        this.teamIdx = 1; //팀 선정
-
-                        // 유저 개인 메세지
-                        let idx = 1;
-                        for (let i = 0; i < this.userPresent1.length; i++) {
-                            if (this.userPresent1[i]) idx++;
-                        }
-                        console.log('1팀의 ' + idx + '번째 유저입니다');
-                        this.entering();
-                    }
-                }
-                if (this.teamIdx == 2) {
-                    for (let i = 0; i < this.users2.length; i++) {
-                        if (this.users2[i].userId == this.getUser.name) {
-                            this.userPresent2[i] = true; //참가 확인 어레이
-                            this.teamIdx = 2; //팀 선정
-                            this.entering();
-                            // 유저 개인 메세지
-                            let idx = 0;
-                            this.userPresent2.forEach((a) => {
-                                if (a) idx++;
-                            });
-                            console.log('2팀의 ' + idx + '번째 인덱스 유저입니다');
-                        }
-                    }
-                }
+                this.setUsers();
             }
-
-            //5. 새로운 유저 입장
-            if (info.type == 5) {
+            //12. 플레이어 존재 정보 수신
+            if (info.type == 12) {
+                console.log('======got :플레이어 존재 정보 수신=========');
+                this.room = info;
+                console.log(this.room);
                 this.userPresent1 = info.beUserPresent1;
                 this.userPresent2 = info.beUserPresent2;
                 this.drawSsazip();
             }
+            //1. 방장 종료
+            if (info == null) {
+                //방장 퇴장
+                this.onDisconnect();
+                alert('방장이 퇴장하여 게임이 종료됩니다!');
+                // 모든 참가자 내보내기
+                this.$router.push('/room');
+                return;
+            }
+
+            // //1.정보 요청 수신시 ( 마스터만 )
+            // if (info.type == 1 && this.masterKeyFlag) {
+            //     console.log('======got mes 마스터의 정보 요청에 대한 수신=========');
+            //     this.sendState();
+            //     return;
+            // }
+            //1. 방장과 db 로부터의 데이터 값 (유저만)
+            // if (info.type == 1 && !this.masterKeyFlag) {
+            //     console.log('======got mes 방장과 db 로부터의 데이터 값=========');
+            //     if (info.lastEntering == this.getUser.name || this.isRegistryed) {
+            //         //유저 본인이 등록 여부 파악
+            //         this.isRegistryed = true;
+            //         this.userPresent1 = info.beUserPresent1;
+            //         this.userPresent2 = info.beUserPresent2;
+            //         //플레이어 여부 확인
+            //         for (let i = 0; i < this.users1.length; i++) {
+            //             if (this.users1[i].userId == this.getUser.name) {
+            //                 this.userPresent1[i] = true; //참가 확인 어레이
+            //                 this.teamIdx = 1; //팀 선정
+            //                 // 유저 개인 메세지
+            //                 let idx = 1;
+            //                 for (let i = 0; i < this.userPresent1.length; i++) {
+            //                     if (this.userPresent1[i]) idx++;
+            //                 }
+            //                 console.log('1팀의 ' + idx + '번째 유저입니다');
+            //                 this.entering();
+            //             }
+            //         }
+            //         if (this.teamIdx == 2) {
+            //             for (let i = 0; i < this.users2.length; i++) {
+            //                 if (this.users2[i].userId == this.getUser.name) {
+            //                     this.userPresent2[i] = true; //참가 확인 어레이
+            //                     this.teamIdx = 2; //팀 선정
+            //                     this.entering();
+            //                     // 유저 개인 메세지
+            //                     let idx = 0;
+            //                     this.userPresent2.forEach((a) => {
+            //                         if (a) idx++;
+            //                     });
+            //                     console.log('2팀의 ' + idx + '번째 인덱스 유저입니다');
+            //                 }
+            //             }
+            //         }
+            //     } else {
+            //         this.onConnected();
+            //     }
+            //     return;
+            // }
+            // //7.유저 기존 상태 수신 (입장 전 과정)
+            // console.log('this.enteredFlag 입장여부');
+            // console.log(this.enteredFlag);
+            // if (info.type == 7 && !this.enteredFlag) {
+            //     console.log('======got mes 기존 상태 마스터로부터 수신=========');
+            //     this.enteredFlag = true;
+            //     this.userPresent1 = info.beUserPresent1;
+            //     this.userPresent2 = info.beUserPresent2;
+            //     this.obstacleflag = info.obstacleflag;
+            //     //입장자에 대한 플레이어 조건 확인 절차
+            //     for (let i = 0; i < this.users1.length; i++) {
+            //         if (this.users1[i].userId == this.getUser.name) {
+            //             this.userPresent1[i] = true; //참가 확인 어레이
+            //             this.teamIdx = 1; //팀 선정
+
+            //             // 유저 개인 메세지
+            //             let idx = 1;
+            //             for (let i = 0; i < this.userPresent1.length; i++) {
+            //                 if (this.userPresent1[i]) idx++;
+            //             }
+            //             console.log('1팀의 ' + idx + '번째 유저입니다');
+            //             this.entering();
+            //         }
+            //     }
+            //     if (this.teamIdx == 2) {
+            //         for (let i = 0; i < this.users2.length; i++) {
+            //             if (this.users2[i].userId == this.getUser.name) {
+            //                 this.userPresent2[i] = true; //참가 확인 어레이
+            //                 this.teamIdx = 2; //팀 선정
+            //                 this.entering();
+            //                 // 유저 개인 메세지
+            //                 let idx = 0;
+            //                 this.userPresent2.forEach((a) => {
+            //                     if (a) idx++;
+            //                 });
+            //                 console.log('2팀의 ' + idx + '번째 인덱스 유저입니다');
+            //             }
+            //         }
+            //     }
+            // }
+
+            // //5. 새로운 유저 입장
+            // if (info.type == 5) {
+            //     console.log('새로운 유저 입장 확인 receive type5 ');
+            //     console.log(info.lastEntering);
+            //     this.userPresent1 = info.beUserPresent1;
+            //     this.userPresent2 = info.beUserPresent2;
+            //     this.drawSsazip();
+            // }
 
             //3.리로드
             if (info.reloadflag && info.type == 3) {
@@ -937,15 +1218,16 @@ export default {
                 // this.receivedGameStopFlag = info.BgameStopFlag;
                 this.receivedGameStopFlag = true;
             }
-
-            if (payload.body == 'exit') {
-                // 모든 참가자의 연결을 끊고
-                this.onDisconnect();
-                alert('방장이 퇴장하여 게임이 종료됩니다!');
-                // 모든 참가자 내보내기
-                this.$router.push('/room');
-                return;
-            }
+            // if (info.type == 9) {
+            //     //마스터만 갱신
+            //     // 팀 벵이스먼트 기준으로 users 재 생성
+            //     this.onConnected();
+            //     // this.onDisconnect();
+            //     // alert('방장이 퇴장하여 게임이 종료됩니다!');
+            //     // 모든 참가자 내보내기
+            //     // this.$router.push('/room');
+            //     return;
+            // }
 
             // let room = JSON.parse(payload.body);
             // console.log(room);
@@ -963,20 +1245,17 @@ export default {
             console.log(teams);
             this.teamline = teams;
         },
+        // 전체 모달 닫기
+        sendCloseModalMessage() {
+            this.stompClient.send(`/pub/ssafymind/close/modal`, {}, this.getRoomId);
+        },
+        onModalMessageReceived(payload) {
+            const flag = JSON.parse(payload.body);
+            this.ordermodal = flag;
+            this.answermodal = flag;
+        },
         onError() {},
         // 게임 방 퇴장 소켓 연결 해제 및 게임 방 유저 정보 삭제
-        onDisconnect() {
-            this.stompClient.send(
-                '/pub/game/jump/exit',
-                {},
-                JSON.stringify({
-                    roomId: this.getRoomId,
-                    participantId: this.getUser.id,
-                    participantName: this.getUser.name,
-                })
-            );
-            this.stompClient.disconnect();
-        },
         // 팀 번호 변경시 소켓 요청
         // changeTeamMessage() {
         //     this.stompClient.send('/pub/game/change', {}, JSON.stringify(this.room));
@@ -993,12 +1272,8 @@ export default {
     //////////////////////////////////환경설정//////////////////////////////////////
     created() {
         console.log('=============created');
-        // // 소켓 연결
-        // this.stompClient = socketConnect(this.onConnected, this.onError);
-        // 방정보 초기화
-        // this.room.id = this.getRoomId;
-        this.masterKeyFlag = this.getIsLogin;
         this.userId = this.getUser.name;
+        this.masterKeyFlag = this.getIsLogin;
     },
     mounted() {
         console.log('=============mounted');
@@ -1030,8 +1305,7 @@ export default {
                 }
             }
             //착지해야만 점프가능
-            console.log('userPlayIdx');
-            console.log(this.userPlayIdx);
+
             if (this.startFlag && this.userPlayIdx != -1) {
                 if (this.teamIdx == 1) {
                     if (this.dinos1[this.userPlayIdx].y == 200) {
@@ -1054,15 +1328,32 @@ export default {
                 }
             }
         });
+
+        // window.addEventListener('beforeunload', this.unLoadEvent);
     },
+    // beforeUnmount() {
+    //     window.removeEventListener('beforeunload', this.unLoadEvent);
+    // },
+    // watch: {
+    //     $route(to, from) {
+    //         console.log(to);
+    //     },
+    // },
     updated: {},
+
     computed: {
         ...mapGetters(['getRoomId']),
         ...mapGetters(['getUser', 'getIsLogin']),
     },
+    destroyed() {
+        console.log('================destroyed');
+        // if (this.masterKeyFlag) {
+        //     this.onDisconnectByMaster();
+        // } else {
+        this.onDisconnect();
+        // }
+    },
 };
-
-
 
 ///////////////////////////routine memo/////////////////////
 ///////////////////////////routine memo/////////////////////

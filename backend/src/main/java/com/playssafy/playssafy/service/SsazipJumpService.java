@@ -19,8 +19,9 @@ public class SsazipJumpService {
 
     // rest 게임방 생성 메서드
     public void createSsazipJump(InitGame initGame) {
-        if(!ssazipJumpRepository.findById(initGame.getRoomId()).isEmpty())
-            return;
+        if(!ssazipJumpRepository.findById(initGame.getRoomId()).isEmpty()){
+            ssazipJumpRepository.deleteById(initGame.getRoomId());
+        }
         SsazipJump ssazipJump = new SsazipJump();
 
         // 방 ID 초기화
@@ -68,8 +69,8 @@ public class SsazipJumpService {
         ssazipJump.setRemainRound(ssazipJump.getTeamOrder().size());
 
         //시작 팀 번호 값 세팅
-        ssazipJump.setTeamIdx1(ssazipJump.getTeamOrder().get(0));
-        ssazipJump.setTeamIdx2(ssazipJump.getTeamOrder().get(1));
+        ssazipJump.setTeamIdx1(0);
+        ssazipJump.setTeamIdx2(1);
 
 //        // 테스트 문제 리스트 ////////
 //        for(int i = 0; i < 20; i++) {
@@ -78,46 +79,131 @@ public class SsazipJumpService {
 //            ssafyMind.getQuizzes().add(new Quiz(1, "무량수불", "무량수불"));
 //        }
 //        // 팀 초기화////////
-//        ssafyMind.getTeams().get(1).getMembers().add(new Participant(initGame.getRoomId(), "1", "김태현1", 1));
-//        ssafyMind.getTeams().get(1).getMembers().add(new Participant(initGame.getRoomId(), "2", "김태현2", 1));
+//        ssazipJump.getTeamsMember().add(new)
+//                .get(1).getMembers().add(new Participant(initGame.getRoomId(), "2", "김태현2", 1));
 //        ssafyMind.getTeams().get(1).getMembers().add(new Participant(initGame.getRoomId(), "3", "김태현3", 1));
 //        ssafyMind.getTeams().get(1).getMembers().add(new Participant(initGame.getRoomId(), "4", "김태현4", 1));
 //        ssafyMind.getTeams().get(2).getMembers().add(new Participant(initGame.getRoomId(), "1", "이장섭1", 2));
 //        ssafyMind.getTeams().get(2).getMembers().add(new Participant(initGame.getRoomId(), "2", "이장섭2", 2));
 //        ssafyMind.getTeams().get(2).getMembers().add(new Participant(initGame.getRoomId(), "3", "이장섭3", 2));
 //        ssafyMind.getTeams().get(2).getMembers().add(new Participant(initGame.getRoomId(), "4", "이장섭4", 2));
-
+//
 
         ssazipJumpRepository.save(ssazipJump);
     }
 
-    // 0. 게임방 입장 메서드
-    public synchronized SsazipJump enter(Participant participant) {
-        SsazipJump ssazipJump = ssazipJumpRepository.findById(participant.getRoomId()).get();
-        Team team = ssazipJump.getTeamsBase().get(participant.getTeamNo());
+
+    // 0. 방을 순수하게 읽어오는 로직
+    public SsazipJump read(String roomId) {
+        return ssazipJumpRepository.findById(roomId).get();
+    }
+    // 11. 게임에 유저 저장
+    public synchronized SsazipJump regi(SsazipJump gotSsazipJump) {
+        System.out.println("게임에 유저 정보 저장 및 삭제");
+        System.out.println(gotSsazipJump.toString());
+        SsazipJump ssazipJump = ssazipJumpRepository.findById(gotSsazipJump.getRoomId()).orElse(null);
+        //맴버에 추가
+        Team team = ssazipJump.getTeamsMember().get(gotSsazipJump.getTeamNo());
+        Participant participant=new Participant(gotSsazipJump.getRoomId(),
+                gotSsazipJump.getParticipantId(),
+                gotSsazipJump.getParticipantName(),
+                gotSsazipJump.getTeamNo());
         if (!team.getMembers().contains(participant)){
             team.getMembers().add(participant);
         }
+        if(ssazipJump.getBeUserPresent1()==null){
+            ssazipJump.setBeUserPresent1(gotSsazipJump.getBeUserPresent1());
+        }
+        if(ssazipJump.getBeUserPresent2()==null){
+            ssazipJump.setBeUserPresent2(gotSsazipJump.getBeUserPresent2());
+        }
+        ssazipJump.setType(gotSsazipJump.getType());
+        // 최근 입장 유저 저장
+        ssazipJump.setLastEntering(gotSsazipJump.getLastEntering());
         // 변경 완료
         return ssazipJumpRepository.save(ssazipJump);
     }
-//
-//    // 2. 게임방 퇴장 메서드
-//    public synchronized SsafyMind exit(Participant participant) {
-//        SsafyMind ssafyMind = ssafyMindRepository.findById(participant.getRoomId()).get();
-//
-//        // 방장이라면 방 자체를 삭제 후 종료
-//        if (ssafyMind.getHost().equals(participant.getParticipantId())) {
-//            ssafyMindRepository.deleteById(participant.getRoomId());
-//            return null;
+    // 12. 플레이어 유저 저장
+    public synchronized SsazipJump regPlayer(SsazipJump gotSsazipJump) {
+        SsazipJump ssazipJump = ssazipJumpRepository.findById(gotSsazipJump.getRoomId()).get();
+        //중계할 데이터
+        ssazipJump.setBeUserPresent1(gotSsazipJump.getBeUserPresent1());
+        ssazipJump.setBeUserPresent2(gotSsazipJump.getBeUserPresent2());
+//        //맴버에 추가
+//        Team team = ssazipJump.getTeamsMember().get(gotSsazipJump.getTeamNo());
+//        Participant participant=new Participant(gotSsazipJump.getRoomId(),
+//                gotSsazipJump.getParticipantId(),
+//                gotSsazipJump.getParticipantName(),
+//                gotSsazipJump.getTeamNo());
+//        if (!team.getMembers().contains(participant)){
+//            team.getMembers().add(participant);
 //        }
-//        // 방장이 아니라면 유저 정보만 삭제
-//        Team team = ssafyMind.getTeams().get(participant.getTeamNo());
-//        team.getMembers().remove(participant);
-//
-//        // 변경 완료
-//        return ssafyMindRepository.save(ssafyMind);
-//    }
+//        if(ssazipJump.getBeUserPresent1().length==0){
+//            ssazipJump.setBeUserPresent1(gotSsazipJump.getBeUserPresent1());
+//        }
+//        if(ssazipJump.getBeUserPresent2().length==0){
+//            ssazipJump.setBeUserPresent2(gotSsazipJump.getBeUserPresent2());
+//        }
+        ssazipJump.setType(gotSsazipJump.getType());
+//        // 최근 입장 유저 저장
+//        ssazipJump.setLastEntering(gotSsazipJump.getLastEntering());
+        // 변경 완료
+        return ssazipJumpRepository.save(ssazipJump);
+    }
+
+
+    // 1. 게임방 퇴장 메서드
+    public synchronized SsazipJump exit(Participant participant) {
+        SsazipJump ssazipJump = ssazipJumpRepository.findById(participant.getRoomId()).get();
+
+        // 방장이라면 방 자체를 삭제 후 종료
+        if (ssazipJump.getHost().equals(participant.getParticipantId())) {
+            ssazipJumpRepository.deleteById(participant.getRoomId());
+            return null;
+        }
+        // 방장이 아니라면 유저 정보만 삭제
+        Team team = ssazipJump.getTeamsMember().get(participant.getTeamNo());
+        team.getMembers().remove(participant);
+
+        // 변경 완료
+        return ssazipJumpRepository.save(ssazipJump);
+    }
+
+    // 3. 대전 팀 변경
+    public synchronized int changeBattleTeam(String roomId) {
+        //return 1 = 동일 라운드 다음팀
+        //return 2 = 다음라운드 시작
+        //return 3 = 게임 종료
+
+        SsazipJump ssazipJump = ssazipJumpRepository.findById(roomId).get();
+        // 마지막 게임 여부 확인
+        if(ssazipJump.getTeamIdx2()==ssazipJump.getTeamOrder().size()-1){
+            //마지막 라운드 여부
+            if(ssazipJump.getRemainRound()==2){
+                return 3;
+            }
+            //다음라운드시
+            if(ssazipJump.getTeamOrderNext().size()%2==1) {
+                List<Integer> list=ssazipJump.getTeamOrderNext();
+                list.add(-2);
+            }
+                ssazipJump.setTeamOrder(ssazipJump.getTeamOrderNext());
+            ssazipJump.setTeamOrderNext(new ArrayList<>());
+            ssazipJump.setRemainRound(ssazipJump.getTeamOrderNext().size());
+            ssazipJump.setTeamIdx1(0);
+            ssazipJump.setTeamIdx2(1);
+            ssazipJumpRepository.save(ssazipJump);
+            return 2;
+        }
+        //같은라운드 다른 팀으로 변경시
+        else{
+            ssazipJump.setTeamIdx1(ssazipJump.getTeamIdx1()+2);
+            ssazipJump.setTeamIdx2(ssazipJump.getTeamIdx2()+2);
+            ssazipJumpRepository.save(ssazipJump);
+            return 1;
+        }
+    }
+
 //
 //    // 3. 그림 데이터 교환
 //    public void draw(String roomId, Point point) {
@@ -149,10 +235,7 @@ public class SsazipJumpService {
 //        return mindMessage;
 //    }
 //
-//    // 5. 방을 순수하게 읽어오는 로직
-//    public SsafyMind read(String roomId) {
-//        return ssafyMindRepository.findById(roomId).get();
-//    }
+
 //
 //    // 6. 1초마다 시간을 갱신하는 로직
 //    public synchronized boolean time(String roomId, int cnt) {
@@ -171,22 +254,7 @@ public class SsazipJumpService {
 //        ssafyMindRepository.save(ssafyMind);
 //    }
 //
-//    // 7. 플레이어 변경
-//    public synchronized int changePlayer(String roomId) {
-//        SsafyMind ssafyMind = ssafyMindRepository.findById(roomId).get();
-//        // 현재 팀의 인원 수
-//        int teamSize = ssafyMind.getTeams().get(ssafyMind.getTeamOrder().get(0)).getMembers().size();
-//        // 현재 플레이어 번호
-//        int curPlayer = ssafyMind.getCurPlayer();
-//        // 다음 플레이어 번호
-//        curPlayer = (curPlayer + 1) % teamSize;
-//        // 세팅
-//        ssafyMind.setCurPlayer(curPlayer);
-//        // 저장
-//        ssafyMindRepository.save(ssafyMind);
-//        // 번호 전송
-//        return curPlayer;
-//    }
+
 //
 //    // 8. 다음 문제로 이동, 동시에 플레이어 순서 및 팀 순서 변경
 //    public synchronized SsafyMind nextProblem(String roomId) {
