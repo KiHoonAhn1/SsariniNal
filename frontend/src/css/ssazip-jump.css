@@ -271,3 +271,71 @@
   margin-bottom: 1.5%;
   padding-top: 8px;
 }
+
+.swal-modal {
+  position: relative;
+  background-color: #99B7FF;
+  border-radius: 1.5rem;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 20px;
+}
+
+.swal-title {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 27px;
+  color: black;
+}
+
+.swal-text {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 18px;
+  color: black;
+}
+
+.swal-content__input {
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.swal-button {
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 16px;
+  background-color: #1C84C4;
+}
+
+.swal-button--cancel {
+    color: white;
+    background-color: #CD5069;
+}
+
+.swal-icon {
+  position: absolute;
+  width: 60px;
+  top: -12px;
+  left: 38px;
+}
+
+.swal-footer {
+  margin-top: 0px;
+}
+
+.swal-button:active {
+  background-color: #1C84C4;
+}
+
+.swal-button--cancel:active {
+  background-color: #F53535;
+}
+
+.swal-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.swal-button:not([disabled]):hover {
+  background-color: #1C84C4;
+}
+
+.swal-button--cancel:not([disabled]):hover {
+  background-color: #F53535;
+}

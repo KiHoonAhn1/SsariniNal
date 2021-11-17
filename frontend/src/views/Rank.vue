@@ -25,7 +25,7 @@
           <div class="silver-team">{{ curScore[1][0] }}팀</div>
         </div>
         <!-- 3등 -->
-        <div class="ssazip-container">
+        <div v-if="parseInt(curScore[2][0])" class="ssazip-container">
           <img class="bronze-place" src="../assets/bronze-place2.png" alt="" />
           <img class="bronze-ssazip" src="../assets/bronze-ssazip.png" alt="" />
           <div class="bronze-team">{{ curScore[2][0] }}팀</div>
@@ -59,6 +59,9 @@ export default {
   data() {
     return {
       curScore: [],
+      first: [],
+      second: [],
+      third: [],
     };
   },
   computed: {
@@ -110,6 +113,9 @@ export default {
             return -1;
           }
         }
+      });
+      this.curScore.forEach(e => {
+        console.log(e)
       });
     },
     // 첫 화면으로 이동
