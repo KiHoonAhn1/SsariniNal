@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="checkbox" id="chk-hear-mic"><label for="chk-hear-mic">마이크 소리 듣기</label>
+    <input type="checkbox" id="chk-hear-mic" /><label for="chk-hear-mic">마이크 소리 듣기</label>
     <button @click="onRecAudio">녹음</button>
     <button @click="offRecAudio">녹음 정지</button>
     <button @click="onSubmitAudioFile"></button>
@@ -9,10 +9,10 @@
 </template>
 
 <script>
-import "@/css/speak-game.css"
+import '@/css/speak-game.css';
 
 export default {
-  name: "SpeakGame",
+  name: 'SpeakGame',
   data: () => {
     return {
       onRec: false,
@@ -21,7 +21,7 @@ export default {
       stream: '',
       media: '',
       audioUrl: '',
-    }
+    };
   },
   mounted: function() {
     this.onRecAudio();
@@ -38,21 +38,20 @@ export default {
         this.source = audioCtx.createMediaStreamSource(stream);
         this.source.connect(this.analyser);
         this.analyser.connect(audioCtx.destination);
-      }
+      };
 
       // 마이크 사용 권한 획득
-      navigator.mediaDevices.getUserMedia({audio : true})
-      .then(stream => {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorder.start();
         this.stream = stream;
         this.media = mediaRecorder;
         makeSound(this.stream);
 
-        this.analyser.onaudioprocess = function (e) {
+        this.analyser.onaudioprocess = function(e) {
           // 3분(180초) 지나면 자동으로 음성 저장 및 녹음 중지
           if (e.playbackTime > 180) {
-            this.stream.getAudioTracks().forEach(function (track) {
+            this.stream.getAudioTracks().forEach(function(track) {
               track.stop();
             });
             mediaRecorder.stop();
@@ -60,23 +59,23 @@ export default {
             this.analyser.disconnect();
             audioCtx.createMediaStreamSource(stream).disconnect();
 
-            mediaRecorder.ondataavailable = function (e) {
+            mediaRecorder.ondataavailable = function(e) {
               this.audioUrl = e.data;
               this.onRec = true;
             };
           } else {
             this.onRec = false;
           }
-        }
-      })
+        };
+      });
     },
     offRecAudio: function() {
-      this.media.ondataavailable = function (e) {
+      this.media.ondataavailable = function(e) {
         this.audioUrl = e.data;
         this.onRec = true;
       };
 
-      this.stream.getAudioTracks().forEach(function (track) {
+      this.stream.getAudioTracks().forEach(function(track) {
         track.stop();
       });
 
@@ -89,13 +88,14 @@ export default {
       if (this.audioUrl) {
         console.log(URL.createObjectURL(this.audioUrl));
       }
-      const sound = new File([this.audioUrl], "soundBlob", { lastModified: new Date().getTime(), type: "audio" });
-      console.log(sound)
+      const sound = new File([this.audioUrl], 'soundBlob', {
+        lastModified: new Date().getTime(),
+        type: 'audio',
+      });
+      console.log(sound);
     },
   },
-}
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

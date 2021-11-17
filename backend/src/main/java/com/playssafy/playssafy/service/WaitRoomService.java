@@ -1,5 +1,6 @@
 package com.playssafy.playssafy.service;
 
+import com.playssafy.playssafy.dto.waitroom.ChangeGame;
 import com.playssafy.playssafy.dto.waitroom.InitGame;
 import com.playssafy.playssafy.dto.waitroom.Participant;
 import com.playssafy.playssafy.dto.waitroom.WaitRoom;
@@ -19,26 +20,6 @@ public class WaitRoomService {
     public WaitRoom createRoom(String roomName, Participant participant) {
         WaitRoom room = new WaitRoom();
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // 테스트용 멤버 추가
-//        room.getMembers().add(new Participant(participant.getRoomId(), "1", "김태현", 1));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "2", "김태현2", 1));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "3", "김태현3", 1));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "4", "이장섭", 2));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "5", "이장섭2", 2));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "6", "이장섭3", 2));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "7", "권희은", 5));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "8", "권희은2", 5));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "9", "권희은3", 5));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "10", "차은채", 7));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "11", "차은채2", 7));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "12", "차은채3", 7));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "13", "안기훈", 10));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "14", "안기훈2", 10));
-//        room.getMembers().add(new Participant(participant.getRoomId(), "15", "안기훈3", 10));
-//        room.setTeamline(new boolean[] {false, true, true, false, false, true, false, true, false, false, true});
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         // UUID를 기반으로 방에 고유 식별자 부여.
         room.setId(UUID.randomUUID().toString());
         // 게임 방 이름 설정
@@ -56,14 +37,18 @@ public class WaitRoomService {
 
     // 2. 게임 방 참여 메소드
     public WaitRoom enterRoom(Participant participant) {
-        WaitRoom waitRoom = waitRoomRepository.findById(participant.getRoomId()).get();
         // 방이 없는 경우 null 반환
-        if (waitRoom == null) {
+        if(waitRoomRepository.findById(participant.getRoomId()).isEmpty())
             return null;
-        }
+        WaitRoom waitRoom = waitRoomRepository.findById(participant.getRoomId()).get();
+//        // 방이 없는 경우 null 반환
+//        if (waitRoom == null) {
+//            return null;
+//        }
         // 참여자가 방장인 경우 사용자를 추가하지 않고 그대로 게임방 정보만 반환
-        if (participant.getParticipantId() != null && waitRoom.getHost().equals(participant.getParticipantId()))
+        if (participant.getParticipantId() != null && waitRoom.getHost().equals(participant.getParticipantId())) {
             return waitRoom;
+        }
         // 중복된 사람이 있는 경우 추가하지 않는다.
         if (waitRoom.getMembers().contains(participant))
             return waitRoom;
@@ -78,10 +63,10 @@ public class WaitRoomService {
 
     // 3. 게임 방 퇴장 메소드
     public WaitRoom exitRoom(Participant participant) {
-        WaitRoom waitRoom = waitRoomRepository.findById(participant.getRoomId()).get();
-        // 게임방이 존재하지 않는 경우
-        if (waitRoom == null)
+        // 방이 없는 경우 null 반환
+        if(waitRoomRepository.findById(participant.getRoomId()).isEmpty())
             return null;
+        WaitRoom waitRoom = waitRoomRepository.findById(participant.getRoomId()).get();
         // 유저 정보 조회(방장인지 확인)
         if (waitRoom.getHost().equals(participant.getParticipantId())) {
             // 방장이라면 방 자체를 삭제 후 종료
@@ -97,10 +82,13 @@ public class WaitRoomService {
 
     // 4. 게임 방 입장 가능 여부 확인 메소드
     public int findParticipantByName(Participant participant) {
-        WaitRoom waitRoom = waitRoomRepository.findById(participant.getRoomId()).get();
         // 게임방이 존재하지 않는 경우
-        if (waitRoom == null)
+        if(waitRoomRepository.findById(participant.getRoomId()).isEmpty())
             return 0;
+        WaitRoom waitRoom = waitRoomRepository.findById(participant.getRoomId()).get();
+//        // 게임방이 존재하지 않는 경우
+//        if (waitRoom == null)
+//            return 0;
         // 입장 제한 인원을 초과한 경우
         if (waitRoom.getMembers().size() > 50)
             return 1;
@@ -116,10 +104,24 @@ public class WaitRoomService {
         return waitRoomRepository.save(waitRoom);
     }
 
-    // 6. 게임 변경
-    public void changeGame(InitGame initGame) {
+    // 6. 게임 세팅
+    public void setGame(InitGame initGame) {
         WaitRoom waitRoom = waitRoomRepository.findById(initGame.getRoomId()).get();
+        // 게임 타입 설정
         waitRoom.setGameType(initGame.getGameType());
+        // 게임 시작 상태로 변경
+        waitRoom.setProgress(true);
         waitRoomRepository.save(waitRoom);
+    }
+
+    // 7. 게임 변경
+    public WaitRoom changeGame(ChangeGame changeGame) {
+        WaitRoom waitRoom = waitRoomRepository.findById(changeGame.getRoomId()).get();
+        waitRoom.setSsafymindExplain(changeGame.isSsafymindExplain());
+        waitRoom.setSpeakgameExplain(changeGame.isSpeakgameExplain());
+        waitRoom.setJumpgameExplain(changeGame.isJumpgameExplain());
+        waitRoom.setGameType(changeGame.getGameType());
+
+        return waitRoomRepository.save(waitRoom);
     }
 }

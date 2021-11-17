@@ -11,7 +11,12 @@
         alt="ssazip-create-img"
         class="ssazip-create-img"
       />
-      <input type="text" placeholder="방 제목을 설정해주세요" v-model="roomName" @enter="createGameRoom"/>
+      <input
+        type="text"
+        placeholder="방 제목을 설정해주세요"
+        v-model="roomName"
+        @enter="createGameRoom"
+      />
       <button @click="createGameRoom">방 만들기</button>
     </div>
   </div>
@@ -50,6 +55,11 @@ export default {
     },
     // 게임 방 만들기
     createGameRoom() {
+      // 방 이름은 최소 1글자 이상, 15글자 이하로 한다
+      if (this.roomName.length < 1 || this.roomName.length > 15) {
+        alert('방 이름은 최소 1글자 이상, 15글자 이하로 한다');
+        return;
+      }
       axios({
         method: 'post',
         url: `/game/create/${this.roomName}`,

@@ -1,7 +1,6 @@
 package com.playssafy.playssafy.service;
 
-import com.playssafy.playssafy.dto.play.JumpInfo;
-import com.playssafy.playssafy.dto.ssafymind.*;
+import com.playssafy.playssafy.dto.ssafymind.Team;
 import com.playssafy.playssafy.dto.ssazipjump.SsazipJump;
 import com.playssafy.playssafy.dto.waitroom.InitGame;
 import com.playssafy.playssafy.dto.waitroom.Participant;
@@ -121,7 +120,7 @@ public class SsazipJumpService {
         Participant participant=new Participant(gotSsazipJump.getRoomId(),
                 gotSsazipJump.getParticipantId(),
                 gotSsazipJump.getParticipantName(),
-                gotSsazipJump.getTeamNo());
+                gotSsazipJump.getTeamNo(), false);
         if (!team.getMembers().contains(participant)){
             team.getMembers().add(participant);
         }

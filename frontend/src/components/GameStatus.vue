@@ -6,9 +6,10 @@
       id=""
       :src="require(`../assets/team${teamOrder[0]}.png`)"
       alt=""
-      v-if="teamOrder != null"
+      v-if="teamOrder != null && teamOrder[0] != null"
     />
-    <div class="team-members-group" v-if="teamOrder != null">
+    <h3 v-else>게임이 종료되었습니다!</h3>
+    <div class="team-members-group" v-if="teamOrder != null && teamOrder[0] != null">
       <span v-for="(member, idx) in teams[teamOrder[0]].members" :key="idx">
         <span class="team-members myturn" v-if="idx == curPlayer">{{
           member.participantName
@@ -17,28 +18,16 @@
       </span>
     </div>
     <SpeakingTimer v-if="game === 'speak'" />
-    <!-- <ProgressBar v-else /> -->
     <div v-else>
-      <!-- <div v-if="teamOrder != null">
-        <div v-for="(member, idx) in teams[teamOrder[0]].members" :key="idx">
-          <div v-if="idx == curPlayer">
-            <div id="progress" v-if="getProgressBar == false">
-              <div id="progress-bar"></div>
-            </div>
-          </div>
-          <div v-else>
-            <div id="progress" v-if="getProgressBar == true">
-              <div id="progress-bar"></div>
-            </div>
-          </div>
-        </div>
-      </div> -->
       <div id="progress" v-if="getProgressBar == false">
         <div id="progress-bar"></div>
       </div>
     </div>
     <div class="next-team-block">
-      <div class="next-team-ready" v-if="teamOrder != null && teamOrder.length > 1">
+      <div
+        class="next-team-ready"
+        v-if="teamOrder != null && teamOrder[0] != null && teamOrder.length > 1"
+      >
         다음 팀 준비하세요~!
       </div>
       <img
@@ -46,7 +35,7 @@
         id=""
         :src="require(`../assets/team${teamOrder[1]}.png`)"
         alt=""
-        v-if="teamOrder != null && teamOrder.length > 1"
+        v-if="teamOrder != null && teamOrder[0] != null && teamOrder.length > 1"
       />
       <div class="next-team-ready" v-else>
         <div id="end">마지막 팀 입니다!</div>
@@ -55,10 +44,6 @@
     </div>
     <div class="ssafymind-score">
       <div class="ssafymind-score-line">
-        <!-- <p>{{ curScore }}</p> -->
-        <!-- <img class="ssafymind-img" id="" src="~@/assets/onetop.png" alt="" />
-				<img class="ssafymind-img" id="" src="~@/assets/twotop.png" alt="" />
-				<img class="ssafymind-img" id="" src="~@/assets/threetop.png" alt="" /> -->
         <div v-for="(score, idx) in curScore" :key="idx">
           <div class="winner-block" v-if="score[1] != 0 && idx + 1 == 1">
             <span class="winner winner-one">{{ idx + 1 }}등</span>
@@ -75,63 +60,12 @@
             <span class="winner-team">{{ score[0] }}팀</span>
             <span class="winner-score winner-three">{{ score[1] }}점</span>
           </div>
-          <!-- <div class="winner-block" v-else-if="idx + 1 <= curTeamCnt"> -->
           <div class="winner-block" v-else>
             <span class="winner">{{ idx + 1 }}등</span>
             <span class="winner-team">{{ score[0] }}팀</span>
             <span class="winner-score">{{ score[1] }}점</span>
           </div>
         </div>
-        <!-- <div class="winner-block">
-          <span class="winner winner-one">1등</span>
-          <span class="winner-team">1팀</span>
-          <span class="winner-score winner-one">30점</span>
-        </div>
-        <div class="winner-block">
-          <span class="winner winner-two">2등</span>
-          <span class="winner-team">2팀</span>
-          <span class="winner-score winner-two">3500점</span>
-        </div>
-        <div class="winner-block">
-          <span class="winner winner-three">3등</span>
-          <span class="winner-team">3팀</span>
-          <span class="winner-score winner-three">350점</span>
-        </div>
-        <div class="winner-block">
-          <span class="winner">4등</span>
-          <span class="winner-team">4팀</span>
-          <span class="winner-score">350점</span>
-        </div>
-        <div class="winner-block">
-          <span class="winner">5등</span>
-          <span class="winner-team">5팀</span>
-          <span class="winner-score">350점</span>
-        </div>
-        <div class="winner-block">
-          <span class="winner">6등</span>
-          <span class="winner-team">6팀</span>
-          <span class="winner-score">350점</span>
-        </div>
-        <div class="winner-block">
-          <span class="winner">7등</span>
-          <span class="winner-team">7팀</span>
-          <span class="winner-score">350점</span>
-        </div>
-        <div class="winner-block">
-          <span class="winner">8등</span>
-          <span class="winner-team">8팀</span>
-          <span class="winner-score">350점</span>
-        </div>
-        <div class="winner-block">
-          <span class="winner">9등</span>
-          <span class="winner-team">9팀</span>
-          <span class="winner-score">350점</span>
-        </div>
-        <div class="winner-block">
-          <span class="winner">10등</span>
-          <span class="winner-team">10팀</span>
-          <span class="winner-score">3050점</span>
-        </div> -->
       </div>
     </div>
   </div>
@@ -139,7 +73,6 @@
 
 <script>
 import '@/components/css/game-status.css';
-// import ProgressBar from '@/components/ssafymind/ProgressBar.vue';
 import SpeakingTimer from '@/components/common/SpeakingTimer.vue';
 import '@/components/css/ssafymind/progressbar.css';
 
@@ -152,7 +85,6 @@ export default {
     };
   },
   components: {
-    // ProgressBar,
     SpeakingTimer,
   },
   props: ['game', 'teamOrder', 'teams', 'curPlayer', 'scores', 'curTeam', 'curTeamCnt'],

@@ -15,7 +15,6 @@
             </div>
           </div>
           <div class="wr-explainbox">
-            <!-- <img id="ssazip-img-modal" src="~@/assets/images/ssazip-create.png" alt=""> -->
             <div
               class="wr-explain-ssafygame-title"
               v-if="
@@ -36,7 +35,7 @@
                 다른 팀원들은 그림을 보고 제시어를 맞춰주세요!<br />
                 주어진 시간 안에 최대한 많은 점수를 획득하세요.
               </div>
-              <div class="wr-explain-speakgame-num">
+              <div class="wr-explain-speakgame-num" v-if="this.host == this.getUser.id">
                 팀 별 문제 수 :
                 <span class="count-minus" @click="count(1)"
                   ><i class="fas fa-play count-arrow"></i
@@ -55,7 +54,7 @@
                 모든 팀원이 순서대로 제시어를 모두 읽으면 통과.<br />
                 주어진 시간 안에 최대한 많은 제시어를 읽어주세요.
               </div>
-              <div class="wr-explain-speakgame-num">
+              <div class="wr-explain-speakgame-num" v-if="this.host == this.getUser.id">
                 팀 별 문제 수 :
                 <span class="count-minus" @click="count(1)"
                   ><i class="fas fa-play count-arrow"></i
@@ -75,7 +74,12 @@
                 장애물을 피해 상대방 팀보다 최대한 많은 시간 버텨주세요.
               </div>
             </div>
-            <button class="wr-select-game-ok" @click="onModal">선택 완료</button>
+            <button class="wr-select-game-ok" @click="onModal" v-if="this.host == this.getUser.id">
+              선택 완료
+            </button>
+            <button class="wr-select-game-ok" @click="onModal" v-if="this.host != this.getUser.id">
+              확인
+            </button>
           </div>
         </div>
       </div>
@@ -84,8 +88,10 @@
 </template>
 <script>
 import '@/components/css/selectGameModal.css';
+import { mapGetters } from 'vuex';
 export default {
   name: 'SelectGameModal',
+  props: ['host'],
   data: function() {
     return {
       openmodal: false,
@@ -95,39 +101,60 @@ export default {
       number: 3,
     };
   },
+  computed: {
+    ...mapGetters(['getUser']),
+  },
   methods: {
     ssafymindExplain: function() {
       if (this.speakgame_explain == true) {
         this.speakgame_explain = false;
-        this.$emit('infoSpeakGame', this.speakgame_explain);
+        if (this.host == this.getUser.id) {
+          this.$emit('infoSpeakGame', this.speakgame_explain);
+        }
       } else if (this.jumpgame_explain == true) {
         this.jumpgame_explain = false;
-        this.$emit('infoJumpGame', this.jumpgame_explain);
+        if (this.host == this.getUser.id) {
+          this.$emit('infoJumpGame', this.jumpgame_explain);
+        }
       }
       this.ssafymind_explain = true;
-      this.$emit('infoSsafyMind', this.ssafymind_explain);
+      if (this.host == this.getUser.id) {
+        this.$emit('infoSsafyMind', this.ssafymind_explain);
+      }
     },
     speakgameExplain: function() {
       if (this.ssafymind_explain == true) {
         this.ssafymind_explain = false;
-        this.$emit('infoSsafyMind', this.ssafymind_explain);
+        if (this.host == this.getUser.id) {
+          this.$emit('infoSsafyMind', this.ssafymind_explain);
+        }
       } else if (this.jumpgame_explain == true) {
         this.jumpgame_explain = false;
-        this.$emit('infoJumpGame', this.jumpgame_explain);
+        if (this.host == this.getUser.id) {
+          this.$emit('infoJumpGame', this.jumpgame_explain);
+        }
       }
       this.speakgame_explain = true;
-      this.$emit('infoSpeakGame', this.speakgame_explain);
+      if (this.host == this.getUser.id) {
+        this.$emit('infoSpeakGame', this.speakgame_explain);
+      }
     },
     jumpgameExplain: function() {
       if (this.speakgame_explain == true) {
         this.speakgame_explain = false;
-        this.$emit('infoSpeakGame', this.speakgame_explain);
+        if (this.host == this.getUser.id) {
+          this.$emit('infoSpeakGame', this.speakgame_explain);
+        }
       } else if (this.ssafymind_explain == true) {
         this.ssafymind_explain = false;
-        this.$emit('infoSsafyMind', this.ssafymind_explain);
+        if (this.host == this.getUser.id) {
+          this.$emit('infoSsafyMind', this.ssafymind_explain);
+        }
       }
       this.jumpgame_explain = true;
-      this.$emit('infoJumpGame', this.jumpgame_explain);
+      if (this.host == this.getUser.id) {
+        this.$emit('infoJumpGame', this.jumpgame_explain);
+      }
     },
     count(type) {
       if (type === 1) {
@@ -148,8 +175,10 @@ export default {
     onModal() {
       // 모달 닫기
       this.$emit('getOpenModal', this.openmodal);
-      // 선택한 문제 수 전달하기
-      this.$emit('transferNumber', this.number);
+      if (this.host == this.getUser.id) {
+        // 게임 선택 완료
+        this.$emit('selectGame', this.number);
+      }
     },
   },
 };

@@ -1,15 +1,17 @@
 <template>
   <div class="game-order-modal">
     <div class="show-team-dialog">
-      <!-- <img src="~@/assets/ssafymindBeforeStart.png" id="ssafymind-before-start-img" alt="" v-show="explainmodal == true"> -->
-      <!-- <GameExplainModal/> -->
       <div class="game-explain-modal" v-show="explainmodal == true">
         <div class="game-explain-dialog">
           <div class="game-explain-content">
             <div class="modal-body">
               <div class="game-explain-explainbox">
+<<<<<<< HEAD
+                <img src="~@/assets/ssafymindBeforeStart.png" id="ssafymind-explain-img" alt="" />
+=======
                 <img v-if="gameType" img src="@/assets/images/mike.png" id="ssafymind-explain-img" alt="">
                 <img v-else src="~@/assets/ssafymindBeforeStart.png" id="ssafymind-explain-img" alt="">
+>>>>>>> d58272e81557e2665b88e9dfbe9856a2a108988e
                 <button class="understand-btn" @click="closeExplainModal">
                   알겠습니다!
                 </button>
@@ -30,17 +32,8 @@
                 :src="require(`../assets/team${teamOrder[idx - 1]}.png`)"
                 alt=""
               />
-              <!-- <img id="team-num-img" src="~@/assets/team2.png" alt="" />
-              <img id="team-num-img" src="~@/assets/team3.png" alt="" />
-              <img id="team-num-img" src="~@/assets/team4.png" alt="" />
-              <img id="team-num-img" src="~@/assets/team5.png" alt="" />
-              <img id="team-num-img" src="~@/assets/team6.png" alt="" />
-              <img id="team-num-img" src="~@/assets/team7.png" alt="" />
-              <img id="team-num-img" src="~@/assets/team8.png" alt="" />
-              <img id="team-num-img" src="~@/assets/team9.png" alt="" />
-              <img id="team-num-img" src="~@/assets/team10.png" alt="" /> -->
             </span>
-            <button class="start-game-btn" @click="startModal" v-if="host == this.getUser.id">
+            <button class="start-game-btn" @click="startModal">
               시작
             </button>
           </div>
@@ -52,14 +45,17 @@
 <script>
 import '@/components/css/gameOrderModal.css';
 import '@/components/css/gameExplainModal.css';
-// import GameExplainModal from '@/components/GameExplainModal';
 import { mapGetters } from 'vuex';
 export default {
   name: 'GameOrderModal',
+<<<<<<< HEAD
+  props: ['teamOrder', 'teamCnt', 'host'],
+=======
   components:{
     // GameExplainModal
   },
   props: ['teamOrder', 'teamCnt', 'host', 'gameType'],
+>>>>>>> d58272e81557e2665b88e9dfbe9856a2a108988e
   data: function() {
     return {
       ordermodal: false,
@@ -74,20 +70,21 @@ export default {
   methods: {
     startModal() {
       this.$emit('getCloseModal', this.ordermodal);
+<<<<<<< HEAD
+      if (this.host == this.getUser.id) {
+        this.$emit('startTimer', this.startTime);
+        this.$emit('sendGameStartTrigger');
+        this.$emit('getProgressBar', this.getProgressBar);
+      }
+=======
       this.$emit('startTimer', this.startTime);
       this.$emit('sendGameStartTrigger');
+>>>>>>> d58272e81557e2665b88e9dfbe9856a2a108988e
     },
-    // closeImg: function(){
-    //   console.log('나 안보이니?')
-    //   setTimeout(this.explainmodal = false, 3000);
-    // },
-    closeExplainModal: function(){
+    closeExplainModal: function() {
       this.explainmodal = false;
-    }
+    },
   },
-  mounted: function(){
-    // this.closeImg();
-  }
 };
 </script>
 <style>

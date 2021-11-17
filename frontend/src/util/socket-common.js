@@ -3,6 +3,10 @@ import SockJS from 'sockjs-client';
 
 // const chatURL = 'http://localhost:8080/playssafy';
 const chatURL = 'https://k5a302.p.ssafy.io:8080/playssafy';
+// const homeURL = 'http://localhost:3000';
+// const roomURL = 'http://localhost:3000/room';
+const homeURL = 'https://k5a302.p.ssafy.io:8080';
+const roomURL = 'https://k5a302.p.ssafy.io:8080/room';
 
 /**
  *
@@ -17,4 +21,4 @@ const socketConnect = (onConnected, onError) => {
   return stompClient;
 };
 
-export { socketConnect };
+export { socketConnect, homeURL, roomURL };

@@ -2,7 +2,6 @@ package com.playssafy.playssafy.dto.waitroom;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -16,6 +15,7 @@ public class Participant {
     private String participantId; // 참가자의 고유 ID
     private String participantName; // 참가자의 이름
     private int teamNo; // 참가자 소속 팀 번호
+    private boolean host; // 본인이 방주인인지 나타내는
 
     @Override
     public boolean equals(Object obj) {

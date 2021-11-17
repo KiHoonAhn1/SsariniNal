@@ -35,7 +35,7 @@ public class SsafyMindController {
         // 유저 입장 후 해당 게임 방 정보 얻기
         SsafyMind ssafyMind = ssafyMindService.exit(participant);
         // 방장이 퇴장한 경우 종료 메세지 뿌려주기
-        if (ssafyMind == null) {
+        if (ssafyMind == null && participant.isHost()) {
             template.convertAndSend("/ssafymind/" + participant.getRoomId(), "exit");
             return;
         }
