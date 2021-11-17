@@ -5,8 +5,8 @@ import SockJS from 'sockjs-client';
 const chatURL = 'https://k5a302.p.ssafy.io:8080/playssafy';
 // const homeURL = 'http://localhost:3000';
 // const roomURL = 'http://localhost:3000/room';
-const homeURL = 'https://k5a302.p.ssafy.io:8080';
-const roomURL = 'https://k5a302.p.ssafy.io:8080/room';
+const homeURL = 'https://k5a302.p.ssafy.io';
+const roomURL = 'https://k5a302.p.ssafy.io/room';
 
 /**
  *
