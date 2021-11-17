@@ -30,12 +30,12 @@ import java.util.TimerTask;
 public class SsazipJumpController {
     @Autowired
     private SsazipJumpService ssazipJumpService;
-    private SsazipJumpRepository ssazipJumpRepository;
+    private final SsazipJumpRepository ssazipJumpRepository;
     private final SimpMessagingTemplate template;
 
     //0.마스터의 룸, 게임 정보 요청
     @MessageMapping(value = "/game/jump/enter/reqInfoRoomNGame")
-    public void reqInfoRoomNGame(SsazipJump gotSsazipJump) {
+    public synchronized void reqInfoRoomNGame(SsazipJump gotSsazipJump) {
         System.out.println("마스터의 룸, 게임 정보 요청");
         System.out.println(gotSsazipJump.toString());
         // 입장 한 유저의 게임 방 정보 요청
@@ -46,7 +46,7 @@ public class SsazipJumpController {
     }
     //11. 유저 등록 및 송출
     @MessageMapping(value = "/game/jump/enter/reg/user")
-    public void regUser(SsazipJump gotSsazipJump) {
+    public synchronized void regUser(SsazipJump gotSsazipJump) {
         System.out.println("유저 등록 및 송출");
         System.out.println(gotSsazipJump.toString());
         SsazipJump ssazipJump = ssazipJumpService.regi(gotSsazipJump);
@@ -54,7 +54,7 @@ public class SsazipJumpController {
     }
     //12. 플레이어 값 저장, 유저에게 송출
     @MessageMapping(value = "/game/jump/enter/play")
-    public void regPlayer(SsazipJump gotSsazipJump) {
+    public synchronized void regPlayer(SsazipJump gotSsazipJump) {
         System.out.println("12. 플레이어 값 저장, 유저에게 송출");
         System.out.println(gotSsazipJump.toString());
         //저장
@@ -73,7 +73,7 @@ public class SsazipJumpController {
     }
     //10. 방 퇴장
     @MessageMapping(value = "/game/jump/exit")
-    public void exit(Participant participant) {
+    public synchronized void exit(Participant participant) {
         System.out.println("퇴장 감지");
         // 퇴장하는 유저 방에서 제거해주기
         SsazipJump ssazipJump = ssazipJumpService.exit(participant);
@@ -89,9 +89,34 @@ public class SsazipJumpController {
         template.convertAndSend("/game/jumpgame/" + participant.getRoomId(), ssazipJump);
     }
 
+    //40. 모달 종료
+    @MessageMapping(value = "/game/jump/closemodal")
+    public synchronized void closeModal(SsazipJump gotSsazipJump) {
+        if(gotSsazipJump.getType()==41) System.out.println("가이드");
+        else if(gotSsazipJump.getType()==42) System.out.println("스타트");
+        else if(gotSsazipJump.getType()==43) System.out.println("라운드");
+        System.out.println("모달 종료");
+//        SsazipJump ssazipJump = ssazipJumpService.read(gotSsazipJump.getRoomId());
+//        if(gotSsazipJump.getType()==41) {//가이드 종료
+//            ssazipJump.setGuideModalFlag(true);
+//        }
+//        if(gotSsazipJump.getType()==42){
+//            ssazipJump.setStartModalFlag(true);
+//        }
+//        if(gotSsazipJump.getType()==43){
+//            ssazipJump.setRoundModalFlag(true);
+//        }
+//        if(gotSsazipJump.getType()==44){
+//            ssazipJump.setRoundModalFlag(false);
+//        }
+        System.out.println(gotSsazipJump.toString());
+//        ssazipJumpRepository.save(ssazipJump);
+        template.convertAndSend("/game/jumpgame/" + gotSsazipJump.getRoomId(), gotSsazipJump);
+    }
+
     //1.마스터에게 초기값 요청
     @MessageMapping(value = "/game/jump/enter/reqToMaster")
-    public void needEnviroment(SsazipJump ssazipJump) {
+    public synchronized void needEnviroment(SsazipJump ssazipJump) {
     System.out.println("입장 전 정보 요청");
     System.out.println(ssazipJump.toString());
     template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
@@ -99,7 +124,7 @@ public class SsazipJumpController {
 
     //7.현 상태 중계 마스터로부터
     @MessageMapping(value = "/game/jump/state")
-    public void broadcastState(SsazipJump ssazipJump) {
+    public synchronized void broadcastState(SsazipJump ssazipJump) {
         System.out.println("현 상태전송");
         System.out.println(ssazipJump.toString());
         template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
@@ -107,7 +132,7 @@ public class SsazipJumpController {
 
     //2. 점프 값 중계, 3. 리셋 중계
     @MessageMapping(value = "/game/jump/data")
-    public void sendJumpInfo(SsazipJump ssazipJump) {
+    public synchronized void sendJumpInfo(SsazipJump ssazipJump) {
         System.out.println("데이터");
         System.out.println(ssazipJump.toString());
         template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
@@ -115,9 +140,29 @@ public class SsazipJumpController {
 
     //중지
     @MessageMapping(value = "/game/jump/stop")
-    public void sendStop(SsazipJump ssazipJump) {
+    public synchronized void sendStop(SsazipJump ssazipJump) {
         System.out.println("중지");
         System.out.println(ssazipJump.toString());
+        template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
+    }
+    //중지, 다음 배틀
+    @MessageMapping(value = "/game/jump/stopbattle")
+    public synchronized void sendStopNNextGame(SsazipJump gotSsazipJump) {
+        System.out.println("다음 배틀");
+        System.out.println(gotSsazipJump.getLoser());
+        if(gotSsazipJump.getType()==62) System.out.println("all game done");
+        System.out.println(gotSsazipJump.toString());
+        SsazipJump ssazipJump=ssazipJumpService.read(gotSsazipJump.getRoomId());
+        ssazipJump.setFinalScore(gotSsazipJump.getFinalScore());
+        ssazipJump.setLoser(gotSsazipJump.getLoser());
+        ssazipJump.setLoseTeam(gotSsazipJump.getLoseTeam());
+        ssazipJump.setTeamIdx1(gotSsazipJump.getTeamIdx1());
+        ssazipJump.setTeamIdx2(gotSsazipJump.getTeamIdx2());
+        ssazipJump.setTeamOrder(gotSsazipJump.getTeamOrder());
+        ssazipJump.setTeamOrderNext(gotSsazipJump.getTeamOrderNext());
+        ssazipJump.setRemainRound(gotSsazipJump.getRemainRound());
+        ssazipJump.setNextRemainRound(gotSsazipJump.getNextRemainRound());
+        ssazipJump.setType(gotSsazipJump.getType());
         template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
     }
 
@@ -132,7 +177,7 @@ public class SsazipJumpController {
     //유저 공간
     //11. registry
     @MessageMapping(value = "/game/jump/enter/registry")
-    public void registryDB(SsazipJump ressazipJump) {
+    public synchronized void registryDB(SsazipJump ressazipJump) {
         System.out.println("유저 접속 저장");
         System.out.println(ressazipJump.toString());
         // 입장 한 유저의 게임 방 정보 요청

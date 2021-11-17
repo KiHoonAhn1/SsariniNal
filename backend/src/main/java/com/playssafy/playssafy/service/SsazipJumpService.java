@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -18,7 +19,7 @@ public class SsazipJumpService {
     private SsazipJumpRepository ssazipJumpRepository;
 
     // rest 게임방 생성 메서드
-    public void createSsazipJump(InitGame initGame) {
+    public synchronized void createSsazipJump(InitGame initGame) {
         if(!ssazipJumpRepository.findById(initGame.getRoomId()).isEmpty()){
             ssazipJumpRepository.deleteById(initGame.getRoomId());
         }
@@ -33,6 +34,7 @@ public class SsazipJumpService {
         ssazipJump.setGameScore1(0);
         ssazipJump.setGameScore2(0);
 
+        ssazipJump.setGuideModalFlag(true);
 
         // 팀 진행 순서 초기화
         boolean[] exist = initGame.getExist();
@@ -42,6 +44,11 @@ public class SsazipJumpService {
             if (exist[i])
                 teamsNum.add(i);
         }
+
+        for(int i=0;i<teamsNum.size();i++){
+            System.out.println(teamsNum.get(i));
+        }
+        System.out.println("입장한 팀의 사이즈는 "+teamsNum.size());
 
         // 팀 섞기(100번)
         for (int i = 0; i < 100; i++) {
@@ -53,6 +60,7 @@ public class SsazipJumpService {
             teamsNum.set(a, teamsNum.get(b));
             teamsNum.set(b, temp);
         }
+        System.out.println("섞은 뒤 사이즈는 "+teamsNum.size());
 
         // 최종 결정된 순서 넣기
         for(int i = 0; i < teamsNum.size(); i++) {
@@ -62,11 +70,16 @@ public class SsazipJumpService {
         }
         // 홀수 팀 수 상황 추가
         if(teamsNum.size()%2==1){
-            ssazipJump.getTeamOrder().add(-2);
+            ssazipJump.getTeamOrder().add(20);
         }
 
         //현재 강(라운드 표시)
         ssazipJump.setRemainRound(ssazipJump.getTeamOrder().size());
+        int nrr=ssazipJump.getRemainRound()/2;
+        if(nrr%2==1){
+            nrr++;
+        }
+        ssazipJump.setNextRemainRound(nrr);
 
         //시작 팀 번호 값 세팅
         ssazipJump.setTeamIdx1(0);
@@ -88,18 +101,19 @@ public class SsazipJumpService {
 //        ssafyMind.getTeams().get(2).getMembers().add(new Participant(initGame.getRoomId(), "3", "이장섭3", 2));
 //        ssafyMind.getTeams().get(2).getMembers().add(new Participant(initGame.getRoomId(), "4", "이장섭4", 2));
 //
-
+        ssazipJump.setTeamOrder(teamsNum);
         ssazipJumpRepository.save(ssazipJump);
     }
 
 
     // 0. 방을 순수하게 읽어오는 로직
-    public SsazipJump read(String roomId) {
-        return ssazipJumpRepository.findById(roomId).get();
+    public synchronized SsazipJump read(String roomId) {
+        return ssazipJumpRepository.findById(roomId).orElse(null);
     }
     // 11. 게임에 유저 저장
     public synchronized SsazipJump regi(SsazipJump gotSsazipJump) {
         System.out.println("게임에 유저 정보 저장 및 삭제");
+        System.out.println(gotSsazipJump.getParticipantName());
         System.out.println(gotSsazipJump.toString());
         SsazipJump ssazipJump = ssazipJumpRepository.findById(gotSsazipJump.getRoomId()).orElse(null);
         //맴버에 추가
