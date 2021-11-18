@@ -26,6 +26,8 @@
 import '@/css/create-room.css';
 import axios from '@/util/http-common.js';
 import { mapActions, mapGetters } from 'vuex';
+import swal from 'sweetalert';
+
 
 export default {
   name: 'CreateRoom',
@@ -57,7 +59,15 @@ export default {
     createGameRoom() {
       // 방 이름은 최소 1글자 이상, 15글자 이하로 한다
       if (this.roomName.length < 1 || this.roomName.length > 15) {
-        alert('방 이름은 최소 1글자 이상, 15글자 이하로 한다');
+        swal({
+            // className:'alert',
+            title: "방 이름은 1글자 이상,",
+            text: "15글자 이하로 입력해주세요",
+            icon: "/img/ssazip-logo.c407ce8a.png",
+            buttons: {
+            text: '확인',
+          },
+        })
         return;
       }
       axios({

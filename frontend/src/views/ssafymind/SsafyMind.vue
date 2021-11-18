@@ -186,6 +186,8 @@ import { socketConnect } from '@/util/socket-common.js';
 import '@/components/css/ssafymind/ssafymind-right.css';
 import '@/components/css/ssafymind/progressbar.css';
 import SsafymindRankModal from '@/components/ssafymind/SsafymindRankModal';
+import swal from 'sweetalert';
+
 
 export default {
   name: 'SsafyMind',
@@ -233,7 +235,14 @@ export default {
     history.pushState(null, null, location.href);
     window.onpopstate = () => {
       history.go(1);
-      alert(`게임 내에서는 '뒤로가기'가 불가능합니다.`);
+      swal({
+          // className:'alert',
+          title: "게임 내에서는 뒤로가기가 불가능합니다.",
+          icon: "/img/ssazip-logo.c407ce8a.png",
+          buttons: {
+          text: '확인',
+        },
+      })
     };
     this.stompClient = socketConnect(this.onConnected, this.onError);
     this.stompClient.debug = function() {};
@@ -536,7 +545,14 @@ export default {
       if (payload.body == 'exit') {
         this.$router.push('/room/' + this.getRoomId).catch(() => {});
         this.stompClient.disconnect();
-        alert('방장이 퇴장하여 게임이 종료됩니다!');
+        swal({
+            // className:'alert',
+            title: "방장이 퇴장하여 게임이 종료됩니다!",
+            icon: "/img/ssazip-logo.c407ce8a.png",
+            buttons: {
+            text: '확인',
+          },
+        })
         return;
       }
       const data = JSON.parse(payload.body);

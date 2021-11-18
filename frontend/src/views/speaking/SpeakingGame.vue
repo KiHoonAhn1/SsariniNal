@@ -59,6 +59,7 @@ import { socketConnect } from '@/util/socket-common.js';
 import Header from '@/components/common/Header.vue';
 import GameOrderModal from '@/components/GameOrderModal';
 import GameStatus from '@/components/GameStatus.vue';
+import swal from 'sweetalert';
 
 export default {
   name: 'SpeakGame',
@@ -103,8 +104,15 @@ export default {
     history.pushState(null, null, location.href);
     window.onpopstate = () => {
       history.go(1);
-      alert(`게임 내에서는 '뒤로가기'가 불가능합니다.`);
-    };
+      swal({
+          // className:'alert',
+          title: "게임 내에서는 뒤로가기가 불가능합니다.",
+          icon: "/img/ssazip-logo.c407ce8a.png",
+          buttons: {
+          text: '확인',
+        },
+      })
+    }
     this.stompClient = socketConnect(this.onConnected, this.onError);
   },
   mounted() {
@@ -125,7 +133,14 @@ export default {
     /*  */
     translate: function() {
       if (typeof webkitSpeechRecognition !== 'function') {
-        alert('크롬에서만 동작합니다');
+        swal({
+          // className:'alert',
+          title: "크롬에서만 동작합니다.",
+          icon: "/img/ssazip-logo.c407ce8a.png",
+          buttons: {
+          text: '확인',
+        },
+      })
         return false;
       }
       const speech = new (window.SpeechRecognition || window.webkitSpeechRecognition)();

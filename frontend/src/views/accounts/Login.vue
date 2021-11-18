@@ -38,6 +38,7 @@
 import '@/css/accounts/login.css';
 import axios from '@/util/http-common.js';
 import { mapActions, mapGetters } from 'vuex';
+import swal from 'sweetalert';
 
 export default {
   name: 'Login',
@@ -73,12 +74,26 @@ export default {
     baseLogin() {
       // 아이디를 입력하지 않은 경우
       if (this.user.id.length == 0) {
-        alert('아이디를 입력하세요!');
+        swal({
+          // className:'alert',
+          title: '아이디를 입력하세요!',
+          icon: "/img/ssazip-logo.c407ce8a.png",
+          buttons: {
+          text: '확인',
+        },
+        })
         return;
       }
       // 비밀번호를 입력하지 않은 경우
       if (this.user.pass.length == 0) {
-        alert('비밀번호를 입력하세요!');
+        swal({
+          // className:'alert',
+          title: '비밀번호를 입력하세요!',
+          icon: "/img/ssazip-logo.c407ce8a.png",
+          buttons: {
+          text: '확인',
+        },
+        })
         return;
       }
       axios({
@@ -90,7 +105,14 @@ export default {
           let user = res.data;
           // 유저가 존재하지 않는 경우
           if (user == '') {
-            alert('아이디나 비밀번호를 확인하세요.');
+            swal({
+              // className:'alert',
+              title: '아이디나 비밀번호를 확인하세요.',
+              icon: "/img/ssazip-logo.c407ce8a.png",
+              buttons: {
+              text: '확인',
+            },
+            })
             return;
           }
           // 존재하는 경우
@@ -155,13 +177,27 @@ export default {
           if (status) {
             const email = naverLogin.user.getEmail();
             if (email == undefined || email == undefined) {
-              alert('이메일과 이름을 체크해주세요.');
+              swal({
+                // className:'alert',
+                title: '이메일과 이름을 체크해주세요.',
+                icon: "/img/ssazip-logo.c407ce8a.png",
+                buttons: {
+                text: '확인',
+              },
+              })
               naverLogin.reprompt();
               return;
             }
             // window.location.replace('http://localhost:8080/login');
           } else {
-            alert('로그인 실패');
+            swal({
+                // className:'alert',
+                title: '로그인 실패',
+                icon: "/img/ssazip-logo.c407ce8a.png",
+                buttons: {
+                text: '확인',
+              },
+            })
           }
         });
       });

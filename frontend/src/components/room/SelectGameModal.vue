@@ -89,6 +89,8 @@
 <script>
 import '@/components/css/selectGameModal.css';
 import { mapGetters } from 'vuex';
+import swal from 'sweetalert';
+
 export default {
   name: 'SelectGameModal',
   props: ['host'],
@@ -161,14 +163,28 @@ export default {
         this.number = this.number - 1;
         if (this.number < 1) {
           this.number = 1;
-          alert('팀별 최소 문제수는 1문제 입니다!');
+          swal({
+              // className:'alert',
+              title: "팀별 최소 문제수는 1문제입니다.",
+              icon: "/img/ssazip-logo.c407ce8a.png",
+              buttons: {
+              text: '확인',
+            },
+          })
         }
       } else if (type === 2) {
         this.number = this.number + 1;
         // 최대 5문제 제한
         if (this.number > 5) {
           this.number = 5;
-          alert('팀별 최대 문제수는 5문제 입니다!');
+          swal({
+              // className:'alert',
+              title: "팀별 최대 문제수는 5문제 입니다!",
+              icon: "/img/ssazip-logo.c407ce8a.png",
+              buttons: {
+              text: '확인',
+            },
+          })
         }
       }
     },

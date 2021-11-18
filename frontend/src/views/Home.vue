@@ -34,6 +34,8 @@ import '@/css/home.css';
 import { mapActions } from 'vuex';
 import axios from '@/util/http-common.js';
 import { uuidv4 } from '@/util/util.js';
+import swal from 'sweetalert';
+
 
 export default {
   name: 'Home',
@@ -51,12 +53,27 @@ export default {
     joinGameRoom() {
       // 닉네임 길이는 3글자 이상, 15글자 이하로 한다.
       if (1 > this.user.name.length || this.user.name.length > 4) {
-        alert('닉네임 길이는 1글자 이상, 4글자 이하로 설정해주세요.');
+        swal({
+          // className:'alert',
+          title: '닉네임 길이는 1글자 이상,',
+          text: ' 4글자 이하로 설정해주세요.',
+          icon: "/img/ssazip-logo.c407ce8a.png",
+          buttons: {
+          text: '확인',
+        },
+        })
         return;
       }
       // roomId를 입력하지 않는 경우 참여가 불가능하다
       if (this.roomId.length == 0) {
-        alert('참가 코드를 입력하세요!');
+        swal({
+            // className:'alert',
+            title: '참가 코드를 입력하세요!',
+            icon: "/img/ssazip-logo.c407ce8a.png",
+            buttons: {
+            text: '확인',
+          },
+        })
         return;
       }
       // 유저 정보 저장
@@ -71,17 +88,40 @@ export default {
           let exist = res.data;
           // 방이 존재하지 않는 경우
           if (exist == 0) {
-            alert('해당 방은 존재하지 않습니다. 입장코드를 확인해주세요!');
+            swal({
+                // className:'alert',
+                title: '해당 방은 존재하지 않습니다!',
+                text: '입장코드를 확인해주세요',
+                icon: "/img/ssazip-logo.c407ce8a.png",
+                buttons: {
+                text: '확인',
+              },
+            })
             return;
           }
           // 입장 제한인원을 초과한 경우
           else if (exist == 1) {
-            alert('해당 방의 입장 가능 정원을 초과했습니다!');
+            swal({
+                // className:'alert',
+                title: '해당 방의 정원을 초과했습니다!',
+                icon: "/img/ssazip-logo.c407ce8a.png",
+                buttons: {
+                text: '확인',
+              },
+            })
             return;
           }
           // 동일한 이름의 참가자가 존재하는 경우
           else if (exist == 2) {
-            alert('동일한 이름을 가진 참가자가 존재합니다. 이름을 수정해주세요!');
+            swal({
+                // className:'alert',
+                title: "동일한 이름의 참가자가 존재합니다.",
+                text: '이름을 수정해주세요!',
+                icon: "/img/ssazip-logo.c407ce8a.png",
+                buttons: {
+                text: '확인',
+              },
+            })
             return;
           }
           // 유저 정보 저장
