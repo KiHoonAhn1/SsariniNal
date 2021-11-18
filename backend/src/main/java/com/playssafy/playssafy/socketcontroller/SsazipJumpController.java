@@ -34,9 +34,13 @@ public class SsazipJumpController {
     @MessageMapping(value = "/game/jump/modal/checker")
     public synchronized void modalChecker(SsazipJump gotSsazipJump) {
         System.out.println("13. 가이드모달 시작시 필요 여부 확인 통신");
+        System.out.println(gotSsazipJump.toString());
         System.out.println(gotSsazipJump.getType());
         SsazipJump ssazipJump = ssazipJumpService.read(gotSsazipJump.getRoomId());
-        template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
+        System.out.println(ssazipJump.isGuideModalFlag());
+        ssazipJump.setType(gotSsazipJump.getType());
+        System.out.println(ssazipJump.toString());
+        template.convertAndSend("/game/jumpgame/" + gotSsazipJump.getRoomId(), ssazipJump);
     }
     //0.mount : 마스터의 룸, 게임 정보 요청
     @MessageMapping(value = "/game/jump/enter/reqInfoRoomNGame")
@@ -115,8 +119,8 @@ public class SsazipJumpController {
 //            ssazipJump.setRoundModalFlag(true   );
 //        }
         System.out.println(gotSsazipJump.toString());
-        ssazipJump.setType(gotSsazipJump.getType());
         ssazipJumpRepository.save(ssazipJump);
+        ssazipJump.setType(gotSsazipJump.getType());
         template.convertAndSend("/game/jumpgame/" + gotSsazipJump.getRoomId(), ssazipJump);
     }
 
@@ -156,8 +160,8 @@ public class SsazipJumpController {
         ssazipJump.setNowRoundNum(gotSsazipJump.getNowRoundNum());
         ssazipJump.setGameScore1(gotSsazipJump.getGameScore1());
         ssazipJump.setGameScore2(gotSsazipJump.getGameScore2());
-        ssazipJump.setType(gotSsazipJump.getType());
         ssazipJumpRepository.save(ssazipJump);
+        ssazipJump.setType(gotSsazipJump.getType());
         template.convertAndSend("/game/jumpgame/" + gotSsazipJump.getRoomId(), ssazipJump);
     }
     //중지, 다음 배틀
@@ -177,8 +181,8 @@ public class SsazipJumpController {
         ssazipJump.setTeamOrderNext(gotSsazipJump.getTeamOrderNext());
         ssazipJump.setRemainRound(gotSsazipJump.getRemainRound());
         ssazipJump.setNextRemainRound(gotSsazipJump.getNextRemainRound());
-        ssazipJump.setType(gotSsazipJump.getType());
         ssazipJumpRepository.save(ssazipJump);
+        ssazipJump.setType(gotSsazipJump.getType());
         template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
     }
 

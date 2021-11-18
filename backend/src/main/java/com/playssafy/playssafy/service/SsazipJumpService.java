@@ -43,7 +43,7 @@ public class SsazipJumpService {
             if (exist[i])
                 teamsNum.add(i);
         }
-
+        System.out.println("teamsNum.size="+teamsNum.size());
         for(int i=0;i<teamsNum.size();i++){
             System.out.println(teamsNum.get(i));
         }
@@ -62,11 +62,11 @@ public class SsazipJumpService {
         System.out.println("섞은 뒤 사이즈는 "+teamsNum.size());
 
         // 최종 결정된 순서 넣기
-        for(int i = 0; i < teamsNum.size(); i++) {
+//        for(int i = 0; i < teamsNum.size(); i++) {
             for (Integer team : teamsNum) {
                 ssazipJump.getTeamOrder().add(team);
             }
-        }
+//        }
         ssazipJump.setRemainRound(teamsNum.size());
         // 홀수 팀 수 상황 추가
         if(teamsNum.size()%2==1){
@@ -76,9 +76,15 @@ public class SsazipJumpService {
         //현재 강(라운드 표시)
         ssazipJump.setRemainRound(ssazipJump.getTeamOrder().size());
         int nrr=ssazipJump.getRemainRound()/2;
-        if(nrr%2==1){
+        System.out.println("nrr "+nrr);
+        if(nrr==1) {
+            nrr=0;
+        }
+        else if(nrr%2==1){
             nrr++;
         }
+        System.out.println("nrr "+nrr);
+
         ssazipJump.setNextRemainRound(nrr);
 
         //시작 팀 번호 값 세팅
@@ -92,6 +98,8 @@ public class SsazipJumpService {
         ssazipJump.setNowRoundNum(1);
 
         ssazipJump.setTeamOrder(teamsNum);
+        System.out.println("방 초기 세팅값");
+        System.out.println(ssazipJump.toString());
         ssazipJumpRepository.save(ssazipJump);
     }
     // 13,0, 방을 순수하게 읽어오는 로직
