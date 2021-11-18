@@ -1,6 +1,6 @@
 package com.playssafy.playssafy.dto.speaking;
 
-import com.playssafy.playssafy.dto.ssafymind.Quiz;
+import com.playssafy.playssafy.dto.waitroom.Quiz;
 import com.playssafy.playssafy.dto.ssafymind.Team;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

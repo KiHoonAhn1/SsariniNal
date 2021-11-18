@@ -2,6 +2,8 @@ package com.playssafy.playssafy.service;
 
 import com.playssafy.playssafy.dto.speaking.SpeakMessage;
 import com.playssafy.playssafy.dto.speaking.Speaking;
+import com.playssafy.playssafy.dto.waitroom.Quiz;
+import com.playssafy.playssafy.dto.ssafymind.Team;
 import com.playssafy.playssafy.dto.waitroom.InitGame;
 import com.playssafy.playssafy.dto.waitroom.Participant;
 import com.playssafy.playssafy.dto.waitroom.WaitRoom;
@@ -17,6 +19,8 @@ import java.util.List;
 public class SpeakingService {
     @Autowired
     private SpeakGameRepository speakGameRepository;
+    @Autowired
+    private WaitRoomRepository waitRoomRepository;
 
     // 0. 게임방 생성 메서드
     public void createSpeaking(InitGame initGame) {

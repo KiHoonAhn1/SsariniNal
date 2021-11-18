@@ -1,4 +1,4 @@
-package com.playssafy.playssafy.dto.speaking;
+package com.playssafy.playssafy.dto.waitroom;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

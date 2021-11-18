@@ -1,5 +1,6 @@
 package com.playssafy.playssafy.dto.ssafymind;
 
+import com.playssafy.playssafy.dto.waitroom.Quiz;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

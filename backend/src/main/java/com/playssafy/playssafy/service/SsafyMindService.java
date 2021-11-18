@@ -3,6 +3,7 @@ package com.playssafy.playssafy.service;
 import com.playssafy.playssafy.dto.ssafymind.*;
 import com.playssafy.playssafy.dto.waitroom.InitGame;
 import com.playssafy.playssafy.dto.waitroom.Participant;
+import com.playssafy.playssafy.dto.waitroom.Quiz;
 import com.playssafy.playssafy.dto.waitroom.WaitRoom;
 import com.playssafy.playssafy.repository.SsafyMindRepository;
 import com.playssafy.playssafy.repository.WaitRoomRepository;
