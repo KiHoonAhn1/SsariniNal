@@ -141,7 +141,7 @@
           >
             최종 결과
           </button>
-          <img class="play-btn" src="~@/assets/play-button.png" @click="gameStart()" alt="" />
+          <img class="play-btn" src="~@/assets/play-button.png" v-if="this.room.host == this.getUser.id" @click="gameStart()" alt="" />
           <button
             class="waiting-room-btn select-game"
             @click="openmodal = true"
