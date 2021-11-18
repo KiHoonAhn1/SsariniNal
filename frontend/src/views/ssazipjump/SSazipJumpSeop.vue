@@ -259,6 +259,7 @@ export default {
             checkCollisionOnFlag: false, //단발성 충돌 감지용 플레그
             idPlayerRegFlag:false,//단방성 플레이어 등록을 위한 플래그
             idUserRegFlag:false,//단발성 유저 등록
+            showRoundOnFlag:true,//쇼라운드 중첩 방지 플래그
         };
     },
     components: {
@@ -442,7 +443,7 @@ export default {
                 }
 
                 //마스터 요청시 장애물 생성
-                if (this.getIsLogin && this.obstacleflag&&(this.getUser.name==this.room.host)) {
+                if (this.getIsLogin && this.obstacleflag) {
                     if (cntTime > this.time) {
                         document.getElementById('ssazipbg').style.animationPlayState = 'running';
                         document.getElementById('ssazipbg2').style.animationPlayState = 'running';
@@ -612,28 +613,13 @@ export default {
                     this.animationOnFlag = false;
                     ssazipbg.style.animationPlayState = 'paused';
                     ssazipbg2.style.animationPlayState = 'paused';
-                    // if (this.masterKeyFlag) {
-                    //     //마스터 재시작
-                    //     setTimeout(() => {
-                    //         // this.showResult = false;
-                    //         console.log('next start');ㅁㅁㄴㅇ
-                    //         this.xArr = [];
-                    //         this.xArrType = [];
-                    //         this.startObstacle();
-                    //         //게임시작
-                    //         //-------
-                    //     }, 3000);
-                    // } else {
-                    //     setTimeout(() => {
-                    //         // this.showResult = false;
-                    //         console.log('next start');
-                    //     }, 3000);
-                    // }
+
                 }
             };
             frame();
             // 충돌체크함수 by master
             const checkCollision = (dino, cactus) => {
+                this.showRoundOnFlag=true;
                 let xDiff = cactus.x - (dino.x + dino.width);
                 let yDiff = cactus.y - (dino.y + dino.height);
                 if (dino.x <= cactus.x + cactus.width) {
@@ -791,11 +777,13 @@ export default {
             this.obstacleflag = true;
             document.getElementById('ssazipbg').style.animationPlayState = 'running';
             document.getElementById('ssazipbg2').style.animationPlayState = 'running';
+            console.log('this.animationOnFlag='+this.animationOnFlag);
             if (!this.animationOnFlag ) {
                 this.drawSsazipgameStart();
             }
         },
         showRound() {
+
             console.log('sssssssssssssssssssssssssssrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
             console.log('sssssssssssssssssssssssssssrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
             console.log('sssssssssssssssssssssssssssrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
@@ -1614,7 +1602,10 @@ export default {
                 console.log('4333333333333333333333333333333');
 
                 this.roundModalOpenFlag = false;
-                this.showRound();
+                if(this.showRoundOnFlag){
+                    this.showRoundOnFlag=false;
+                    this.showRound();
+                }
                 return;
             }
             //round open
@@ -1747,7 +1738,7 @@ export default {
                     console.log('will end');
 
                     this.onDisconnect();
-                }, 2000);
+                }, 3000);
             }
             if (info.type == 61) {
                 this.checkCollisionOnFlag = false;
