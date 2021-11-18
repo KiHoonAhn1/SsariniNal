@@ -25,18 +25,23 @@ import java.util.TimerTask;
  */
 @Controller
 @RequiredArgsConstructor
-//@RestController
-//@RequestMapping("/")
 public class SsazipJumpController {
     @Autowired
     private SsazipJumpService ssazipJumpService;
     private final SsazipJumpRepository ssazipJumpRepository;
     private final SimpMessagingTemplate template;
-
-    //0.마스터의 룸, 게임 정보 요청
+    //13. 가이드모달 시작시 필요 여부 확인 통신
+    @MessageMapping(value = "/game/jump/modal/checker")
+    public synchronized void modalChecker(SsazipJump gotSsazipJump) {
+        System.out.println("13. 가이드모달 시작시 필요 여부 확인 통신");
+        System.out.println(gotSsazipJump.getType());
+        SsazipJump ssazipJump = ssazipJumpService.read(gotSsazipJump.getRoomId());
+        template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
+    }
+    //0.mount : 마스터의 룸, 게임 정보 요청
     @MessageMapping(value = "/game/jump/enter/reqInfoRoomNGame")
     public synchronized void reqInfoRoomNGame(SsazipJump gotSsazipJump) {
-        System.out.println("마스터의 룸, 게임 정보 요청");
+        System.out.println("mount : 마스터의 룸, 게임 정보 요청");
         System.out.println(gotSsazipJump.toString());
         // 입장 한 유저의 게임 방 정보 요청
         SsazipJump ssazipJump = ssazipJumpService.read(gotSsazipJump.getRoomId());
@@ -44,10 +49,10 @@ public class SsazipJumpController {
         // 게임 방 정보 소켓으로 반환
         template.convertAndSend("/game/jumpgame/" + gotSsazipJump.getRoomId(), ssazipJump);
     }
-    //11. 유저 등록 및 송출
+    //11. 유저(방장을 제외한 모든 참여자) 등록 및 송출
     @MessageMapping(value = "/game/jump/enter/reg/user")
     public synchronized void regUser(SsazipJump gotSsazipJump) {
-        System.out.println("유저 등록 및 송출");
+        System.out.println("//11. 유저(방장을 제외한 모든 참여자) 등록 및 송출");
         System.out.println(gotSsazipJump.toString());
         SsazipJump ssazipJump = ssazipJumpService.regi(gotSsazipJump);
         template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
@@ -96,39 +101,40 @@ public class SsazipJumpController {
         else if(gotSsazipJump.getType()==42) System.out.println("스타트");
         else if(gotSsazipJump.getType()==43) System.out.println("라운드");
         System.out.println("모달 종료");
-//        SsazipJump ssazipJump = ssazipJumpService.read(gotSsazipJump.getRoomId());
-//        if(gotSsazipJump.getType()==41) {//가이드 종료
-//            ssazipJump.setGuideModalFlag(true);
-//        }
-//        if(gotSsazipJump.getType()==42){
-//            ssazipJump.setStartModalFlag(true);
-//        }
-//        if(gotSsazipJump.getType()==43){
-//            ssazipJump.setRoundModalFlag(true);
-//        }
+        SsazipJump ssazipJump = ssazipJumpService.read(gotSsazipJump.getRoomId());
+        if(gotSsazipJump.getType()==41) {//가이드 종료
+            ssazipJump.setGuideModalFlag(false);
+        }
+        if(gotSsazipJump.getType()==42){
+            ssazipJump.setStartModalFlag(false);
+        }
+        if(gotSsazipJump.getType()==43){
+            ssazipJump.setRoundModalFlag(false);
+        }
 //        if(gotSsazipJump.getType()==44){
-//            ssazipJump.setRoundModalFlag(false);
+//            ssazipJump.setRoundModalFlag(true   );
 //        }
         System.out.println(gotSsazipJump.toString());
-//        ssazipJumpRepository.save(ssazipJump);
-        template.convertAndSend("/game/jumpgame/" + gotSsazipJump.getRoomId(), gotSsazipJump);
+        ssazipJump.setType(gotSsazipJump.getType());
+        ssazipJumpRepository.save(ssazipJump);
+        template.convertAndSend("/game/jumpgame/" + gotSsazipJump.getRoomId(), ssazipJump);
     }
 
-    //1.마스터에게 초기값 요청
-    @MessageMapping(value = "/game/jump/enter/reqToMaster")
-    public synchronized void needEnviroment(SsazipJump ssazipJump) {
-    System.out.println("입장 전 정보 요청");
-    System.out.println(ssazipJump.toString());
-    template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
-    }
+//    //1.마스터에게 초기값 요청
+//    @MessageMapping(value = "/game/jump/enter/reqToMaster")
+//    public synchronized void needEnviroment(SsazipJump ssazipJump) {
+//    System.out.println("입장 전 정보 요청");
+//    System.out.println(ssazipJump.toString());
+//    template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
+//    }
 
-    //7.현 상태 중계 마스터로부터
-    @MessageMapping(value = "/game/jump/state")
-    public synchronized void broadcastState(SsazipJump ssazipJump) {
-        System.out.println("현 상태전송");
-        System.out.println(ssazipJump.toString());
-        template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
-    }
+//    //7.현 상태 중계 마스터로부터
+//    @MessageMapping(value = "/game/jump/state")
+//    public synchronized void broadcastState(SsazipJump ssazipJump) {
+//        System.out.println("현 상태전송");
+//        System.out.println(ssazipJump.toString());
+//        template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
+//    }
 
     //2. 점프 값 중계, 3. 리셋 중계
     @MessageMapping(value = "/game/jump/data")
@@ -140,10 +146,19 @@ public class SsazipJumpController {
 
     //중지
     @MessageMapping(value = "/game/jump/stop")
-    public synchronized void sendStop(SsazipJump ssazipJump) {
+    public synchronized void sendStop(SsazipJump gotSsazipJump) {
         System.out.println("중지");
-        System.out.println(ssazipJump.toString());
-        template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
+        System.out.println(gotSsazipJump.toString());
+        SsazipJump ssazipJump = ssazipJumpService.read(gotSsazipJump.getRoomId());
+        ssazipJump.setBeGameStopFlag(true);
+        ssazipJump.setLoser(gotSsazipJump.getLoser());
+        ssazipJump.setLoseTeam(gotSsazipJump.getLoseTeam());
+        ssazipJump.setNowRoundNum(gotSsazipJump.getNowRoundNum());
+        ssazipJump.setGameScore1(gotSsazipJump.getGameScore1());
+        ssazipJump.setGameScore2(gotSsazipJump.getGameScore2());
+        ssazipJump.setType(gotSsazipJump.getType());
+        ssazipJumpRepository.save(ssazipJump);
+        template.convertAndSend("/game/jumpgame/" + gotSsazipJump.getRoomId(), ssazipJump);
     }
     //중지, 다음 배틀
     @MessageMapping(value = "/game/jump/stopbattle")
@@ -163,6 +178,7 @@ public class SsazipJumpController {
         ssazipJump.setRemainRound(gotSsazipJump.getRemainRound());
         ssazipJump.setNextRemainRound(gotSsazipJump.getNextRemainRound());
         ssazipJump.setType(gotSsazipJump.getType());
+        ssazipJumpRepository.save(ssazipJump);
         template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
     }
 

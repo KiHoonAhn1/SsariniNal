@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -88,4 +89,42 @@ public class SsazipJump {
     }
 
 
+    @Override
+    public String toString() {
+        return "SsazipJump{" +
+                "roomId='" + roomId + '\'' +
+                ", type=" + type +
+                ", host='" + host + '\'' +
+                ", gameScore1=" + gameScore1 +
+                ", gameScore2=" + gameScore2 +
+                ", teamOrder=" + teamOrder +
+                ", teamOrderNext=" + teamOrderNext +
+                ", finalScore=" + finalScore +
+                ", remainRound=" + remainRound +
+                ", nextRemainRound=" + nextRemainRound +
+                ", teamIdx1=" + teamIdx1 +
+                ", teamIdx2=" + teamIdx2 +
+                ", masterCreatedFlag=" + masterCreatedFlag +
+                ", jumpArr1=" + Arrays.toString(jumpArr1) +
+                ", jumpArr2=" + Arrays.toString(jumpArr2) +
+                ", reloadflag=" + reloadflag +
+                ", participantId='" + participantId + '\'' +
+                ", participantName='" + participantName + '\'' +
+                ", teamNo=" + teamNo +
+                ", obstacleflag=" + obstacleflag +
+                ", xbArr=" + Arrays.toString(xbArr) +
+                ", xbArrType=" + Arrays.toString(xbArrType) +
+
+                ", beUserPresent1=" + Arrays.toString(beUserPresent1) +
+                ", beUserPresent2=" + Arrays.toString(beUserPresent2) +
+                ", beGameStopFlag=" + beGameStopFlag +
+                ", lastEntering='" + lastEntering + '\'' +
+                ", loser='" + loser + '\'' +
+                ", loseTeam='" + loseTeam + '\'' +
+                ", nowRoundNum=" + nowRoundNum +
+                ", guideModalFlag=" + guideModalFlag +
+                ", startModalFlag=" + startModalFlag +
+                ", roundModalFlag=" + roundModalFlag +
+                '}';
+    }
 }

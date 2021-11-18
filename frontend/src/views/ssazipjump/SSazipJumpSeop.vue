@@ -186,7 +186,7 @@ export default {
             //참여 중 여부 확인 어레이
             userPresent1: [false, false, false, false, false, false],
             userPresent2: [false, false, false, false, false, false],
-            dinos1: [],
+            dinos1: [], //싸집이 정보 배열
             dinos2: [],
             userId: '안기훈',
             userIdx: -1, //팀 내 순서
@@ -216,7 +216,7 @@ export default {
             receivedArrType: [], //수신된 장애물 타입
             startFlag: false, //게임 시작 플레그 초기 false여야한다, 방장의 시작으로 동작 구현 필요
             drawFlag: false, //장애물 그리기 플레그
-            drawObFlag: false, //장애물 생성 플레그
+            obstacleflag: false, //장애물 생성 플레그
             enteredUser1: 0,
             enteredUser2: 0,
             // gameStopFlag: false,
@@ -427,7 +427,7 @@ export default {
                 }
 
                 //마스터 요청시 장애물 생성
-                if (this.getIsLogin && this.drawObFlag) {
+                if (this.getIsLogin && this.obstacleflag) {
                     if (cntTime > this.time) {
                         this.time++;
                         if (this.xArr.length == 0) {
@@ -578,6 +578,8 @@ export default {
                 }
                 // console.log(this.receivedGameStopFlag);
                 if (this.receivedGameStopFlag) {
+                    //6
+                    this.receivedGameStopFlag = false;
                     console.log('=============== stop ani');
                     console.log('=============== stop ani');
                     console.log('=============== stop ani');
@@ -590,7 +592,6 @@ export default {
                     this.animationOnFlag = false;
                     ssazipbg.style.animation = 'paused';
                     ssazipbg2.style.animation = 'paused';
-                    this.receivedGameStopFlag = false;
                     // if (this.masterKeyFlag) {
                     //     //마스터 재시작
                     //     setTimeout(() => {
@@ -620,6 +621,7 @@ export default {
                         console.log('=======충돌');
                         console.log('=======충돌');
                         console.log(dino.name);
+                        this.drawFlag = false;
                         this.loser = dino.name;
                         this.loseTeam = dino.teamNo;
                         if (this.loseTeam == 1) {
@@ -629,13 +631,13 @@ export default {
                         }
                         this.nowRoundNum++;
                         // this.gameStopFlag = true;
-                        this.receivedGameStopFlag = true;
+                        this.receivedGameStopFlag = true; //정지신호
                         if (this.nowRoundNum < 4 && this.gameScore1 < 2 && this.gameScore2 < 2) {
                             //동일 팀 승패 가르기 중
-                            this.stopGameSending();
+                            this.stopGameSendingByMaster();
                         } else {
                             //다음 배틀로
-                            this.stopGameNBattleSending();
+                            this.stopGameNBattleSendingByMaster();
                         }
                     }
                 }
@@ -661,7 +663,7 @@ export default {
             this.users1 = [];
             this.users2 = [];
             console.log(teamNum1 + ' ' + teamNum2);
-            if (teamNum1 != 20) {
+            if (teamNum1 != undefined) {
                 console.log('1팀 수 ' + this.room.teamsMember[teamNum1].members.length);
 
                 for (let i = 0; i < this.room.teamsMember[teamNum1].members.length; i++) {
@@ -671,7 +673,8 @@ export default {
                     this.users1.push(mem);
                 }
             }
-            if (teamNum2 != 20) {
+            if (teamNum2 != undefined) {
+                // if (this.room.teamsMember[teamNum2] != null) {
                 console.log('2팀 수 ' + this.room.teamsMember[teamNum2].members.length);
                 for (let i = 0; i < this.room.teamsMember[teamNum2].members.length; i++) {
                     console.log(i + '번 플레이어');
@@ -680,6 +683,7 @@ export default {
                     let mem = { userId: this.room.teamsMember[teamNum2].members[i].participantName, jump: false };
                     this.users2.push(mem);
                 }
+                // }
             }
             // this.broadcastToUser();
 
@@ -732,16 +736,7 @@ export default {
                 }
             }
         },
-        unLoadEvent: function(event) {
-            if (this.canLeaveSite) return;
 
-            event.preventDefault();
-            event.returnValue = '';
-        },
-
-        nextGame() {
-            //다음게임
-        },
         ////////////////////// modal method //////////////////////////
         ////////////////////// modal method //////////////////////////
         ////////////////////// modal method //////////////////////////
@@ -770,11 +765,17 @@ export default {
             if (!this.animationOnFlag) {
                 this.drawSsazipgameStart();
             }
-            this.drawObFlag = true;
+            this.obstacleflag = true;
             document.getElementById('ssazipbg').style.animationPlayState = 'running';
             document.getElementById('ssazipbg2').style.animationPlayState = 'running';
         },
         showRound() {
+            console.log("sssssssssssssssssssssssssssrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+                        console.log("sssssssssssssssssssssssssssrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+            console.log("sssssssssssssssssssssssssssrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+            console.log("sssssssssssssssssssssssssssrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+            console.log("sssssssssssssssssssssssssssrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+
             //시작 전 라운드와 1, 2, 3 표시
             //round 표시함수
             const round1 = document.querySelector('.round1');
@@ -842,6 +843,10 @@ export default {
         },
 
         closeRoundModal() {
+            console.log("closeRoundModalcloseRoundModal")
+            console.log("closeRoundModalcloseRoundModal")
+            console.log("closeRoundModalcloseRoundModal")
+            console.log("closeRoundModalcloseRoundModal")
             this.closeRoundModalReqSending();
             // this.roundModalOpen = open;
             // this.showRound();
@@ -866,7 +871,19 @@ export default {
 
         ////////////////////////////////////Socket 요청들/////////////////////////////////////////////////
         ////////////////////////////////////Socket 요청들/////////////////////////////////////////////////
-        ////////////////////////////////////Socket 요청들/////////////////////////////////////////////////
+        ////////////////////////////////////Socket 요청들////////////////ss/////////////////////////////////
+        ///////////////동작 순으로 배치
+        //13. 가이드모달 시작시 필요 여부 확인 통신
+        checkNeedGuideModalSending() {
+            this.stompClient.send(
+                '/pub/game/jump/modal/checker',
+                {},
+                JSON.stringify({
+                    roomId: this.getRoomId,
+                    type: 13,
+                })
+            );
+        },
         //0.게임 방 입장 : 정보 구독 및 유저 정보 전송
         onConnected() {
             //0. 초기 정보 요청
@@ -874,8 +891,9 @@ export default {
 
             // 구독
             this.stompClient.subscribe('/game/jumpgame/' + this.getRoomId, this.onMessageReceived);
-
+            this.checkNeedGuideModalSending(); //해당 방에 가이드 모달이 필요한지 type 12
             // db 정보 요청 (master act)
+            //0.mount : 마스터의 룸, 게임 정보 요청
             if (this.masterKeyFlag) {
                 this.stompClient.send(
                     '/pub/game/jump/enter/reqInfoRoomNGame',
@@ -887,6 +905,7 @@ export default {
                 );
             }
             // 11.db 등록 요청 (user act)
+            //11. 유저(방장을 제외한 모든 참여자) 등록 및 송출
             else {
                 this.stompClient.send(
                     '/pub/game/jump/enter/reg/user',
@@ -895,8 +914,6 @@ export default {
                         roomId: this.getRoomId,
                         participantId: this.getUser.id,
                         participantName: this.getUser.name,
-                        beUserPresent1: this.userPresent1,
-                        beUserPresent2: this.userPresent2,
                         teamNo: this.getUser.teamNo,
                         //sdfdasdasd
                         type: 11, //정보요청 타입
@@ -935,6 +952,7 @@ export default {
                     roomId: this.getRoomId,
                     participantId: this.getUser.id,
                     participantName: this.getUser.name,
+                    drawFlag: false,
                 })
             );
 
@@ -961,7 +979,8 @@ export default {
         },
         //4. close modal
         closeGuideModalReqSending() {
-            console.log('41');
+            if(this.masterKeyFlag){
+            console.log('41 ' + this.getRoomId);
             this.stompClient.send(
                 '/pub/game/jump/closemodal',
                 {},
@@ -970,9 +989,12 @@ export default {
                     type: 41, //정보요청 타입
                 })
             );
+            }
         },
         closeStartModalReqSending() {
-            console.log('42');
+                        if(this.masterKeyFlag){
+
+            console.log('42 ' + this.getRoomId);
             this.stompClient.send(
                 '/pub/game/jump/closemodal',
                 {},
@@ -981,8 +1003,14 @@ export default {
                     type: 42, //정보요청 타입
                 })
             );
+                        }
         },
         closeRoundModalReqSending() {
+                        if(this.masterKeyFlag){
+
+            console.log('43');
+            console.log('43');
+            console.log('43');
             console.log('43');
             this.stompClient.send(
                 '/pub/game/jump/closemodal',
@@ -992,9 +1020,16 @@ export default {
                     type: 43, //정보요청 타입
                 })
             );
+                        }
         },
         openRoundModalReq() {
+                        if(this.masterKeyFlag){
+
             console.log('44 재시작 전체 전송');
+                        console.log('44 재시작 전체 전송');
+            console.log('44 재시작 전체 전송');
+            console.log('44 재시작 전체 전송');
+
 
             this.stompClient.send(
                 '/pub/game/jump/closemodal',
@@ -1004,62 +1039,48 @@ export default {
                     type: 44, //정보요청 타입
                 })
             );
+                        }
         },
 
-        //1. 방 세팅, 장애물 생성, 새 유저 입장, 정지 시 유저에게 송출
-        broadcastToUser() {
-            this.stompClient.send(
-                '/pub/game/jump/broc/base',
-                {},
-                JSON.stringify({
-                    roomId: this.getRoomId,
-                    beUserPresent1: this.userPresent1,
-                    beUserPresent2: this.userPresent2,
-                    obstacleflag: this.drawObFlag,
-                    xbArr: this.xArr,
-                    xbArrType: this.xArrType,
-                    beGameStopFlag: true,
-                    type: 1, //정보요청 타입
-                })
-            );
-        },
-
-        // //7.현 상태 송출 by master
-        // sendState() {
-        //     console.log('=======sendState');
+        // //1. 방 세팅, 장애물 생성, 새 유저 입장, 정지 시 유저에게 송출
+        // broadcastToUser() {
         //     this.stompClient.send(
-        //         '/pub/game/jump/state',
+        //         '/pub/game/jump/broc/base',
         //         {},
         //         JSON.stringify({
         //             roomId: this.getRoomId,
         //             beUserPresent1: this.userPresent1,
         //             beUserPresent2: this.userPresent2,
         //             obstacleflag: this.drawObFlag,
-        //             type: 7,
+        //             xbArr: this.xArr,
+        //             xbArrType: this.xArrType,
+        //             beGameStopFlag: true,
+        //             type: 1, //정보요청 타입
         //         })
         //     );
         // },
-        //5.입장
-        entering() {
-            console.log('=======entering');
-            this.stompClient.send(
-                '/pub/game/jump/enter',
-                {},
-                JSON.stringify({
-                    roomId: this.getRoomId,
-                    beUserPresent1: this.userPresent1,
-                    beUserPresent2: this.userPresent2,
-                    type: 5,
-                    lastEntering: this.getUser.name,
-                })
-            );
-        },
+
+        // //5.입장
+        // entering() {
+        //     console.log('=======entering');
+        //     this.stompClient.send(
+        //         '/pub/game/jump/enter',
+        //         {},
+        //         JSON.stringify({
+        //             roomId: this.getRoomId,
+        //             beUserPresent1: this.userPresent1,
+        //             beUserPresent2: this.userPresent2,
+        //             type: 5,
+        //             lastEntering: this.getUser.name,
+        //         })
+        //     );
+        // },
         ///////////////////////////////////////////////////
         //3. 재시작 => 마스터 화면은 초기화, 플레이어는 재 접속
         reloading() {
             console.log('=======sending reloading fuc');
             this.reloadFlag = true;
-            this.drawObFlag = false;
+            this.obstacleflag = false;
             this.receivedArr = [];
             this.receivedArrType = [];
             this.xArr = [];
@@ -1096,6 +1117,7 @@ export default {
                     beUserPresent1: this.userPresent1,
                     beUserPresent2: this.userPresent2,
                     reloadflag: this.reloadFlag,
+                    obstacleflag: false,
                     type: 3,
                 })
             );
@@ -1135,8 +1157,13 @@ export default {
         },
         //////////////////////////////////////
         //6. 게임 정지 by master
-        stopGameSending() {
-            console.log('=======stopGameSending');
+        stopGameSendingByMaster() {
+            console.log('=======stopGameSendingByMaster');
+            //4초 뒤 게임 재시작
+            setTimeout(() => {
+                console.log('re start');
+                this.openRoundModalReq();
+            }, 4000);
 
             this.stompClient.send(
                 '/pub/game/jump/stop',
@@ -1153,28 +1180,30 @@ export default {
                     type: 6,
                 })
             );
-            //4초 뒤 게임 재시작
+        },
+        //61. 게임 정지 다음 팀 간 배틀 시작 혹은 결산
+        stopGameNBattleSendingByMaster() {
+            //다음 게임 시작
             setTimeout(() => {
                 console.log('re start');
                 this.openRoundModalReq();
             }, 4000);
-        },
-        //61. 게임 정지 다음 팀 간 배틀 시작 혹은 결산
-        stopGameNBattleSending() {
             //공통 초기화
+            this.obstacleflag = false;
             this.nowRoundNum = 1;
             this.gameScore1 = 0;
             this.gameScore2 = 0;
             //다음 레벨 (강) 팀 추가
             let orderNext = this.room.teamOrderNext;
-            if (this.gameScore1 == 2) {
+            if (this.loseTeam == 2) {
                 orderNext.push(this.battleTeam1);
             } else {
                 orderNext.push(this.battleTeam2);
             }
-            console.log('=======stopGameNBattleSending');
+            console.log('=======stopGameNBattleSendingByMaster');
             // let isFinalGameFlag=false;
-            //Next 레벨 = 강( 현 종료된 배틀은 현 레벨 마지막 배틀 )
+
+            //Next 레벨  강( 현 종료된 배틀은 현 레벨 마지막 배틀 )
             if (this.remainRound != this.nextRemainRound) {
                 //next level
                 //게임 종료 상황
@@ -1218,16 +1247,24 @@ export default {
                     );
                     return;
                 }
-                //다음 게임 시작, 값 변경 및 저장 필요, 다음 배틀은 다른 레벨 입니다
+                //다음 게임 시작, 값 변경 및 저장 필요, 곧 진행 할 다음 배틀은 다른 레벨 입니다
                 else {
                     if (orderNext.length % 2 == 1) {
                         orderNext.push(20); //부전승을 위한 봇 추가
+                    } //넥스트 팀 순서 설계완료
+                    // this.nextRemainRound = orderNext.length;
+                    // //결산용
+                    // if (this.nextRemainRound == 4) {
+                    //     this.finalScore = orderNext;
+                    // }
+                    let nn = orderNext;
+                    if (this.teamOrderNext.length == 2) {
+                        //다음은 결승
+                        nn = [];
                     }
-                    this.nextRemainRound = orderNext.length;
-                    //결산용
-                    if (this.nextRemainRound == 4) {
-                        this.finalScore = orderNext;
-                    }
+                    // else{
+                    // nn=
+                    // }
 
                     this.stompClient.send(
                         '/pub/game/jump/stopbattle',
@@ -1244,9 +1281,7 @@ export default {
                             teamIdx1: 0,
                             teamIdx2: 1,
                             teamOrder: orderNext,
-                            teamOrderNext: [],
-                            remainRound: this.nextRemainRound,
-                            nextRemainRound: this.nextRemainRound,
+                            teamOrderNext: nn,
                             finalScore: this.finalScore,
                             type: 61,
                         })
@@ -1254,14 +1289,19 @@ export default {
                 }
             } else {
                 //same level, 인덱스, 다음 레벨 추가 값 변경 및 저장 필요 (다음 배틀은 아직 현 레벨에서 배틀이 입니다.)
-                //다다음이 다음 레벨일 경우(다음 배틀이 현 레벨에서 마지막 배틀 입니다)
-                let nnextRemainR = 0;
-                if (this.room.teamIdx2 + 1 == this.remainRound - 1) {
-                    nnextRemainR = this.remainRound / 2;
-                    if (this.remainRound % 2 == 1) {
-                        nnextRemainR++;
-                    }
-                }
+                //다다음이 다른 레벨일 경우(다음 배틀이 현 레벨에서 마지막 배틀 입니다)
+                // let nnextRemainR = this.nextRemainRound;
+                // if (this.room.teamIdx2 + 1 == this.remainRound - 2) {
+                //     //현 레벨 남은 팀은 2개
+                //     nnextRemainR = this.remainRound / 2;
+                //     if (this.remainRound % 2 == 1) {
+                //         nnextRemainR++;
+                //     }
+                //     // this.nextBattleTeam2=30;//?인 팀
+                // } else {
+                //     //현 레벨에 남은 팀은 2개 이상
+                //     nnextRemainR = this.nextRemainRound;
+                // }
                 this.stompClient.send(
                     '/pub/game/jump/stopbattle',
                     {},
@@ -1274,40 +1314,19 @@ export default {
                         gameScore1: this.gameScore1,
                         gameScore2: this.gameScore2,
                         //값 변경사항
-                        teamIdx1: this.room.teamIdx1 + 1,
-                        teamIdx2: this.room.teamIdx2 + 1,
+                        teamOrder: this.teamOrder,
                         teamOrderNext: orderNext,
-                        remainRound: this.nextRemainRound,
-                        nextRemainRound: nnextRemainR,
+                        teamIdx1: this.room.teamIdx1 + 2,
+                        teamIdx2: this.room.teamIdx2 + 2,
+                        // remainRound: this.nextRemainRound,
+                        // nextRemainRound: nnextRemainR,
                         type: 61,
                     })
                 );
             }
-
-            //다음 게임 시작
-            setTimeout(() => {
-                console.log('re start');
-                this.openRoundModalReq();
-            }, 4000);
         },
 
-        //10. 방장 퇴장 게임 방 퇴장 소켓 연결 해제 및 게임 방 유저 정보 삭제
-        onDisconnectByMaster() {
-            this.stompClient.send(
-                '/pub/ssafymind/exit',
-                {},
-                JSON.stringify({
-                    roomId: this.getRoomId,
-                    participantId: this.getUser.id,
-                    participantName: this.getUser.name,
-                    type: 10,
-                })
-            );
-            this.stompClient.disconnect();
-            this.$router.push('/room/' + this.getRoomId);
-        },
-
-        ////////////////////// 메세지 수신 ///////////////////
+        ////////////////////// 메세지 수신 /////////////////////
         ////////////////////// 메세지 수신 ///////////////////
         ////////////////////// 메세지 수신 ///////////////////
 
@@ -1318,34 +1337,40 @@ export default {
             let info = JSON.parse(payload.body);
             console.log('======got mes=========');
             console.log(info);
+            console.log(info.type);
 
+            //13. 가이드모달 시작시 필요 여부 확인 통신
+            if (info.type == 13) {
+                console.log('가이드라인');
+                this.guideModalOpenFlag = info.guideModalFlag;
+                console.log(this.guideModalOpenFlag);
+            }
             //0. 마스터의 정보 수신 (only master)
             if (info.type == 0 && info.host == this.getUser.name) {
                 console.log('======마스터 got : 방, 게임 정보 수신=========');
                 this.room = info;
                 console.log(this.room);
-                this.room = info;
-                                this.receivedGameStopFlag = info.beGameStopFlag;
-
+                //기본 정보
+                // this.receivedGameStopFlag = info.beGameStopFlag;
                 this.userPresent1 = info.beUserPresent1;
                 this.userPresent2 = info.beUserPresent2;
                 this.finalScore = info.finalScore;
                 this.gameScore1 = info.gameScore1;
                 this.gameScore2 = info.gameScore2;
                 this.hostId = this.room.host;
-                this.guideModalOpenFlag = info.guideModalFlag;
-                this.startModalOpenFlag = info.startModalFlag;
-                this.roundModalOpenFlag = info.roundModalFlag;
-                this.loser = info.loser;
-                this.loseTeam = info.loseTeam;
-                this.nowRoundNum = info.nowRoundNum;
-                this.obstacleflag = info.obstacleflag;
+                // this.guideModalOpenFlag = info.guideModalFlag;
+                // this.startModalOpenFlag = info.startModalFlag;
+                // this.roundModalOpenFlag = info.roundModalFlag;
+                // this.loser = info.loser;
+                // this.loseTeam = info.loseTeam;
+                // this.nowRoundNum = info.nowRoundNum;
+                // this.obstacleflag = info.obstacleflag;
                 this.battleTeam1 = info.teamOrder[info.teamIdx1];
                 this.battleTeam2 = info.teamOrder[info.teamIdx2];
                 this.remainRound = info.remainRound;
                 this.nextRemainRound = info.nextRemainRound;
                 this.teamOrder = info.teamOrder;
-                this.teamOrderNext = info.teamOrderNext;
+                // this.teamOrderNext = info.teamOrderNext;
                 this.teamIdx1 = info.teamIdx1;
                 this.teamIdx2 = info.teamIdx2;
                 if (this.teamOrder.length > 2) {
@@ -1359,9 +1384,8 @@ export default {
             if (info.type == 11) {
                 console.log('======got : 등록 후 방 정보 수신=========');
                 console.log(this.room);
-
                 this.room = info;
-                                this.receivedGameStopFlag = info.beGameStopFlag;
+                // this.receivedGameStopFlag = info.beGameStopFlag;
 
                 this.userPresent1 = info.beUserPresent1;
                 this.userPresent2 = info.beUserPresent2;
@@ -1369,9 +1393,9 @@ export default {
                 this.gameScore1 = info.gameScore1;
                 this.gameScore2 = info.gameScore2;
                 this.hostId = this.room.host;
-                this.guideModalOpenFlag = info.guideModalFlag;
-                this.startModalOpenFlag = info.startModalFlag;
-                this.roundModalOpenFlag = info.roundModalFlag;
+                // this.guideModalOpenFlag = info.guideModalFlag;
+                // this.startModalOpenFlag = info.startModalFlag;
+                // this.roundModalOpenFlag = info.roundModalFlag;
                 this.loser = info.loser;
                 this.loseTeam = info.loseTeam;
                 this.nowRoundNum = info.nowRoundNum;
@@ -1408,8 +1432,8 @@ export default {
                 }
                 //다음 판이 현재 강 일때
                 else {
-                    this.nextBattleTeam1 = info.teamOrder[info.teamIdx1];
-                    this.nextBattleTeam2 = info.teamOrder[info.teamIdx2];
+                    this.nextBattleTeam1 = info.teamOrder[info.teamIdx1 + 2];
+                    this.nextBattleTeam2 = info.teamOrder[info.teamIdx2 + 2];
                 }
                 this.setUsers();
             }
@@ -1424,9 +1448,9 @@ export default {
                 this.gameScore1 = info.gameScore1;
                 this.gameScore2 = info.gameScore2;
                 this.hostId = this.room.host;
-                this.guideModalOpenFlag = info.guideModalFlag;
-                this.startModalOpenFlag = info.startModalFlag;
-                this.roundModalOpenFlag = info.roundModalFlag;
+                // this.guideModalOpenFlag = info.guideModalFlag;
+                // this.startModalOpenFlag = info.startModalFlag;
+                // this.roundModalOpenFlag = info.roundModalFlag;
                 this.loser = info.loser;
                 this.loseTeam = info.loseTeam;
                 this.nowRoundNum = info.nowRoundNum;
@@ -1454,6 +1478,14 @@ export default {
                 this.$router.push('/room');
                 return;
             }
+            if (info.type == 400) {
+                //방장 퇴장
+                this.onDisconnect();
+                alert('알 수 없는 오류로 게임이 종료됩니다!');
+                // 모든 참가자 내보내기
+                this.$router.push('/room');
+                return;
+            }
 
             //4. close modal
             if (info.type == 41) {
@@ -1462,21 +1494,26 @@ export default {
                 this.startModalOpenFlag = true;
                 return;
             }
+            //start close
             if (info.type == 42) {
-                //start close
                 this.startModalOpenFlag = false;
                 this.gameResetNStart();
                 // this.roundModal();
                 return;
             }
+            //round close
             if (info.type == 43) {
-                //round close
+                console.log("4333333333333333333333333333333")
+                                console.log("4333333333333333333333333333333")
+                console.log("4333333333333333333333333333333")
+                console.log("4333333333333333333333333333333")
+
                 this.roundModalOpenFlag = false;
                 this.showRound();
                 return;
             }
+            //round open
             if (info.type == 44) {
-                //round open
                 // this.roundModalOpenFlag = true;
                 // this.showRound();
                 this.gameResetNStart();
@@ -1519,6 +1556,7 @@ export default {
                         // this.users2[i].jump = this.jumpsss2[i];
                     }
                 }
+                return;
             }
 
             //4. 장애물
@@ -1528,9 +1566,9 @@ export default {
                 this.receivedArrType = info.xbArrType;
                 return;
             }
-            if (info.obstacleflag && !this.drawFlag) {
-                this.drawFlag = true;
-            }
+            // if (info.obstacleflag && !this.drawFlag) {
+            //     this.drawFlag = true;
+            // }
 
             //6.게임 알반 정지
             if (info.type == 6) {
@@ -1547,38 +1585,39 @@ export default {
                 this.nowRoundNum = info.nowRoundNum;
                 this.gameScore1 = info.gameScore1;
                 this.gameScore2 = info.gameScore2;
+                return;
             }
             // 61 62 게임 정지 다음 단계
             if (info.type == 62) {
                 //모든 게임 종료, 결산
                 console.log('결산 명령 수신 완료');
-                                this.receivedGameStopFlag = info.beGameStopFlag;
+                this.receivedGameStopFlag = info.beGameStopFlag;
 
-                this.userPresent1 = info.beUserPresent1;
-                this.userPresent2 = info.beUserPresent2;
+                // this.userPresent1 = info.beUserPresent1;
+                // this.userPresent2 = info.beUserPresent2;
                 this.finalScore = info.finalScore;
                 this.gameScore1 = info.gameScore1;
                 this.gameScore2 = info.gameScore2;
                 this.hostId = this.room.host;
-                this.guideModalOpenFlag = info.guideModalFlag;
-                this.startModalOpenFlag = info.startModalFlag;
-                this.roundModalOpenFlag = info.roundModalFlag;
+                // this.guideModalOpenFlag = info.guideModalFlag;
+                // this.startModalOpenFlag = info.startModalFlag;
+                // this.roundModalOpenFlag = info.roundModalFlag;
                 this.loser = info.loser;
                 this.loseTeam = info.loseTeam;
                 this.nowRoundNum = info.nowRoundNum;
-                this.obstacleflag = info.obstacleflag;
-                this.battleTeam1 = info.teamOrder[info.teamIdx1];
-                this.battleTeam2 = info.teamOrder[info.teamIdx2];
+                // this.obstacleflag = info.obstacleflag;
+                // this.battleTeam1 = info.teamOrder[info.teamIdx1];
+                // this.battleTeam2 = info.teamOrder[info.teamIdx2];
                 this.remainRound = info.remainRound;
                 this.nextRemainRound = info.nextRemainRound;
                 this.teamOrder = info.teamOrder;
                 this.teamOrderNext = info.teamOrderNext;
                 this.teamIdx1 = info.teamIdx1;
                 this.teamIdx2 = info.teamIdx2;
-                if (this.teamOrder.length > 2) {
-                    this.nextBattleTeam1 = info.teamOrder[info.teamIdx1 + 2];
-                    this.nextBattleTeam2 = info.teamOrder[info.teamIdx1 + 2];
-                }
+                // if (this.teamOrder.length > 2) {
+                //     this.nextBattleTeam1 = info.teamOrder[info.teamIdx1 + 2];
+                //     this.nextBattleTeam2 = info.teamOrder[info.teamIdx1 + 2];
+                // }
                 if (this.loseTeam == 1) {
                     this.win1 = false;
                     this.lose1 = true;
@@ -1599,11 +1638,11 @@ export default {
                     console.log('will end');
 
                     this.onDisconnectByMaster();
-                }, 4000);
+                }, 2000);
             }
             if (info.type == 61) {
                 //다음 팀간 배틀
-                                this.receivedGameStopFlag = info.beGameStopFlag;
+                this.receivedGameStopFlag = info.beGameStopFlag;
 
                 this.userPresent1 = info.beUserPresent1;
                 this.userPresent2 = info.beUserPresent2;
@@ -1611,24 +1650,45 @@ export default {
                 this.gameScore1 = info.gameScore1;
                 this.gameScore2 = info.gameScore2;
                 this.hostId = this.room.host;
-                this.guideModalOpenFlag = info.guideModalFlag;
-                this.startModalOpenFlag = info.startModalFlag;
-                this.roundModalOpenFlag = info.roundModalFlag;
+                // this.guideModalOpenFlag = info.guideModalFlag;
+                // this.startModalOpenFlag = info.startModalFlag;
+                // this.roundModalOpenFlag = info.roundModalFlag;
                 this.loser = info.loser;
                 this.loseTeam = info.loseTeam;
                 this.nowRoundNum = info.nowRoundNum;
                 this.obstacleflag = info.obstacleflag;
-                this.battleTeam1 = info.teamOrder[info.teamIdx1];
-                this.battleTeam2 = info.teamOrder[info.teamIdx2];
-                this.remainRound = info.remainRound;
-                this.nextRemainRound = info.nextRemainRound;
                 this.teamOrder = info.teamOrder;
                 this.teamOrderNext = info.teamOrderNext;
+                this.battleTeam1 = info.teamOrder[info.teamIdx1];
+                this.battleTeam2 = info.teamOrder[info.teamIdx2];
+                this.remainRound = info.teamOrder.length;
+                // this.nextRemainRound = info.nextRemainRound;
                 this.teamIdx1 = info.teamIdx1;
                 this.teamIdx2 = info.teamIdx2;
-                if (this.teamOrder.length > 2) {
-                    this.nextBattleTeam1 = info.teamOrder[info.teamIdx1 + 2];
-                    this.nextBattleTeam2 = info.teamOrder[info.teamIdx1 + 2];
+                //현 위치 파악
+                if (this.teamIdx1 + 2 < this.team.length) {
+                    this.nextRemainRound = this.remainRound;
+                    this.nextBattleTeam1 = this.teamOrder[info.teamIdx1 + 2];
+                } else if (this.remainRound == 2) {
+                    this.nextRemainRound = 0;
+                    this.nextBattleTeam1 = 20;
+                } else {
+                    this.nextRemainRound = this.teamOrderNext.length / 2;
+                    if (this.nextRemainRound % 2 == 1) this.nextRemainRound++;
+                    this.nextBattleTeam1 = this.teamOrderNext[0];
+                }
+                if (this.teamIdx2 + 2 < this.team.length) {
+                    this.nextRemainRound = this.remainRound;
+                    this.nextBattleTeam2 = this.teamOrder[info.teamIdx2 + 2];
+                } else if (this.remainRound == 2) {
+                    this.nextRemainRound = 0;
+                    this.nextBattleTeam2 = 20;
+                } else {
+                    this.nextRemainRound = this.teamOrderNext.length / 2;
+                    if (this.nextRemainRound % 2 == 1) this.nextRemainRound++;
+                    if (this.teamOrderNext.length == 1) this.nextBattleTeam2 = this.nextBattleTeam2 = 30;
+                    //?대신
+                    else this.nextBattleTeam2 = this.teamOrderNext[1];
                 }
                 if (this.loseTeam == 1) {
                     this.win1 = false;
@@ -1637,7 +1697,6 @@ export default {
                     this.win1 = true;
                     this.lose1 = false;
                 }
-
             }
             // //1.정보 요청 수신시 ( 마스터만 )
             // if (info.type == 1 && this.masterKeyFlag) {
@@ -1797,6 +1856,7 @@ export default {
             this.guideModalOpenFlag = true;
         }
         // 소켓 연결
+        //0.게임 방 입장 : 정보 구독 및 유저 정보 전송
         this.stompClient = socketConnect(this.onConnected, this.onError);
 
         // 캔버스 반복 생성 시작
@@ -1808,8 +1868,8 @@ export default {
         //플레이어 조작
         document.addEventListener('keydown', (e) => {
             //장애물 생성 요청
-            if (e.code === 'KeyA' && !this.drawObFlag && this.masterKeyFlag) {
-                this.drawObFlag = true;
+            if (e.code === 'KeyA' && !this.obstacleflag && this.masterKeyFlag) {
+                this.obstacleflag = true;
                 this.showResult = false;
                 document.getElementById('ssazipbg').style.animationPlayState = 'running';
                 document.getElementById('ssazipbg2').style.animationPlayState = 'running';
