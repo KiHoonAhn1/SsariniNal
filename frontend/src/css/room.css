@@ -83,7 +83,9 @@
   display: inline-block;
 }
 .waiting-room .select-game {
+  margin-top: 3%;
   background-color: #12739e;
+  margin-left: -13%;
 }
 
 .waiting-room .final-score {
@@ -91,11 +93,16 @@
 }
 
 .waiting-room .play-btn {
-  color: #ffa500;
-  background-color: white;
+  /* color: #ffa500;
+  background-color: white; */
+  width: 4%;
   border-radius: 100%;
   cursor: pointer;
-  /* position: absolute; */
+  position: absolute;
+  margin-top: 0.5%;
+}
+.waiting-room .play-btn:active {
+  transform: scale(0.9);
 }
 
 .waiting-room #score-title {

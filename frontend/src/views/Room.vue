@@ -141,11 +141,7 @@
           >
             최종 결과
           </button>
-          <i
-            class="fas fa-play-circle play-btn fa-5x"
-            @click="gameStart()"
-            v-if="this.room.host == this.getUser.id"
-          ></i>
+          <img class="play-btn" src="~@/assets/play-button.png" @click="gameStart()" alt="" />
           <button
             class="waiting-room-btn select-game"
             @click="openmodal = true"
