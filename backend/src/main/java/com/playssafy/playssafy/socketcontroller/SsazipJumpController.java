@@ -95,7 +95,7 @@ public class SsazipJumpController {
         }
         ssazipJump.setType(11);
         // 게임방 정보 소켓으로 반환
-        template.convertAndSend("/game/jumpgame/" + participant.getRoomId(), ssazipJump);
+//        template.convertAndSend("/game/jumpgame/" + participant.getRoomId(), ssazipJump);
     }
 
     //40. 모달 종료

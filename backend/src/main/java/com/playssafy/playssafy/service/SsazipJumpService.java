@@ -75,13 +75,15 @@ public class SsazipJumpService {
 
         //현재 강(라운드 표시)
         ssazipJump.setRemainRound(ssazipJump.getTeamOrder().size());
-        int nrr=ssazipJump.getRemainRound()/2;
-        System.out.println("nrr "+nrr);
-        if(nrr==1) {
+        int nrr=ssazipJump.getRemainRound();
+        if(ssazipJump.getTeamOrder().size()==2){
             nrr=0;
         }
-        else if(nrr%2==1){
-            nrr++;
+        else{
+            nrr/=2;
+            if(nrr%2==1){
+                nrr++;
+            }
         }
         System.out.println("nrr "+nrr);
 
