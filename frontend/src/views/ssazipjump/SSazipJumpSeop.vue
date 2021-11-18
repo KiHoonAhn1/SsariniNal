@@ -10,7 +10,7 @@
             :hostId="hostId"
             @getCloseModal="closeRoundModal"
         />
-        <SSazipjumpRankModal v-if="rankModalOpenFlag == true" :userId="userId" :hostId="hostId" @getCloseModal="closeStartModal" />
+        <SSazipjumpRankModal v-if="rankModalOpenFlag == true" :userId="userId" :hostId="hostId" :finalScore="finalScore" @getCloseModal="closeStartModal" />
         <Header v-bind:gameTitle="'싸집이 점프 게임'" :host="getUser.id" />
         <!-- <button @click="showRound()">dd</button> -->
         <div style="display:flex; justify-content:center">
