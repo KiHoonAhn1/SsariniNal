@@ -60,10 +60,25 @@ public class SsafyMindService {
         ssafyMind.setCurTeamCnt(teams.size());
 
         // 테스트 문제 리스트 ////////
-        for(int i = 0; i < 20; i++) {
-            ssafyMind.getQuizzes().add(new Quiz(1, "아미타불", "아미타불"));
-            ssafyMind.getQuizzes().add(new Quiz(1, "원시천존", "원시천존"));
-            ssafyMind.getQuizzes().add(new Quiz(1, "무량수불", "무량수불"));
+        for(int i = 0; i < 10; i++) {
+            ssafyMind.getQuizzes().add(new Quiz(1, "싸피", "싸피"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "도커", "도커"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "프로님", "프로님"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "5기", "5기"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "삼성", "삼성"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "해피하우스", "해피하우스"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "유튜브", "유튜브"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "포크레인", "포크레인"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "우거지국", "우거지국"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "삼국시대", "삼국시대"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "오징어게임", "오징어게임"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "자바", "자바"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "아이유", "아이유"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "대한민국", "대한민국"));
+            ssafyMind.getQuizzes().add(new Quiz(1, "코로나", "코로나"));
+        }
+        for(int i = 0; i < 3; i++) {
+            ssafyMind.getQuizzes().add(new Quiz(1, "개발", "개발"));
         }
         ssafyMindRepository.save(ssafyMind);
     }
