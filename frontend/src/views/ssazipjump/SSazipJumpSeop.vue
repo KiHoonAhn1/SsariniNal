@@ -1,16 +1,16 @@
 <template>
     <div>
-        <SSazipjumpGuideModal v-if="guideModalOpenFlag == true" :userId="userId" :hostId="hostId" @guideModal="guideModal" />
-        <SSazipjumpStartModal v-if="startModalOpenFlag == true" :userId="userId" :hostId="hostId" @getCloseModal="closeStartModal" />
+        <SSazipjumpGuideModal v-if="guideModalOpenFlag == true" :userId="getUser.id" :hostId="hostId" @guideModal="guideModal" />
+        <SSazipjumpStartModal v-if="startModalOpenFlag == true" :userId="getUser.id" :hostId="hostId" @getCloseModal="closeStartModal" />
         <SSazipjumpRoundModal
             v-if="roundModalOpenFlag == true"
             :battleTeam1="battleTeam1"
             :battleTeam2="battleTeam2"
-            :userId="userId"
+            :userId="getUser.id"
             :hostId="hostId"
             @getCloseModal="closeRoundModal"
         />
-        <SSazipjumpRankModal v-if="rankModalOpenFlag == true" :userId="userId" :hostId="hostId" :finalScore="finalScore" @getCloseModal="closeStartModal" />
+        <SSazipjumpRankModal v-if="rankModalOpenFlag == true" :userId="getUser.id" :hostId="hostId" :finalScore="finalScore" @getCloseModal="closeStartModal" />
         <Header v-bind:gameTitle="'싸집이 점프 게임'" :host="getUser.id" />
         <!-- <button @click="showRound()">dd</button> -->
         <div style="display:flex; justify-content:center">
@@ -189,7 +189,7 @@ export default {
             userPresent2: [false, false, false, false, false, false],
             dinos1: [], //싸집이 정보 배열
             dinos2: [],
-            userId: '안기훈',
+            // userId: '안기훈',
             userIdx: -1, //팀 내 순서
             userPlayIdx: -1, //실 참가 인원 중 순서
             status: true,
@@ -302,8 +302,8 @@ export default {
                         teamNo: 1,
                         // 캐릭터 그리기 함수(생성)
                         draw() {
-                            ctx.fillStyle = 'green';
-                            ctx.fillRect(this.x, this.y, this.width, this.height); //위치, 크기
+                            // ctx.fillStyle = 'green';
+                            // ctx.fillRect(this.x, this.y, this.width, this.height); //위치, 크기
                             if (this.me == 0) {
                                 ctx.drawImage(ssazip, this.x, this.y, this.width, this.height);
                             } else {
@@ -341,8 +341,8 @@ export default {
                         teamNo: 2,
                         // 캐릭터 그리기 함수(생성)
                         draw() {
-                            ctx2.fillStyle = 'green';
-                            ctx2.fillRect(this.x, this.y, this.width, this.height); //위치, 크기
+                            // ctx2.fillStyle = 'green';
+                            // ctx2.fillRect(this.x, this.y, this.width, this.height); //위치, 크기
                             if (this.me == 0) {
                                 ctx2.drawImage(ssazip2, this.x, this.y, this.width, this.height);
                             } else {
@@ -401,11 +401,11 @@ export default {
                 }
                 draw() {
                     if (this.type != 0) {
-                        ctx.fillStyle = 'red';
-                        ctx.fillRect(this.x, this.y, this.width, this.height);
+                        // ctx.fillStyle = 'red';
+                        // ctx.fillRect(this.x, this.y, this.width, this.height);
                         ctx.drawImage(eval('obstacle' + this.type), this.x, this.y, this.width, this.height);
-                        ctx2.fillStyle = 'red';
-                        ctx2.fillRect(this.x, this.y, this.width, this.height);
+                        // ctx2.fillStyle = 'red';
+                        // ctx2.fillRect(this.x, this.y, this.width, this.height);
                         ctx2.drawImage(eval('obstacle' + this.type), this.x, this.y, this.width, this.height);
                     }
                 }
