@@ -257,6 +257,8 @@ export default {
             showResult: false, //걸린이 표시
             roundCnt: 0,
             checkCollisionOnFlag: false, //단발성 충돌 감지용 플레그
+            idPlayerRegFlag:false,//단방성 플레이어 등록을 위한 플래그
+            idUserRegFlag:false,//단발성 유저 등록
         };
     },
     components: {
@@ -269,6 +271,8 @@ export default {
     methods: {
         drawSsazip() {
             console.log('============싸집이를 그린다');
+            console.log(this.userPresent1)
+            console.log(this.userPresent2)
             const ssazip = document.getElementById('ssazip');
             const ssazip2 = document.getElementById('ssazip2');
             const ssazipMe = document.getElementById('ssazipMe');
@@ -419,6 +423,8 @@ export default {
 
             //////////////////반복 액션//////////////////
             //////////////////반복 액션//////////////////
+            this.xArr = [];
+            this.xArrType = [];
             //////////////////반복 액션//////////////////
             const frame = (timestamp) => {
                 animation = requestAnimationFrame(frame); //frame을 1초에 60번 실행해줘 실행해줘
@@ -436,7 +442,7 @@ export default {
                 }
 
                 //마스터 요청시 장애물 생성
-                if (this.getIsLogin && this.obstacleflag) {
+                if (this.getIsLogin && this.obstacleflag&&(this.getUser.name==this.room.host)) {
                     if (cntTime > this.time) {
                         document.getElementById('ssazipbg').style.animationPlayState = 'running';
                         document.getElementById('ssazipbg2').style.animationPlayState = 'running';
@@ -458,7 +464,9 @@ export default {
                                 this.xArrType.splice(i, 1);
                             }
                         });
-                        this.sendObstaclePosition(); //장애물 송출
+                        if (!this.checkCollisionOnFlag) {
+                            this.sendObstaclePosition(); //장애물 송출
+                        }
                     }
                 }
                 //마스터 요청시 장애물 생성 end
@@ -630,6 +638,7 @@ export default {
                 let yDiff = cactus.y - (dino.y + dino.height);
                 if (dino.x <= cactus.x + cactus.width) {
                     if (xDiff < -10 && yDiff < -10 && !this.checkCollisionOnFlag) {
+                        this.checkCollisionOnFlag = true;
                         console.log('=======충돌');
                         console.log('=======충돌');
                         console.log(dino.name);
@@ -748,6 +757,7 @@ export default {
                     }
                 }
             }
+            this.drawSsazip();
         },
 
         ////////////////////// modal method //////////////////////////
@@ -781,7 +791,7 @@ export default {
             this.obstacleflag = true;
             document.getElementById('ssazipbg').style.animationPlayState = 'running';
             document.getElementById('ssazipbg2').style.animationPlayState = 'running';
-            if (!this.animationOnFlag) {
+            if (!this.animationOnFlag ) {
                 this.drawSsazipgameStart();
             }
         },
@@ -913,6 +923,7 @@ export default {
             // db 정보 요청 (master act)
             //0.mount : 마스터의 룸, 게임 정보 요청
             if (this.getIsLogin) {
+                console.log("0.mount : 마스터의 룸, 게임 정보 요청")
                 // if (this.masterKeyFlag) {
                 this.stompClient.send(
                     '/pub/game/jump/enter/reqInfoRoomNGame',
@@ -925,7 +936,10 @@ export default {
             }
             // 11.db 등록 요청 (user act)
             //11. 유저(방장을 제외한 모든 참여자) 등록 및 송출
-            else {
+            // else {
+                console.log("유저 등록")
+                if(!this.idUserRegFlag)
+                this.idUserRegFlag=true;
                 this.stompClient.send(
                     '/pub/game/jump/enter/reg/user',
                     {},
@@ -938,16 +952,18 @@ export default {
                         type: 11, //정보요청 타입
                     })
                 );
-            }
+            // }
             //마스터 새로고침시, 입장 시 플레이어도 새로고침
             // if (this.masterKeyFlag) {
             if (this.getIsLogin) {
                 //마스터가 생성시 나머지 새로고침 요청
-                this.reloadingPlay();
+                // this.reloadingPlay();
             }
         },
-        //12. 플레이어로 등록 및 송출
+        //12. 플레이어로 등록 및 송출하다.  
         playerRegSending() {
+            if(this.idPlayerRegFlag) return;
+            this.idPlayerRegFlag=true;
             this.stompClient.send(
                 '/pub/game/jump/enter/play',
                 {},
@@ -977,38 +993,6 @@ export default {
                     })
                 );
             }
-            // else {
-            //     this.stompClient.send(
-            //         '/pub/game/jump/exit',
-            //         {},
-            //         JSON.stringify({
-            //             roomId: this.getRoomId,
-            //             participantId: this.getUser.id,
-            //             participantName: this.getUser.name,
-            //         })
-            //     );
-            // }
-
-            // if (this.userPlayIdx != -1) {
-            //     if (this.teamOneOrTwo == 1) {
-            //         for (let i = 0; i < this.users1.length; i++) {
-            //             if (this.users1[i].userId == this.getUser.name) {
-            //                 this.userPresent1[i] = false; //참가 확인 어레이, 플레이어 값
-            //                 this.playerRegSending();
-            //             }
-            //         }
-            //     }
-            //     if (this.teamOneOrTwo == 2) {
-            //         for (let i = 0; i < this.users2.length; i++) {
-            //             if (this.users2[i].userId == this.getUser.name) {
-            //                 this.userPresent2[i] = false; //참가 확인 어레이, 플레이어 값
-            //                 this.playerRegSending();
-            //             }
-            //         }
-            //     }
-            // }
-            // this.stompClient.disconnect();
-            // this.$router.push('/room/' + this.getRoomId);
         },
         //4. close modal
         closeGuideModalReqSending() {
@@ -1120,7 +1104,7 @@ export default {
             this.xbArrType = [];
             document.getElementById('ssazipbg').style.animationPlayState = 'paused';
             document.getElementById('ssazipbg2').style.animationPlayState = 'paused';
-            if (!this.animationOnFlag) {
+            if (!this.animationOnFlag && this.getIsLogin) {
                 console.log('============re animation');
                 this.receivedGameStopFlag = false;
                 this.drawSsazipgameStart();
@@ -1141,6 +1125,7 @@ export default {
         },
         // 3.마스터가 새로고침 누를때 플레이어 재 접속
         reloadingPlay() {
+
             this.reloadFlag = true;
             this.stompClient.send(
                 '/pub/game/jump/data',
@@ -1376,7 +1361,7 @@ export default {
         onMessageReceived(payload) {
             console.log(payload);
             if (payload.body == 'exit') {
-                console.log('eeeeeeeeeee');
+                console.log('exit 신호 수신했습니다');
                 // this.rankModalOpenFlag = true;
                 this.$router.push('/room/' + this.getRoomId).catch(() => {});
                 setTimeout(() => {}, 3000);
@@ -1390,13 +1375,13 @@ export default {
 
             //13. 가이드모달 시작시 필요 여부 확인 통신
             if (info.type == 13) {
-                console.log('가이드라인');
+                console.log('가이드라인 체크 여부 수신했습니다. '+ info.guideModalFlag);
                 this.guideModalOpenFlag = info.guideModalFlag;
                 console.log(this.guideModalOpenFlag);
             }
             //0. 마스터의 정보 수신 (only master)
             if (info.type == 0 && info.host == this.getUser.name) {
-                console.log('======마스터 got : 방, 게임 정보 수신=========');
+                console.log('======마스터만 수신합니다 got : 방, 게임 정보 수신=========');
                 this.room = info;
                 console.log(this.room);
                 //기본 정보
@@ -1451,11 +1436,11 @@ export default {
                     }
                 }
                 // this.setUsersByMaster();
-                this.setUsers();
+                // this.setUsers();
             }
             //11. 유저의 등록 정보 수신
             if (info.type == 11) {
-                console.log('======got : 등록 후 방 정보 수신=========');
+                console.log('======유저 등록 후 방 정보 수신, 그리기=========');
                 this.room = info;
                 console.log(this.room);
                 // this.receivedGameStopFlag = info.beGameStopFlag;

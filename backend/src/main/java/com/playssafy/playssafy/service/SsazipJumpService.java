@@ -112,7 +112,9 @@ public class SsazipJumpService {
     public synchronized SsazipJump read(String roomId) {
         SsazipJump ssazipJump =ssazipJumpRepository.findById(roomId).orElse(null);
         if(ssazipJump==null) {
-            ssazipJump.setType(400);//에러
+            SsazipJump ssazipJump1=new SsazipJump();
+            ssazipJump1.setType(400);//에러
+            return ssazipJump1;
         }
         return ssazipJump;
     }
@@ -129,6 +131,7 @@ public class SsazipJumpService {
                 gotSsazipJump.getParticipantName(),
                 gotSsazipJump.getTeamNo(), false);
         if (!team.getMembers().contains(participant)){
+            System.out.println(participant.getParticipantName()+"님은 "+participant.getTeamNo()+"팀으로 등록 됩니다.");
             team.getMembers().add(participant);
         }
         ssazipJump.setType(gotSsazipJump.getType());
@@ -139,10 +142,16 @@ public class SsazipJumpService {
     }
     // 12. 플레이어 유저 저장
     public synchronized SsazipJump regPlayer(SsazipJump gotSsazipJump) {
-        SsazipJump ssazipJump = ssazipJumpRepository.findById(gotSsazipJump.getRoomId()).get();
+        SsazipJump ssazipJump = ssazipJumpRepository.findById(gotSsazipJump.getRoomId()).orElse(null);
         //중계할 데이터
-        ssazipJump.setBeUserPresent1(gotSsazipJump.getBeUserPresent1());
-        ssazipJump.setBeUserPresent2(gotSsazipJump.getBeUserPresent2());
+        boolean [] bup1=ssazipJump.getBeUserPresent1();
+        boolean [] bup2=ssazipJump.getBeUserPresent2();
+        for(int i=0;i<bup1.length;i++){
+            bup1[i]=bup1[i]||gotSsazipJump.getBeUserPresent1()[i];
+            bup2[i]=bup2[i]||gotSsazipJump.getBeUserPresent2()[i];
+        }
+        ssazipJump.setBeUserPresent1(bup1);
+        ssazipJump.setBeUserPresent2(bup2);
 //        //맴버에 추가
 //        Team team = ssazipJump.getTeamsMember().get(gotSsazipJump.getTeamNo());
 //        Participant participant=new Participant(gotSsazipJump.getRoomId(),

@@ -94,6 +94,9 @@ public class SsazipJump {
         return "SsazipJump{" +
                 "roomId='" + roomId + '\'' +
                 ", type=" + type +
+                ", participantName='" + participantName + '\'' +
+                ", beUserPresent1=" + Arrays.toString(beUserPresent1) +
+                ", beUserPresent2=" + Arrays.toString(beUserPresent2) +
                 ", host='" + host + '\'' +
                 ", gameScore1=" + gameScore1 +
                 ", gameScore2=" + gameScore2 +
@@ -109,14 +112,13 @@ public class SsazipJump {
                 ", jumpArr2=" + Arrays.toString(jumpArr2) +
                 ", reloadflag=" + reloadflag +
                 ", participantId='" + participantId + '\'' +
-                ", participantName='" + participantName + '\'' +
+
                 ", teamNo=" + teamNo +
                 ", obstacleflag=" + obstacleflag +
                 ", xbArr=" + Arrays.toString(xbArr) +
                 ", xbArrType=" + Arrays.toString(xbArrType) +
 
-                ", beUserPresent1=" + Arrays.toString(beUserPresent1) +
-                ", beUserPresent2=" + Arrays.toString(beUserPresent2) +
+
                 ", beGameStopFlag=" + beGameStopFlag +
                 ", lastEntering='" + lastEntering + '\'' +
                 ", loser='" + loser + '\'' +
