@@ -42,5 +42,6 @@ public class Speaking {
         quizzes = new ArrayList<>();
         chat = new ArrayList<>();
         teamOrder = new ArrayList<>();
+        scores = new int[11];
     }
 }

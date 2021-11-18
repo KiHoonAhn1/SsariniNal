@@ -152,12 +152,7 @@ public class SsafyMindService {
         return mindMessage;
     }
 
-    // 5. 방을 순수하게 읽어오는 로직
-    public SsafyMind read(String roomId) {
-        return ssafyMindRepository.findById(roomId).get();
-    }
-
-    // 6. 1초마다 시간을 갱신하는 로직
+    // 5. 1초마다 시간을 갱신하는 로직
     public synchronized boolean time(String roomId, int cnt) {
         SsafyMind ssafyMind = ssafyMindRepository.findById(roomId).get();
         if(ssafyMind.getTimeFlag().equals("stop"))
@@ -167,7 +162,7 @@ public class SsafyMindService {
         return true;
     }
 
-    // 6 - 1. 시간 정지
+    // 6. 시간 정지
     public synchronized void timeStop(String roomId, String flag){
         SsafyMind ssafyMind = ssafyMindRepository.findById(roomId).get();
         ssafyMind.setTimeFlag(flag);

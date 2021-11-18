@@ -9,7 +9,6 @@
       @infoSpeakGame="infoSpeakGame"
       @infoJumpGame="infoJumpGame"
       v-on:selectGame="selectGame"
-      v-on:transferNumber="getProblemNumber"
     />
 
     <div class="room-title">
@@ -175,7 +174,6 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { socketConnect } from '@/util/socket-common.js';
 import swal from 'sweetalert';
 
-
 export default {
   name: 'Room',
   components: {
@@ -221,13 +219,13 @@ export default {
     window.onpopstate = () => {
       history.go(1);
       swal({
-          // className:'alert',
-          title: "게임 내에서는 뒤로가기가 불가합니다.",
-          icon: "/img/ssazip-logo.png",
-          buttons: {
+        // className:'alert',
+        title: '게임 내에서는 뒤로가기가 불가합니다.',
+        icon: '/img/ssazip-logo.png',
+        buttons: {
           text: '확인',
         },
-      })
+      });
     };
   },
   // 방 삭제시
@@ -272,27 +270,27 @@ export default {
           // 방이 존재하지 않는 경우
           if (exist == 0) {
             swal({
-                // className:'alert',
-                title: "해당 방은 존재하지 않습니다.",
-                text: '입장코드를 확인해주세요!',
-                icon: "/img/ssazip-logo.png",
-                buttons: {
+              // className:'alert',
+              title: '해당 방은 존재하지 않습니다.',
+              text: '입장코드를 확인해주세요!',
+              icon: '/img/ssazip-logo.png',
+              buttons: {
                 text: '확인',
               },
-            })
+            });
             this.$router.push('/');
             return;
           }
           // 입장 제한인원을 초과한 경우
           else if (exist == 1) {
             swal({
-                // className:'alert',
-                title: '해당 방의 정원을 초과했습니다!',
-                icon: "/img/ssazip-logo.png",
-                buttons: {
+              // className:'alert',
+              title: '해당 방의 정원을 초과했습니다!',
+              icon: '/img/ssazip-logo.png',
+              buttons: {
                 text: '확인',
               },
-            })
+            });
             this.$router.push('/');
             return;
           }
@@ -301,14 +299,14 @@ export default {
             // 새로고침하는 경우
             if (this.getUser.name.length != 0) return;
             swal({
-                // className:'alert',
-                title: "동일한 이름의 참가자가 존재합니다.",
-                text: '이름을 수정해주세요!',
-                icon: "/img/ssazip-logo.png",
-                buttons: {
+              // className:'alert',
+              title: '동일한 이름의 참가자가 존재합니다.',
+              text: '이름을 수정해주세요!',
+              icon: '/img/ssazip-logo.png',
+              buttons: {
                 text: '확인',
               },
-            })
+            });
             this.$router.push('/');
             return;
           }
@@ -320,13 +318,13 @@ export default {
       const userName = this.getUser.name;
       if (!userName) {
         swal({
-            // className:'alert',
-            title: "잘못된 접근입니다.",
-            icon: "/img/ssazip-logo.png",
-            buttons: {
+          // className:'alert',
+          title: '잘못된 접근입니다.',
+          icon: '/img/ssazip-logo.png',
+          buttons: {
             text: '확인',
           },
-        })
+        });
         this.$router.push('/');
       }
     },
@@ -361,13 +359,13 @@ export default {
           if (this.room.members[idx].teamNo == teamNo) return;
           if (this.assignTeamNo[teamNo].length >= 6 && teamNo != 0) {
             swal({
-                // className:'alert',
-                title: "해당 팀은 정원이 가득 찼습니다!",
-                icon: "/img/ssazip-logo.png",
-                buttons: {
+              // className:'alert',
+              title: '해당 팀은 정원이 가득 찼습니다!',
+              icon: '/img/ssazip-logo.png',
+              buttons: {
                 text: '확인',
               },
-            })
+            });
             return;
           }
           this.room.members[idx].teamNo = teamNo;
@@ -406,13 +404,13 @@ export default {
     copyCode() {
       this.$copyText(this.getRoomId);
       swal({
-          // className:'alert',
-          title: "입장 코드를 복사했습니다!",
-          icon: "/img/ssazip-logo.png",
-          buttons: {
+        // className:'alert',
+        title: '입장 코드를 복사했습니다!',
+        icon: '/img/ssazip-logo.png',
+        buttons: {
           text: '확인',
         },
-      })
+      });
     },
     /**
      * Socket 요청들
@@ -441,13 +439,13 @@ export default {
         // 모든 참가자의 연결을 끊고
         this.onDisconnect();
         swal({
-            // className:'alert',
-            title: "방장이 퇴장하여 게임이 종료됩니다!!",
-            icon: "/img/ssazip-logo.png",
-            buttons: {
+          // className:'alert',
+          title: '방장이 퇴장하여 게임이 종료됩니다!!',
+          icon: '/img/ssazip-logo.png',
+          buttons: {
             text: '확인',
           },
-        })
+        });
         return;
       }
       let room = JSON.parse(payload.body);
@@ -517,13 +515,13 @@ export default {
     noParticipantChecker() {
       if (this.room.members.length == 0) {
         swal({
-            // className:'alert',
-            title: "참여인원이 없습니다!",
-            icon: "/img/ssazip-logo.png",
-            buttons: {
+          // className:'alert',
+          title: '참여인원이 없습니다!',
+          icon: '/img/ssazip-logo.png',
+          buttons: {
             text: '확인',
           },
-        })
+        });
         return false;
       }
       let curCnt = 0;
@@ -531,26 +529,26 @@ export default {
         if (this.room.teamline[i]) curCnt++;
         if (this.room.teamline[i] && this.assignTeamNo[i].length == 0) {
           swal({
-              // className:'alert',
-              title: "팀에는 최소 한 명이 필요합니다!",
-              icon: "/img/ssazip-logo.png",
-              buttons: {
+            // className:'alert',
+            title: '팀에는 최소 한 명이 필요합니다!',
+            icon: '/img/ssazip-logo.png',
+            buttons: {
               text: '확인',
             },
-          })
+          });
           return false;
         }
       }
       if (curCnt < 2) {
         swal({
-            // className:'alert',
-            title: "최소 2개의 팀이 필요합니다!",
-            icon: "/img/ssazip-logo.png",
-            buttons: {
+          // className:'alert',
+          title: '최소 2개의 팀이 필요합니다!',
+          icon: '/img/ssazip-logo.png',
+          buttons: {
             text: '확인',
           },
-        })
- 
+        });
+
         return;
       }
       return true;
@@ -559,13 +557,13 @@ export default {
     gameStart() {
       if (this.gameType == 0) {
         swal({
-            // className:'alert',
-            title: "게임을 선택해주세요!",
-            icon: "/img/ssazip-logo.png",
-            buttons: {
+          // className:'alert',
+          title: '게임을 선택해주세요!',
+          icon: '/img/ssazip-logo.png',
+          buttons: {
             text: '확인',
           },
-        })
+        });
         return;
       }
       if (!this.noParticipantChecker()) {

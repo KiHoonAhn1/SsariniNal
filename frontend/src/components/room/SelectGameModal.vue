@@ -164,13 +164,13 @@ export default {
         if (this.number < 1) {
           this.number = 1;
           swal({
-              // className:'alert',
-              title: "팀별 최소 문제수는 1문제입니다.",
-              icon: "/img/ssazip-logo.png",
-              buttons: {
+            // className:'alert',
+            title: '팀별 최소 문제수는 1문제입니다.',
+            icon: '/img/ssazip-logo.png',
+            buttons: {
               text: '확인',
             },
-          })
+          });
         }
       } else if (type === 2) {
         this.number = this.number + 1;
@@ -178,13 +178,13 @@ export default {
         if (this.number > 5) {
           this.number = 5;
           swal({
-              // className:'alert',
-              title: "팀별 최대 문제수는 5문제 입니다!",
-              icon: "/img/ssazip-logo.png",
-              buttons: {
+            // className:'alert',
+            title: '팀별 최대 문제수는 5문제 입니다!',
+            icon: '/img/ssazip-logo.png',
+            buttons: {
               text: '확인',
             },
-          })
+          });
         }
       }
     },

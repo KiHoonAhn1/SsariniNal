@@ -33,6 +33,7 @@
       v-on:onDisconnect="onDisconnect"
     />
     <GameStatus
+      game="ssafymind"
       v-bind:teamOrder="room.teamOrder"
       v-bind:teams="room.teams"
       v-bind:curPlayer="room.curPlayer"
@@ -188,7 +189,6 @@ import '@/components/css/ssafymind/progressbar.css';
 import SsafymindRankModal from '@/components/ssafymind/SsafymindRankModal';
 import swal from 'sweetalert';
 
-
 export default {
   name: 'SsafyMind',
   components: {
@@ -236,13 +236,13 @@ export default {
     window.onpopstate = () => {
       history.go(1);
       swal({
-          // className:'alert',
-          title: "게임 내에서는 뒤로가기가 불가능합니다.",
-          icon: "/img/ssazip-logo.png",
-          buttons: {
+        // className:'alert',
+        title: '게임 내에서는 뒤로가기가 불가능합니다.',
+        icon: '/img/ssazip-logo.png',
+        buttons: {
           text: '확인',
         },
-      })
+      });
     };
     this.stompClient = socketConnect(this.onConnected, this.onError);
     this.stompClient.debug = function() {};
@@ -546,13 +546,13 @@ export default {
         this.$router.push('/room/' + this.getRoomId).catch(() => {});
         this.stompClient.disconnect();
         swal({
-            // className:'alert',
-            title: "방장이 퇴장하여 게임이 종료됩니다!",
-            icon: "/img/ssazip-logo.png",
-            buttons: {
+          // className:'alert',
+          title: '방장이 퇴장하여 게임이 종료됩니다!',
+          icon: '/img/ssazip-logo.png',
+          buttons: {
             text: '확인',
           },
-        })
+        });
         return;
       }
       const data = JSON.parse(payload.body);

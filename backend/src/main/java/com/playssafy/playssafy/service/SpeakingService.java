@@ -34,6 +34,7 @@ public class SpeakingService {
         speaking.setHost(initGame.getHost());
 
         // 팀 진행 순서 초기화
+        speaking.setCurTeam(initGame.getExist());
         boolean[] exist = initGame.getExist();
         // 현재 팀이 존재한다면, 팀 넣기
         List<Integer> teams = new ArrayList<>();
@@ -67,6 +68,7 @@ public class SpeakingService {
             speaking.getQuizzes().add(new Quiz(1, "간장공장 공장장", "간장공장공장장"));
             speaking.getQuizzes().add(new Quiz(1, "내가 그린 기린 그림", "내가그린기린그림"));
         }
+        System.out.println(speaking);
         // 팀 초기화////////
 //        speaking.getTeams().get(1).getMembers().add(new Participant(initGame.getRoomId(), "1", "김태현1", 1));
 //        speaking.getTeams().get(1).getMembers().add(new Participant(initGame.getRoomId(), "2", "김태현2", 1));
@@ -123,9 +125,10 @@ public class SpeakingService {
 
         int lastIndex = speaking.getQuizzes().size() - 1;
         if(speaking.getQuizzes().get(lastIndex).getAnswer().equals(speakMessage.getMessage().replaceAll(" ",""))) {
-            System.out.println("here");
             // 정답으로 상태를 바꿔주고
             speakMessage.setCorrect(true);
+            // 문제를 맞출 때 마다 20점씩 상승
+            speaking.getScores()[speakMessage.getTeamNo()] += 20;
             speakGameRepository.save(speaking);
             return speakMessage;
         }

@@ -22,6 +22,7 @@ public class SpeakingController {
     public void enter(Participant participant) {
         // 유저 입장 후 해당 게임 방 정보 얻기
         Speaking speaking = speakingService.enter(participant);
+        System.out.println(speaking);
         // 게임 방 정보 소켓으로 반환
         template.convertAndSend("/speaking/" + participant.getRoomId(), speaking);
     }
