@@ -38,13 +38,13 @@
                             <img id="obstacle1" src="@/assets/obstacle1.png" />
                         </div>
                         <div style="display:none;">
-                            <img id="obstacle2" src="@/assets/logo.png" />
+                            <img id="obstacle2" src="@/assets/obstacle2.png" />
                         </div>
                         <div style="display:none;">
-                            <img id="obstacle3" src="@/assets/eraser.png" />
+                            <img id="obstacle3" src="@/assets/obstacle3.png" />
                         </div>
                         <div style="display:none;">
-                            <img id="obstacle4" src="@/assets/team1.png" />
+                            <img id="obstacle4" src="@/assets/obstacle4.png" />
                         </div>
                     </div>
                     <!-- 아랫팀 -->
@@ -68,13 +68,13 @@
                             <img id="obstacle12" src="@/assets/obstacle1.png" />
                         </div>
                         <div style="display:none;">
-                            <img id="obstacle22" src="@/assets/logo.png" />
+                            <img id="obstacle22" src="@/assets/obstacle2.png" />
                         </div>
                         <div style="display:none;">
-                            <img id="obstacle32" src="@/assets/eraser.png" />
+                            <img id="obstacle32" src="@/assets/obstacle3.png" />
                         </div>
                         <div style="display:none;">
-                            <img id="obstacle42" src="@/assets/team1.png" />
+                            <img id="obstacle42" src="@/assets/obstacle4.png" />
                         </div>
                     </div>
                 </div>
@@ -196,6 +196,7 @@ export default {
             obstacle1: document.getElementById('obstacle1'),
             obstacle2: document.getElementById('obstacle2'),
             obstacle3: document.getElementById('obstacle3'),
+            obstacle4: document.getElementById('obstacle4'),
             stompClient: null,
             // 방 정보
             roomNgameInfo: {},

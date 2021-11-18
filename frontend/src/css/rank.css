@@ -9,8 +9,9 @@
 .rank-title-word {
   position: relative;
   top:-8vh;
-  font-size: 30px;
+  font-size: 35px;
   font-weight: bold;
+  font-family: 'Poor Story', cursive;
 }
 .rank-button-over {
   position: relative;
@@ -24,6 +25,7 @@
   font-weight: bold;
   font-size: 30px;
   text-align: center;
+  
 }
 
 /* 하단 메인 컨테이너 */
@@ -56,6 +58,7 @@
   top: 10.5vh;
   left:165px;
   font-size: 70px;
+  font-family: 'Poor Story', cursive;
 }
 .silver-place {
   position: relative;
@@ -82,8 +85,9 @@
   position: absolute;
   top: 54.5vh;
   left:190px;
-  font-size: 50px;
+  font-size: 70px;
   color: #FFFFFF;
+  font-family: 'Cute Font', cursive;
 }
 .silver-team {
   position: absolute;
@@ -95,8 +99,9 @@
   position: absolute;
   top: 62.5vh;
   left: 10px;
-  font-size: 50px;
+  font-size: 70px;
   color: #FFFFFF;
+  font-family: 'Cute Font', cursive;
 }
 .bronze-team {
   position: absolute;
@@ -108,8 +113,9 @@
   position: absolute;
   top: 66.5vh;
   left:145px;
-  font-size: 50px;
+  font-size: 70px;
   color: #FFFFFF;
+  font-family: 'Cute Font', cursive;
 }
 
 /* 우측 나머지 팀 결과 */

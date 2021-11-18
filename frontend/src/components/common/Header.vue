@@ -34,6 +34,7 @@ export default {
   height: 56px;
   margin-bottom: 1.5%;
   padding-top: 8px;
+  font-family: 'Poor Story', cursive;
 }
 #game-title {
   position: absolute;

@@ -109,7 +109,7 @@
               "
             >
               <img id="ssazip-img" src="~@/assets/images/ssazip-create.png" alt="" />
-              <div id="selectgame-name">
+              <div id="selectgame-name" style="font-family: 'Poor Story', cursive; font-size:30px">
                 게임 선택 버튼을 눌러 게임을 고르세요~!
               </div>
             </div>
