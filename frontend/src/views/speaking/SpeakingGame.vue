@@ -107,7 +107,7 @@ export default {
       swal({
           // className:'alert',
           title: "게임 내에서는 뒤로가기가 불가능합니다.",
-          icon: "/img/ssazip-logo.c407ce8a.png",
+          icon: "/img/ssazip-logo.png",
           buttons: {
           text: '확인',
         },
@@ -136,7 +136,7 @@ export default {
         swal({
           // className:'alert',
           title: "크롬에서만 동작합니다.",
-          icon: "/img/ssazip-logo.c407ce8a.png",
+          icon: "/img/ssazip-logo.png",
           buttons: {
           text: '확인',
         },

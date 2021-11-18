@@ -238,7 +238,7 @@ export default {
       swal({
           // className:'alert',
           title: "게임 내에서는 뒤로가기가 불가능합니다.",
-          icon: "/img/ssazip-logo.c407ce8a.png",
+          icon: "/img/ssazip-logo.png",
           buttons: {
           text: '확인',
         },
@@ -548,7 +548,7 @@ export default {
         swal({
             // className:'alert',
             title: "방장이 퇴장하여 게임이 종료됩니다!",
-            icon: "/img/ssazip-logo.c407ce8a.png",
+            icon: "/img/ssazip-logo.png",
             buttons: {
             text: '확인',
           },

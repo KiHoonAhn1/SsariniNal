@@ -78,17 +78,38 @@
   left:175px;
   font-size: 70px;
 }
+.gold-team-score {
+  position: absolute;
+  top: 54.5vh;
+  left:190px;
+  font-size: 50px;
+  color: #FFFFFF;
+}
 .silver-team {
   position: absolute;
   top: 22vh;
   left: 3px;
   font-size: 60px;
 }
+.silver-team-score {
+  position: absolute;
+  top: 62.5vh;
+  left: 10px;
+  font-size: 50px;
+  color: #FFFFFF;
+}
 .bronze-team {
   position: absolute;
   top: 30.2vh;
   left:147px;
   font-size: 50px;
+}
+.bronze-team-score {
+  position: absolute;
+  top: 66.5vh;
+  left:145px;
+  font-size: 50px;
+  color: #FFFFFF;
 }
 
 /* 우측 나머지 팀 결과 */
@@ -97,7 +118,7 @@
   /* background-color: aqua; */
   border: 3px solid white;
   border-radius: 20px;
-  width: 12vw;
+  width: 15vw;
   height: 101%;
   position: absolute;
   right: 16vh;
@@ -106,15 +127,25 @@
   /* right:-100%; */
 }
 /* 결과 등수 */
+.rank-list-item {
+  margin-top:20px;
+}
 .rank-list-item-rank {
-  color:white;
+  color:rgb(241, 230, 124);
   font-weight: bold;
   font-size: 25px;
+  margin-top:20px;
 }
 /* 결과 팀 */
 .rank-list-item-team {
   margin-left:30px;
   color:white;
+  font-weight: bold;
+  font-size: 25px;
+}
+.rank-list-item-score {
+  margin-left:30px;
+  color:rgb(219, 124, 124);
   font-weight: bold;
   font-size: 25px;
 }

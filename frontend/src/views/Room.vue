@@ -223,7 +223,7 @@ export default {
       swal({
           // className:'alert',
           title: "게임 내에서는 뒤로가기가 불가합니다.",
-          icon: "/img/ssazip-logo.c407ce8a.png",
+          icon: "/img/ssazip-logo.png",
           buttons: {
           text: '확인',
         },
@@ -275,7 +275,7 @@ export default {
                 // className:'alert',
                 title: "해당 방은 존재하지 않습니다.",
                 text: '입장코드를 확인해주세요!',
-                icon: "/img/ssazip-logo.c407ce8a.png",
+                icon: "/img/ssazip-logo.png",
                 buttons: {
                 text: '확인',
               },
@@ -288,7 +288,7 @@ export default {
             swal({
                 // className:'alert',
                 title: '해당 방의 정원을 초과했습니다!',
-                icon: "/img/ssazip-logo.c407ce8a.png",
+                icon: "/img/ssazip-logo.png",
                 buttons: {
                 text: '확인',
               },
@@ -304,7 +304,7 @@ export default {
                 // className:'alert',
                 title: "동일한 이름의 참가자가 존재합니다.",
                 text: '이름을 수정해주세요!',
-                icon: "/img/ssazip-logo.c407ce8a.png",
+                icon: "/img/ssazip-logo.png",
                 buttons: {
                 text: '확인',
               },
@@ -322,7 +322,7 @@ export default {
         swal({
             // className:'alert',
             title: "잘못된 접근입니다.",
-            icon: "/img/ssazip-logo.c407ce8a.png",
+            icon: "/img/ssazip-logo.png",
             buttons: {
             text: '확인',
           },
@@ -363,7 +363,7 @@ export default {
             swal({
                 // className:'alert',
                 title: "해당 팀은 정원이 가득 찼습니다!",
-                icon: "/img/ssazip-logo.c407ce8a.png",
+                icon: "/img/ssazip-logo.png",
                 buttons: {
                 text: '확인',
               },
@@ -408,7 +408,7 @@ export default {
       swal({
           // className:'alert',
           title: "입장 코드를 복사했습니다!",
-          icon: "/img/ssazip-logo.c407ce8a.png",
+          icon: "/img/ssazip-logo.png",
           buttons: {
           text: '확인',
         },
@@ -443,7 +443,7 @@ export default {
         swal({
             // className:'alert',
             title: "방장이 퇴장하여 게임이 종료됩니다!!",
-            icon: "/img/ssazip-logo.c407ce8a.png",
+            icon: "/img/ssazip-logo.png",
             buttons: {
             text: '확인',
           },
@@ -519,7 +519,7 @@ export default {
         swal({
             // className:'alert',
             title: "참여인원이 없습니다!",
-            icon: "/img/ssazip-logo.c407ce8a.png",
+            icon: "/img/ssazip-logo.png",
             buttons: {
             text: '확인',
           },
@@ -533,7 +533,7 @@ export default {
           swal({
               // className:'alert',
               title: "팀에는 최소 한 명이 필요합니다!",
-              icon: "/img/ssazip-logo.c407ce8a.png",
+              icon: "/img/ssazip-logo.png",
               buttons: {
               text: '확인',
             },
@@ -545,7 +545,7 @@ export default {
         swal({
             // className:'alert',
             title: "최소 2개의 팀이 필요합니다!",
-            icon: "/img/ssazip-logo.c407ce8a.png",
+            icon: "/img/ssazip-logo.png",
             buttons: {
             text: '확인',
           },
@@ -561,7 +561,7 @@ export default {
         swal({
             // className:'alert',
             title: "게임을 선택해주세요!",
-            icon: "/img/ssazip-logo.c407ce8a.png",
+            icon: "/img/ssazip-logo.png",
             buttons: {
             text: '확인',
           },

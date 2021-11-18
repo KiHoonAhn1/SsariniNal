@@ -166,7 +166,7 @@ export default {
           swal({
               // className:'alert',
               title: "팀별 최소 문제수는 1문제입니다.",
-              icon: "/img/ssazip-logo.c407ce8a.png",
+              icon: "/img/ssazip-logo.png",
               buttons: {
               text: '확인',
             },
@@ -180,7 +180,7 @@ export default {
           swal({
               // className:'alert',
               title: "팀별 최대 문제수는 5문제 입니다!",
-              icon: "/img/ssazip-logo.c407ce8a.png",
+              icon: "/img/ssazip-logo.png",
               buttons: {
               text: '확인',
             },

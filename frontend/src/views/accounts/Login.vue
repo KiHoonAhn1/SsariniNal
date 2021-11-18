@@ -77,7 +77,7 @@ export default {
         swal({
           // className:'alert',
           title: '아이디를 입력하세요!',
-          icon: "/img/ssazip-logo.c407ce8a.png",
+          icon: "/img/ssazip-logo.png",
           buttons: {
           text: '확인',
         },
@@ -89,7 +89,7 @@ export default {
         swal({
           // className:'alert',
           title: '비밀번호를 입력하세요!',
-          icon: "/img/ssazip-logo.c407ce8a.png",
+          icon: "/img/ssazip-logo.png",
           buttons: {
           text: '확인',
         },
@@ -108,7 +108,7 @@ export default {
             swal({
               // className:'alert',
               title: '아이디나 비밀번호를 확인하세요.',
-              icon: "/img/ssazip-logo.c407ce8a.png",
+              icon: "/img/ssazip-logo.png",
               buttons: {
               text: '확인',
             },
@@ -180,7 +180,7 @@ export default {
               swal({
                 // className:'alert',
                 title: '이메일과 이름을 체크해주세요.',
-                icon: "/img/ssazip-logo.c407ce8a.png",
+                icon: "/img/ssazip-logo.png",
                 buttons: {
                 text: '확인',
               },
@@ -193,7 +193,7 @@ export default {
             swal({
                 // className:'alert',
                 title: '로그인 실패',
-                icon: "/img/ssazip-logo.c407ce8a.png",
+                icon: "/img/ssazip-logo.png",
                 buttons: {
                 text: '확인',
               },

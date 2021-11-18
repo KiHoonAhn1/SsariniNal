@@ -57,7 +57,7 @@ export default {
           // className:'alert',
           title: '닉네임 길이는 1글자 이상,',
           text: ' 4글자 이하로 설정해주세요.',
-          icon: "/img/ssazip-logo.c407ce8a.png",
+          icon: "/img/ssazip-logo.png",
           buttons: {
           text: '확인',
         },
@@ -69,7 +69,7 @@ export default {
         swal({
             // className:'alert',
             title: '참가 코드를 입력하세요!',
-            icon: "/img/ssazip-logo.c407ce8a.png",
+            icon: "/img/ssazip-logo.png",
             buttons: {
             text: '확인',
           },
@@ -92,7 +92,7 @@ export default {
                 // className:'alert',
                 title: '해당 방은 존재하지 않습니다!',
                 text: '입장코드를 확인해주세요',
-                icon: "/img/ssazip-logo.c407ce8a.png",
+                icon: "/img/ssazip-logo.png",
                 buttons: {
                 text: '확인',
               },
@@ -104,7 +104,7 @@ export default {
             swal({
                 // className:'alert',
                 title: '해당 방의 정원을 초과했습니다!',
-                icon: "/img/ssazip-logo.c407ce8a.png",
+                icon: "/img/ssazip-logo.png",
                 buttons: {
                 text: '확인',
               },
@@ -117,7 +117,7 @@ export default {
                 // className:'alert',
                 title: "동일한 이름의 참가자가 존재합니다.",
                 text: '이름을 수정해주세요!',
-                icon: "/img/ssazip-logo.c407ce8a.png",
+                icon: "/img/ssazip-logo.png",
                 buttons: {
                 text: '확인',
               },

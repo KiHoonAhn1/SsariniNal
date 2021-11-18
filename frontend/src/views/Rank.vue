@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>{{ this.curScore }}</div>
+    <!-- <div>{{ this.curScore }}</div> -->
     <!-- 상단 타이틀 리본 -->
     <div>
       <img class="rank-title" src="../assets/rank-title.png" alt="" />
@@ -17,26 +17,32 @@
           <img class="gold-ssazip" src="../assets/gold-ssazip.png" alt="" />
           <!-- <img class="gold-crown" src="../assets/gold-crown.png" alt=""> -->
           <div class="gold-team">{{ curScore[0][0] }}팀</div>
+          <div class="gold-team-score">{{ curScore[0][1] }}점</div>
         </div>
         <!-- 2등 -->
         <div class="ssazip-container" v-if="curScore.length >= 2">
           <img class="silver-place" src="../assets/silver-place2.png" alt="" />
           <img class="silver-ssazip" src="../assets/silver-ssazip.png" alt="" />
           <div class="silver-team">{{ curScore[1][0] }}팀</div>
+          <div class="silver-team-score">{{ curScore[1][1] }}점</div>
+
         </div>
         <!-- 3등 -->
         <div v-if="curScore.length >= 3 && parseInt(curScore[2][0])" class="ssazip-container">
           <img class="bronze-place" src="../assets/bronze-place2.png" alt="" />
           <img class="bronze-ssazip" src="../assets/bronze-ssazip.png" alt="" />
           <div class="bronze-team">{{ curScore[2][0] }}팀</div>
+          <div class="bronze-team-score">{{ curScore[2][1] }}점</div>
+
         </div>
         <!-- 우측 나머지팀 결과 -->
         <div class="rank-list" v-if="curScore.length >= 4">
           <div style="margin-top:50px">
             <div v-for="(score, idx) in curScore" :key="idx">
-              <div v-if="idx >= 3">
+              <div class="rank-list-item" v-if="idx >= 3">
                 <span class="rank-list-item-rank">{{ idx + 1 }}등</span>
                 <span class="rank-list-item-team">{{ score[0] }}팀</span>
+                <span class="rank-list-item-score">{{ score[1] }}점</span>
               </div>
             </div>
           </div>
@@ -115,9 +121,6 @@ export default {
             return -1;
           }
         }
-      });
-      this.curScore.forEach((e) => {
-        console.log(e);
       });
     },
     // 첫 화면으로 이동
