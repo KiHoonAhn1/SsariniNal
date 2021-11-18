@@ -1969,7 +1969,7 @@ export default {
         this.stompClient = socketConnect(this.onConnected, this.onError);
 
         // 캔버스 반복 생성 시작
-        if (!this.startFlag) {
+        if (!this.startFlag&&!this.animationOnFlag) {
             this.startFlag = true;
             this.drawSsazipgameStart();
         }
