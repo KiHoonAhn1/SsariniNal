@@ -43,7 +43,7 @@
                 alt=""
               />
             </span>
-            <button v-if="host===user" class="start-game-btn" @click="startModal">
+            <button v-if="host == getUser.id" class="start-game-btn" @click="startModal">
               시작
             </button>
           </div>
