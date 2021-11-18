@@ -9,7 +9,10 @@
       v-if="teamOrder != null && teamOrder[0] != null"
     />
     <h3 v-else>게임이 종료되었습니다!</h3>
-    <div class="team-members-group" v-if="teamOrder != null && teamOrder[0] != null">
+    <div
+      class="team-members-group"
+      v-if="game !== 'speak' && teamOrder != null && teamOrder[0] != null"
+    >
       <span v-for="(member, idx) in teams[teamOrder[0]].members" :key="idx">
         <span class="team-members myturn" v-if="idx == curPlayer">{{
           member.participantName
