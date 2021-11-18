@@ -481,7 +481,8 @@ export default {
                         var cactus = new Cactus();
                         cactus.x = this.receivedArr[i]; //장애물 위치
                         cactus.type = this.receivedArrType[i]; //장애물 타입 배열 이용
-                        if (this.masterKeyFlag && !this.receivedGameStopFlag) {
+                        // if (this.masterKeyFlag && !this.receivedGameStopFlag) {
+                        if (this.getIsLogin && !this.receivedGameStopFlag) {
                             this.dinos1.forEach((dino) => {
                                 checkCollision(dino, cactus); //모든 장애물과 충돌확인
                             });
@@ -694,7 +695,8 @@ export default {
 
             //
             // //마스터가 아니라면  플레이어 여부 확인과 등록 필요
-            if (!this.masterKeyFlag) {
+            // if (!this.masterKeyFlag) {
+            if (!this.getIsLogin) {
                 this.isPlayer();
             } else {
                 this.drawSsazip();
@@ -901,7 +903,8 @@ export default {
             this.checkNeedGuideModalSending(); //해당 방에 가이드 모달이 필요한지 type 12
             // db 정보 요청 (master act)
             //0.mount : 마스터의 룸, 게임 정보 요청
-            if (this.masterKeyFlag) {
+            if (this.getIsLogin) {
+            // if (this.masterKeyFlag) {
                 this.stompClient.send(
                     '/pub/game/jump/enter/reqInfoRoomNGame',
                     {},
@@ -928,7 +931,8 @@ export default {
                 );
             }
             //마스터 새로고침시, 입장 시 플레이어도 새로고침
-            if (this.masterKeyFlag) {
+            // if (this.masterKeyFlag) {
+            if (this.getIsLogin) {
                 //마스터가 생성시 나머지 새로고침 요청
                 this.reloadingPlay();
             }
@@ -986,7 +990,8 @@ export default {
         },
         //4. close modal
         closeGuideModalReqSending() {
-            if (this.masterKeyFlag) {
+            // if (this.masterKeyFlag) {
+            if (this.getIsLogin) {
                 console.log('41 ' + this.getRoomId);
                 this.stompClient.send(
                     '/pub/game/jump/closemodal',
@@ -999,7 +1004,8 @@ export default {
             }
         },
         closeStartModalReqSending() {
-            if (this.masterKeyFlag) {
+            // if (this.masterKeyFlag) {
+            if (this.getIsLogin) {
                 console.log('42 ' + this.getRoomId);
                 this.stompClient.send(
                     '/pub/game/jump/closemodal',
@@ -1012,7 +1018,8 @@ export default {
             }
         },
         closeRoundModalReqSending() {
-            if (this.masterKeyFlag) {
+            // if (this.masterKeyFlag) {
+            if (this.getIsLogin) {
                 console.log('43');
                 console.log('43');
                 console.log('43');
@@ -1028,7 +1035,8 @@ export default {
             }
         },
         openRoundModalReq() {
-            if (this.masterKeyFlag) {
+            if (this.getIsLogin) {
+            // if (this.masterKeyFlag) {
                 console.log('44 재시작 전체 전송');
                 console.log('44 재시작 전체 전송');
                 console.log('44 재시작 전체 전송');
@@ -1609,7 +1617,8 @@ export default {
             //3.리로드
             if (info.reloadflag && info.type == 3) {
                 this.reloadFlag = false;
-                if (!this.masterKeyFlag) this.$router.go();
+                // if (!this.masterKeyFlag) this.$router.go();
+                if (!this.getIsLogin) this.$router.go();
                 // this.userPresent1 = info.beUserPresent1;
                 // this.userPresent2 = info.beUserPresent2;
                 // this.drawSsazip();
@@ -1946,12 +1955,13 @@ export default {
         // this.room.id = this.getRoomId;
         this.masterKeyFlag = this.getIsLogin;
         this.userId = this.getUser.name;
-        this.masterKeyFlag = this.getIsLogin;
+        // this.masterKeyFlag = this.getIsLogin;
     },
     mounted() {
         console.log('=============mounted');
         console.log('==========start i am ' + this.getUser.name);
-        if (this.masterKeyFlag) {
+        // if (this.masterKeyFlag) {
+        if (this.getIsLogin) {
             this.guideModalOpenFlag = true;
         }
         // 소켓 연결
@@ -1967,7 +1977,8 @@ export default {
         //플레이어 조작
         document.addEventListener('keydown', (e) => {
             //장애물 생성 요청
-            if (e.code === 'KeyA' && !this.obstacleflag && this.masterKeyFlag) {
+            // if (e.code === 'KeyA' && !this.obstacleflag && this.masterKeyFlag) {
+            if (e.code === 'KeyA' && !this.obstacleflag && this.getIsLogin) {
                 this.obstacleflag = true;
                 this.showResult = false;
                 document.getElementById('ssazipbg').style.animationPlayState = 'running';
