@@ -65,10 +65,10 @@
                             <div class="round2"></div>
                         </div>
                         <div style="display:none;">
-                            <img id="ssazip2" class="t" src="@/assets/ssazip-blue.png" />
+                            <img id="ssazip2" class="t" src="@/assets/ssazip-red.png" />
                         </div>
                         <div style="display:none;">
-                            <img id="ssazipMe2" class="t" src="@/assets/ssazipMe.png" />
+                            <img id="ssazipMe2" class="t" src="@/assets/ssazipMe2.png" />
                         </div>
                         <div style="display:none;">
                             <img id="obstacle12" src="@/assets/obstacle1.png" />

@@ -8,8 +8,8 @@
 }
 .rank-title-word {
   position: relative;
-  top:-8vh;
-  font-size: 35px;
+  top:-8.5vh;
+  font-size: 40px;
   font-weight: bold;
   font-family: 'Poor Story', cursive;
 }
@@ -25,7 +25,6 @@
   font-weight: bold;
   font-size: 30px;
   text-align: center;
-  
 }
 
 /* 하단 메인 컨테이너 */
@@ -58,7 +57,6 @@
   top: 10.5vh;
   left:165px;
   font-size: 70px;
-  font-family: 'Poor Story', cursive;
 }
 .silver-place {
   position: relative;
@@ -78,42 +76,45 @@
 .gold-team {
   position: absolute;
   top: 10.5vh;
-  left:175px;
-  font-size: 70px;
+  left:180px;
+  font-size: 80px;
+  font-family: 'Cute Font', cursive;
 }
 .gold-team-score {
   position: absolute;
   top: 54.5vh;
-  left:190px;
-  font-size: 70px;
+  left:200px;
+  font-size: 60px;
   color: #FFFFFF;
   font-family: 'Cute Font', cursive;
 }
 .silver-team {
   position: absolute;
   top: 22vh;
-  left: 3px;
-  font-size: 60px;
+  left: 15px;
+  font-size: 70px;
+  font-family: 'Cute Font', cursive;
 }
 .silver-team-score {
   position: absolute;
   top: 62.5vh;
-  left: 10px;
-  font-size: 70px;
+  left: 20px;
+  font-size: 60px;
   color: #FFFFFF;
   font-family: 'Cute Font', cursive;
 }
 .bronze-team {
   position: absolute;
-  top: 30.2vh;
-  left:147px;
-  font-size: 50px;
+  top: 29.4vh;
+  left:145px;
+  font-size: 70px;
+  font-family: 'Cute Font', cursive;
 }
 .bronze-team-score {
   position: absolute;
   top: 66.5vh;
-  left:145px;
-  font-size: 70px;
+  left:155px;
+  font-size: 60px;
   color: #FFFFFF;
   font-family: 'Cute Font', cursive;
 }
