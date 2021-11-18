@@ -8,7 +8,7 @@
       v-on:sendGameStartTrigger="sendGameStartTrigger"
       :gameType="'speaking'"
     />
-    <Header v-bind:gameTitle="'또박또박 말해요'" :host="getUser.id"/>
+    <Header v-bind:gameTitle="'또박또박 말해요'" :host="getUser.id" />
     <div class="game-screen">
       <GameStatus game="speak" />
       <div class="game-board">
@@ -39,7 +39,9 @@
       <!-- 아래는 나중에 사용할 아이들 -->
       <div style="display:none;">
         <p>녹음하기</p>
-        <input type="checkbox" id="chk-hear-mic" /><label for="chk-hear-mic">마이크 소리 듣기</label>
+        <input type="checkbox" id="chk-hear-mic" /><label for="chk-hear-mic"
+          >마이크 소리 듣기</label
+        >
         <!-- <button id="record">녹음</button> -->
         <!-- <button id="stop">녹음 정지</button> -->
         <span id="final_span"></span>
@@ -90,11 +92,7 @@ export default {
         '/img/speak/speak-fail.png',
         '/img/speak/speak-success.png',
       ],
-      micImg: [
-        '/img/mic/mic-disabled.png',
-        '/img/mic/mic-off.png',
-        '/img/mic/mic-on.png',
-      ],
+      micImg: ['/img/mic/mic-disabled.png', '/img/mic/mic-off.png', '/img/mic/mic-on.png'],
       talkFinish: false,
       quiz: null,
       lastTeamLen: 0,
@@ -105,8 +103,8 @@ export default {
     history.pushState(null, null, location.href);
     window.onpopstate = () => {
       history.go(1);
-      alert(`게임 내에서는 '뒤로가기'가 불가능합니다.`)
-    }
+      alert(`게임 내에서는 '뒤로가기'가 불가능합니다.`);
+    };
     this.stompClient = socketConnect(this.onConnected, this.onError);
   },
   mounted() {
@@ -159,7 +157,6 @@ export default {
         }
       };
 
-
       speech.onresult = (event) => {
         const talker = this.answerIdx;
         let interimTranscript = '';
@@ -183,7 +180,7 @@ export default {
             this.interimTranscript += transcript;
           }
         }
-        if(this.isRecording) {
+        if (this.isRecording) {
           this.stompClient.send(
             `/pub/speaking/talk/${this.getRoomId}`,
             {},
@@ -204,16 +201,20 @@ export default {
       const record = document.querySelector('#record');
       record.addEventListener('click', async () => {
         if (
-          this.getUser.name !== this.room.teams[this.room.teamOrder[0]].members[this.answerIdx].participantName
-            && !this.isRecording
-          ) {
-            console.log(this.room.teams[this.room.teamOrder[0]].members[this.answerIdx].participantName);
-            this.isRecording = true;
-            return
+          this.getUser.name !==
+            this.room.teams[this.room.teamOrder[0]].members[this.answerIdx].participantName &&
+          !this.isRecording
+        ) {
+          console.log(
+            this.room.teams[this.room.teamOrder[0]].members[this.answerIdx].participantName
+          );
+          this.isRecording = true;
+          return;
         } else if (
-          this.getUser.name !== this.room.teams[this.room.teamOrder[0]].members[this.answerIdx].participantName
-            && this.isRecording
-          ) {
+          this.getUser.name !==
+            this.room.teams[this.room.teamOrder[0]].members[this.answerIdx].participantName &&
+          this.isRecording
+        ) {
           this.isRecording = false;
         } else {
           const speakImg = document.querySelectorAll('.member-name > img');
@@ -249,7 +250,9 @@ export default {
             speakImg[this.answerIdx].src = this.speakImg[1];
             finalTranscript = '';
             this.finalTranscript = '';
-            const sentenceBox = document.querySelectorAll('.sentence-board > .sentence-board-child > .member-sentence > span')[this.answerIdx];
+            const sentenceBox = document.querySelectorAll(
+              '.sentence-board > .sentence-board-child > .member-sentence > span'
+            )[this.answerIdx];
             sentenceBox.innerText = '';
             this.isRecording = true;
             this.talkFinish = false;
@@ -274,15 +277,15 @@ export default {
       speech.addEventListener('result', (event) => {
         const transcript = event['results'];
         // this.mediaRecorder.stop();
-        return transcript
+        return transcript;
       });
     },
     // 멤버 설정
     setTeamMembers: async function() {
-      this.teamMember = this.room.teams[this.room.teamOrder[0]].members
+      this.teamMember = this.room.teams[this.room.teamOrder[0]].members;
     },
     nextTurn: function() {
-      this.stompClient.send('/pub/speaking/next/team', {}, this.getRoomId)
+      this.stompClient.send('/pub/speaking/next/team', {}, this.getRoomId);
       this.userAnswerIdx++;
       this.answerIdx++;
     },
@@ -313,7 +316,10 @@ export default {
       // 방 정보 교환 채널
       this.stompClient.subscribe('/speaking/' + this.getRoomId, this.onMessageReceived);
       // 정답 데이터 채널
-      this.stompClient.subscribe('/speaking/answer/' + this.getRoomId, this.onAnswerMessageReceived);
+      this.stompClient.subscribe(
+        '/speaking/answer/' + this.getRoomId,
+        this.onAnswerMessageReceived
+      );
       // 현재 진행 중인 사람의 문장 전송
       this.stompClient.subscribe('/speaking/talk/' + this.getRoomId, this.onTalkingMessageReceived);
       // 플레이어 변경
@@ -321,7 +327,10 @@ export default {
       // 다음 팀으로
       this.stompClient.subscribe(`/speaking/next/team/` + this.getRoomId, this.onChangeTeam);
       // 모달 정보 교환
-      this.stompClient.subscribe('/ssafymind/close/modal/' + this.getRoomId,this.onModalMessageReceived);
+      this.stompClient.subscribe(
+        '/ssafymind/close/modal/' + this.getRoomId,
+        this.onModalMessageReceived
+      );
 
       // 입장 시 데이터 수신
       this.stompClient.send(
@@ -373,16 +382,21 @@ export default {
       this.talkFinish = true;
       const data = JSON.parse(payload.body);
       const speakImg = document.querySelectorAll('.member-name > img');
-      const sentenceBox = document.querySelectorAll('.sentence-board > .sentence-board-child > .member-sentence > span')[this.answerIdx];
+      const sentenceBox = document.querySelectorAll(
+        '.sentence-board > .sentence-board-child > .member-sentence > span'
+      )[this.answerIdx];
       sentenceBox.innerText = await data.message;
       if (data.correct) {
         speakImg[this.answerIdx].src = this.speakImg[3];
         this.setMic(0);
         this.removeMic();
-        if (this.getUser.name === this.room.teams[this.room.teamOrder[0]].members[this.answerIdx].participantName) {
-          console.log('이거 혹시 되냐???')
-          console.log('이거 혹시 되냐???')
-          console.log('이거 혹시 되냐???')
+        if (
+          this.getUser.name ===
+          this.room.teams[this.room.teamOrder[0]].members[this.answerIdx].participantName
+        ) {
+          console.log('이거 혹시 되냐???');
+          console.log('이거 혹시 되냐???');
+          console.log('이거 혹시 되냐???');
           this.stompClient.send('/pub/speaking/change/player', {}, this.getRoomId);
         }
       } else {
@@ -390,24 +404,30 @@ export default {
       }
     },
     onTalkingMessageReceived(payload) {
-      console.log('talking 시작')
-      console.log(this.talker)
-      console.log(this.answerIdx)
+      console.log('talking 시작');
+      console.log(this.talker);
+      console.log(this.answerIdx);
       const data = JSON.parse(payload.body);
-      if (this.talker !== this.answerIdx && data.talker !== this.answerIdx && this.talker !== data.talker) {
+      if (
+        this.talker !== this.answerIdx &&
+        data.talker !== this.answerIdx &&
+        this.talker !== data.talker
+      ) {
         this.talker = data.talker;
-        return
+        return;
       }
       console.log(data.talker);
       console.log(data.sentence);
-      console.log('talking 끝')
+      console.log('talking 끝');
       if (data.sentence === '') {
         this.talkFinish = false;
       }
       if (!this.talkFinish || data.sentence === '') {
         const speakImg = document.querySelectorAll('.member-name > img');
         speakImg[this.answerIdx].src = this.speakImg[1];
-        const sentenceBox = document.querySelectorAll('.sentence-board > .sentence-board-child > .member-sentence > span')[this.answerIdx];
+        const sentenceBox = document.querySelectorAll(
+          '.sentence-board > .sentence-board-child > .member-sentence > span'
+        )[this.answerIdx];
         sentenceBox.innerText = data.sentence;
       }
     },
@@ -415,21 +435,33 @@ export default {
       const data = JSON.parse(payload.body);
       this.isRecording = false;
       this.talkFinish = false;
-      console.log('------------------change player--------------')
-      console.log(data)
-      console.log(this.room.teams[this.room.teamOrder[0]].members.length)
-      console.log('------------------change player--------------')
+      console.log('------------------change player--------------');
+      console.log(data);
+      console.log(this.room.teams[this.room.teamOrder[0]].members.length);
+      console.log('------------------change player--------------');
       // 다음 팀으로 넘겨야 하는 경우
-      if (data === 0 && this.answerIdx + 1 === this.room.teams[this.room.teamOrder[0]].members.length) {
-        if (this.getUser.name === this.room.teams[this.room.teamOrder[0]].members[this.answerIdx].participantName) {
+      if (
+        data === 0 &&
+        this.answerIdx + 1 === this.room.teams[this.room.teamOrder[0]].members.length
+      ) {
+        if (
+          this.getUser.name ===
+          this.room.teams[this.room.teamOrder[0]].members[this.answerIdx].participantName
+        ) {
           this.stompClient.send('/pub/speaking/next/team', {}, this.getRoomId);
+          this.answerIdx = data;
+          this.setMic(0);
+          this.removeMic();
         }
-      // 다른 선수로 넘겨야 하는 경우
+        // 다른 선수로 넘겨야 하는 경우
       } else {
         this.answerIdx = data;
         const speakImg = document.querySelectorAll('.member-name > img');
         speakImg[data].src = this.speakImg[0];
-        if (this.getUser.name === this.room.teams[this.room.teamOrder[0]].members[data].participantName) {
+        if (
+          this.getUser.name ===
+          this.room.teams[this.room.teamOrder[0]].members[data].participantName
+        ) {
           // 마이크 권한 주기
           this.setAudio(); // 이전 사람과 이번 턴의 index
           // 마이크 아이콘 변경
@@ -442,8 +474,8 @@ export default {
       this.room = data;
       this.setMic(2); // 이전 사람과 이번 팀의 index
       this.answerIdx = 0;
-      console.log('===================onTeamChange==================')
-      console.log('==================onTeamChange===================')
+      console.log('===================onTeamChange==================');
+      console.log('==================onTeamChange===================');
       // answerIdx 바꿔주기
       // 팀원들 싹 다시 뿌려주기
       // span 싹 지워주기
@@ -457,6 +489,6 @@ export default {
     sendGameStartTrigger: function() {
       this.stompClient.send(`/pub/ssafymind/close/modal`, {}, this.getRoomId);
     },
-  }
-}
+  },
+};
 </script>
