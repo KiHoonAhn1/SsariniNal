@@ -53,10 +53,10 @@ public class SsazipJumpController {
         // 게임 방 정보 소켓으로 반환
         template.convertAndSend("/game/jumpgame/" + gotSsazipJump.getRoomId(), ssazipJump);
     }
-    //11. 유저(방장을 제외한 모든 참여자) 등록 및 송출
+    //11. 유저(방장을 제외한x 포함 모든 참여자) 등록 및 송출
     @MessageMapping(value = "/game/jump/enter/reg/user")
     public synchronized void regUser(SsazipJump gotSsazipJump) {
-        System.out.println("//11. 유저(방장을 제외한 모든 참여자) 등록 및 송출");
+        System.out.println("//11. 유저(방장을 제외한x 포함 모든 참여자) 등록 및 송출");
         System.out.println(gotSsazipJump.toString());
         SsazipJump ssazipJump = ssazipJumpService.regi(gotSsazipJump);
         template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
@@ -88,14 +88,14 @@ public class SsazipJumpController {
         SsazipJump ssazipJump = ssazipJumpService.exit(participant);
 
         // 방장이 퇴장한 경우 종료 메세지 뿌려주기
-        if (ssazipJump == null) {
+        if (ssazipJump == null&& participant.isHost()) {
             System.out.println("방장 퇴장");
             template.convertAndSend("/game/jumpgame/" + participant.getRoomId(), "exit");
             return;
         }
         ssazipJump.setType(11);
-        // 게임방 정보 소켓으로 반환
-//        template.convertAndSend("/game/jumpgame/" + participant.getRoomId(), ssazipJump);
+//         게임방 정보 소켓으로 반환
+        template.convertAndSend("/game/jumpgame/" + participant.getRoomId(), ssazipJump);
     }
 
     //40. 모달 종료

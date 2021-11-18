@@ -4,7 +4,9 @@ import com.playssafy.playssafy.dto.ssafymind.Team;
 import com.playssafy.playssafy.dto.ssazipjump.SsazipJump;
 import com.playssafy.playssafy.dto.waitroom.InitGame;
 import com.playssafy.playssafy.dto.waitroom.Participant;
+import com.playssafy.playssafy.dto.waitroom.WaitRoom;
 import com.playssafy.playssafy.repository.SsazipJumpRepository;
+import com.playssafy.playssafy.repository.WaitRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import java.util.List;
 public class SsazipJumpService {
     @Autowired
     private SsazipJumpRepository ssazipJumpRepository;
+    @Autowired
+    private WaitRoomRepository waitRoomRepository;
 
     // rest 게임방 생성 메서드
     public synchronized void createSsazipJump(InitGame initGame) {
@@ -112,9 +116,9 @@ public class SsazipJumpService {
         }
         return ssazipJump;
     }
-    //11. 유저(방장을 제외한 모든 참여자) 등록 및 송출
+    //11. 유저(방장을 제외한x포함 모든 참여자) 등록 및 송출
     public synchronized SsazipJump regi(SsazipJump gotSsazipJump) {
-        System.out.println("1. 유저(방장을 제외한 모든 참여자) 등록 및 송출 service");
+        System.out.println("1. 유저(방장을 제외한x포함  모든 참여자) 등록 및 송출 service");
         System.out.println("참가자="+gotSsazipJump.getParticipantName());
         System.out.println(gotSsazipJump.toString());
         SsazipJump ssazipJump = ssazipJumpRepository.findById(gotSsazipJump.getRoomId()).orElse(null);
@@ -164,11 +168,19 @@ public class SsazipJumpService {
 
     // 1. 게임방 퇴장 메서드
     public synchronized SsazipJump exit(Participant participant) {
+        if(ssazipJumpRepository.findById(participant.getRoomId()).isEmpty())
+            return null;
         SsazipJump ssazipJump = ssazipJumpRepository.findById(participant.getRoomId()).get();
 
         // 방장이라면 방 자체를 삭제 후 종료
         if (ssazipJump.getHost().equals(participant.getParticipantId())) {
             ssazipJumpRepository.deleteById(participant.getRoomId());
+            // 게임이 진행중이었던 경우 게임 진행 여부 초기화
+            WaitRoom waitRoom = waitRoomRepository.findById(participant.getRoomId()).get();
+            if(waitRoom.isProgress()) {
+                waitRoom.setProgress(false);
+                waitRoomRepository.save(waitRoom);
+            }
             return null;
         }
         // 방장이 아니라면 유저 정보만 삭제
