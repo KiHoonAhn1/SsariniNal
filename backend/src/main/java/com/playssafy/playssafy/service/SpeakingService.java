@@ -67,9 +67,9 @@ public class SpeakingService {
             speaking.getQuizzes().add(new Quiz(1, "삼성 청년 소프트웨어 아카데미", "삼성청년소프트웨어아카데미"));
             speaking.getQuizzes().add(new Quiz(1, "간장공장 공장장", "간장공장공장장"));
             speaking.getQuizzes().add(new Quiz(1, "내가 그린 기린 그림", "내가그린기린그림"));
+            speaking.getQuizzes().add(new Quiz(1, "한양 양장점 옆 한영 양장점", "한양양장점옆한영양장점"));
             speaking.getQuizzes().add(new Quiz(1, "내가 그린 기린 그림", "내가그린기린그림"));
-            speaking.getQuizzes().add(new Quiz(1, "한국관광공사 곽진광 관광과장", "한국관광공사곽진광관광과장"));
-            speaking.getQuizzes().add(new Quiz(1, "경찰청 철창살은 외철창살이냐 쌍철창살이냐", "경찰청철창살은외철창살이냐쌍철창살이냐"));
+            speaking.getQuizzes().add(new Quiz(1, "철수책상은 철책상", "철수책상은철책상"));
         }
         speakGameRepository.save(speaking);
     }
