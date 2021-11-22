@@ -26,6 +26,7 @@ public class WaitRoomSocketController {
         WaitRoom waitRoom = waitRoomService.enterRoom(participant);
         // 게임 방이 없는 경우 입장할 방이 없다고 알려주기
         if (waitRoom == null) {
+            System.out.println(participant + "3");
             template.convertAndSend("/game/room/" + participant.getRoomId(), "null");
             return;
         }

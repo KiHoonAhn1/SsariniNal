@@ -1,24 +1,15 @@
 package com.playssafy.playssafy.socketcontroller;
 
 
-import com.playssafy.playssafy.dto.play.JumpInfo;
 import com.playssafy.playssafy.dto.ssazipjump.SsazipJump;
 import com.playssafy.playssafy.dto.waitroom.Participant;
-import com.playssafy.playssafy.dto.waitroom.WaitRoom;
 import com.playssafy.playssafy.repository.SsazipJumpRepository;
 import com.playssafy.playssafy.service.SsazipJumpService;
-import com.playssafy.playssafy.service.WaitRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * 점프 관리 컨트롤러
@@ -42,6 +33,7 @@ public class SsazipJumpController {
         System.out.println(ssazipJump.toString());
         template.convertAndSend("/game/jumpgame/" + gotSsazipJump.getRoomId(), ssazipJump);
     }
+
     //0.mount : 마스터의 룸, 게임 정보 요청
     @MessageMapping(value = "/game/jump/enter/reqInfoRoomNGame")
     public synchronized void reqInfoRoomNGame(SsazipJump gotSsazipJump) {

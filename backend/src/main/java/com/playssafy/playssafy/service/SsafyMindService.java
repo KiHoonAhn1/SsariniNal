@@ -136,7 +136,7 @@ public class SsafyMindService {
 
         // 정답 확인, 리스트의 마지막 부분 부터 문제 회수
         int lastIndex = ssafyMind.getQuizzes().size() - 1;
-        if(ssafyMind.getQuizzes().get(lastIndex).getAnswer().equals(mindMessage.getMessage())) {
+        if(mindMessage.getTeamNo() != 0 && ssafyMind.getQuizzes().get(lastIndex).getAnswer().equals(mindMessage.getMessage())) {
             // 현재 문제의 상태를 바꾸고
             mindMessage.setCorrect(true);
             // 해당 팀의 점수 높이기

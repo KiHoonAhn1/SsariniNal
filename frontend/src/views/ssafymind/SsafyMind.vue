@@ -130,7 +130,11 @@
             v-model="message"
             @keyup.enter="sendAnswerMessage"
             id="send-ans"
-            v-if="room.teamOrder[0] != null && user.teamNo != 0 && room.teamOrder[0] != user.teamNo"
+            v-if="
+              room.teamOrder[0] != null &&
+                getUser.teamNo != 0 &&
+                room.teamOrder[0] != getUser.teamNo
+            "
           />
         </div>
         <div v-for="(msg, idx) in room.chat" :key="idx">

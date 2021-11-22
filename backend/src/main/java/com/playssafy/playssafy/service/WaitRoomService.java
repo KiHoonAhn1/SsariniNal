@@ -37,10 +37,12 @@ public class WaitRoomService {
 
     // 2. 게임 방 참여 메소드
     public WaitRoom enterRoom(Participant participant) {
+        System.out.println(participant + "1");
         // 방이 없는 경우 null 반환
         if(waitRoomRepository.findById(participant.getRoomId()).isEmpty())
             return null;
         WaitRoom waitRoom = waitRoomRepository.findById(participant.getRoomId()).get();
+        System.out.println(participant + "2");
 //        // 방이 없는 경우 null 반환
 //        if (waitRoom == null) {
 //            return null;
@@ -83,6 +85,7 @@ public class WaitRoomService {
     // 4. 게임 방 입장 가능 여부 확인 메소드
     public int findParticipantByName(Participant participant) {
         // 게임방이 존재하지 않는 경우
+        System.out.println(participant.getRoomId() + " + 1");
         if(waitRoomRepository.findById(participant.getRoomId()).isEmpty())
             return 0;
         WaitRoom waitRoom = waitRoomRepository.findById(participant.getRoomId()).get();
