@@ -1,6 +1,14 @@
 # 🎈싸린이날
 
 > 2021.10.11 ~ 2021.11.26
+>
+> ### Team
+>
+> - 이장섭 : Back-End Developer, Project Manager
+> - 권희은 : Front-End Developer
+> - 김태현 : Back-End Developer
+> - 안기훈 : Front-End Developer
+> - 차은채 : Front-End Developer
 
 **서비스 개요**
 
@@ -10,7 +18,7 @@
 
 
 
-## 기획
+## ✨기획
 
 ### 주제 선정
 
@@ -23,13 +31,13 @@
 
 
 
-## 아키텍처 설계
+## 🖇아키텍처 설계
 
 ![1](./assets/싸린이날 아키텍쳐 설계.png)
 
 
 
-## 프로토타입
+## 🎆프로토타입
 
 * 참여코드를 입력하면 대기실로 이동해 3가지 게임을 즐길 수 있습니다.
 * 방만들기를 할 경우에는 방을 생성해 방장 자격으로 게임 전반의 컨트롤을 담당합니다.
@@ -39,7 +47,7 @@
 
 
 
-## 게임소개
+## 💎게임소개
 
 "협동심"을 주제로하는 세 가지 게임을 구현하였습니다.
 
@@ -85,11 +93,98 @@
 
 
 
-### 프로젝트에서 얻은점
-
-
+## 🏆프로젝트에서 얻은점
 
 ![2](./assets/6.png)
 
+<br>
+
+## 🔦Usage
+
+**Frontend**
+
+```shell
+cd frontend
+yarn install
+yarn start
+```
+
+**Backend**
+
+```shell
+cd backend
+./gradlew build
+cd build/libs
+java -jar PLAYSSAFY-0.0.1-SNAPSHOT.jar
+```
+
+<br>
+
+## Burndown Chart
+
+![image-20211123223444325](./assets/image-20211123223444325.png)
+
+![image-20211123223504918](./assets/image-20211123223504918.png)
+
+![image-20211123223515452](./assets/image-20211123223515452.png)
+
+<br>
+
+## 🌏Environment
+
+## Frontend
+
+### IDE
+
+- Visual Studio Code 1.59.0
+
+### JavaScript
+
+- Node.js 14.16.0
+
+### Framework
+
+- Vue/CLI 4.5.13
 
 
+
+## Backend
+
+### IDE
+
+- Intellij IDEA 2021.1.3(Ultimate Edition)
+
+### Java
+
+- OpenJDK 11.0.1
+
+### Spring Boot
+
+- spring boot 2.5.3
+- Gradle 7.1.1
+
+
+
+## Database
+
+- MySQL 15.1 Distrib 10.6.3-MariaDB, for debian-linux-gnu
+- Redis_version 6.2.6
+
+
+
+## Infra
+
+- Ubuntu 20.04 LTS
+- Docker 20.10.7
+- Jenkins 2.304
+
+
+
+## 사용 협업 툴
+
+- 회의 : Webex, Zoom, Discord
+- 이슈 트래킹 : JIRA
+- 대화 : Slack
+- 문서 : Notion
+- 디자인 : Figma
+- 버전 관리 : Git

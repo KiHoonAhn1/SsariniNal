@@ -624,6 +624,7 @@ export default {
      * 메세지 보내기, 받기
      */
     sendAnswerMessage() {
+      if (this.message.length == 0) return;
       this.stompClient.send(
         `/pub/ssafymind/message/${this.getRoomId}`,
         {},
