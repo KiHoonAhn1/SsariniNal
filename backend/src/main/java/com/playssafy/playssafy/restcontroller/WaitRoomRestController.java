@@ -69,5 +69,6 @@ public class WaitRoomRestController {
         waitRoomService.setGame(initGame);
         // ssafymind 게임방 생성
         ssazipJumpService.createSsazipJump(initGame);
+
     }
 }

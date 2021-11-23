@@ -159,8 +159,8 @@ public class SsazipJumpController {
     //중지, 다음 배틀
     @MessageMapping(value = "/game/jump/stopbattle")
     public synchronized void sendStopNNextGame(SsazipJump gotSsazipJump) {
-        System.out.println("다음 배틀");
-        System.out.println(gotSsazipJump.getLoser());
+        System.out.println("배틀 정지");
+        System.out.println("loseteam="+gotSsazipJump.getLoser());
         if(gotSsazipJump.getType()==62) System.out.println("all game done");
         System.out.println(gotSsazipJump.toString());
         SsazipJump ssazipJump=ssazipJumpService.read(gotSsazipJump.getRoomId());
@@ -174,6 +174,32 @@ public class SsazipJumpController {
         ssazipJump.setRemainRound(gotSsazipJump.getRemainRound());
         ssazipJump.setNextRemainRound(gotSsazipJump.getNextRemainRound());
         ssazipJumpRepository.save(ssazipJump);
+        ssazipJump.setType(gotSsazipJump.getType());
+        template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
+    }
+    @MessageMapping(value = "/game/jump/nextbattle")
+    public synchronized void sendNextGame(SsazipJump gotSsazipJump) {
+        System.out.println("다음 배틀");
+        System.out.println("loseteam="+gotSsazipJump.getLoser());
+        System.out.println(gotSsazipJump.toString());
+        SsazipJump ssazipJump=ssazipJumpService.read(gotSsazipJump.getRoomId());
+
+        ssazipJump.setBeGameStopFlag(gotSsazipJump.isBeGameStopFlag());
+        ssazipJump.setLoser(gotSsazipJump.getLoser());
+        ssazipJump.setLoseTeam(gotSsazipJump.getLoseTeam());
+        ssazipJump.setNowRoundNum(gotSsazipJump.getNowRoundNum());
+        ssazipJump.setGameScore1(gotSsazipJump.getGameScore1());
+        ssazipJump.setGameScore2(gotSsazipJump.getGameScore2());
+        ssazipJump.setTeamIdx1(gotSsazipJump.getTeamIdx1());
+        ssazipJump.setTeamIdx2(gotSsazipJump.getTeamIdx2());
+        ssazipJump.setTeamOrder(gotSsazipJump.getTeamOrder());
+        ssazipJump.setTeamOrderNext(gotSsazipJump.getTeamOrderNext());
+        ssazipJump.setFinalScore(gotSsazipJump.getFinalScore());
+        ssazipJump.setRemainRound(gotSsazipJump.getRemainRound());
+        ssazipJump.setNextRemainRound(gotSsazipJump.getNextRemainRound());
+        ssazipJumpRepository.save(ssazipJump);
+        System.out.println("game score ="+ssazipJump.getGameScore1()+" "+ssazipJump.getGameScore2() +"" +
+                " beuserP"+ssazipJump.getBeUserPresent1()+" "+ssazipJump.getBeUserPresent2());
         ssazipJump.setType(gotSsazipJump.getType());
         template.convertAndSend("/game/jumpgame/" + ssazipJump.getRoomId(), ssazipJump);
     }

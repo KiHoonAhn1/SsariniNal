@@ -65,7 +65,7 @@ public class SsazipJumpService {
         }
         System.out.println("섞은 뒤 사이즈는 "+teamsNum.size());
 
-        // 최종 결정된 순서 넣기
+        // 최종 결정된 순서 넣기 => 의미 있는 짓이야?
 //        for(int i = 0; i < teamsNum.size(); i++) {
             for (Integer team : teamsNum) {
                 ssazipJump.getTeamOrder().add(team);
@@ -73,8 +73,14 @@ public class SsazipJumpService {
 //        }
         ssazipJump.setRemainRound(teamsNum.size());
         // 홀수 팀 수 상황 추가
-        if(teamsNum.size()%2==1){
+        if((teamsNum.size()%2)==1){
+            System.out.println("홀수팀이다 봇 추가한다");
+            System.out.println(ssazipJump.getTeamOrder().size());
             ssazipJump.getTeamOrder().add(20);
+            teamsNum.add(20);
+            System.out.println(("ch2  "));
+            System.out.println(ssazipJump.getTeamOrder().size());
+
         }
 
         //현재 강(라운드 표시)
@@ -83,12 +89,13 @@ public class SsazipJumpService {
         if(ssazipJump.getTeamOrder().size()==2){
             nrr=0;
         }
-        else{
-            nrr/=2;
-            if(nrr%2==1){
-                nrr++;
-            }
-        }
+//        else{
+//            nrr/=2;
+//            if(nrr%2==1){
+//                nrr++;
+//            }
+
+//        }
         System.out.println("nrr "+nrr);
 
         ssazipJump.setNextRemainRound(nrr);
