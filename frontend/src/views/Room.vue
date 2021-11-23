@@ -230,9 +230,9 @@ export default {
         },
       });
     };
-    if (this.getIsLogin) {
-      this.interval = setInterval(this.keepSign, 1000);
-    }
+    // if (this.getIsLogin) {
+    //   this.interval = setInterval(this.keepSign, 1000);
+    // }
   },
   // 방 삭제시
   updated() {
@@ -443,9 +443,7 @@ export default {
         method: 'get',
         url: `/sign/${this.getRoomId}`,
       })
-        .then(() => {
-          console.log('ok!');
-        })
+        .then(() => {})
         .catch(() => {});
     },
     // 메세지 수신
