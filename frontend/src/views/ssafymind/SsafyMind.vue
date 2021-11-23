@@ -624,7 +624,7 @@ export default {
      * 메세지 보내기, 받기
      */
     sendAnswerMessage() {
-      if (this.checkSpace(this.message.length)) return;
+      if (this.checkSpace(this.message)) return;
       this.stompClient.send(
         `/pub/ssafymind/message/${this.getRoomId}`,
         {},
@@ -644,7 +644,6 @@ export default {
         return false; // 스페이스 없는 경우
       }
     },
-
     onAnswerMessageReceived(payload) {
       const data = JSON.parse(payload.body);
       // 정답인 경우
