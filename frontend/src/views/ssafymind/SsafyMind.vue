@@ -638,7 +638,7 @@ export default {
     },
     // 공백 문자 막기
     checkSpace(str) {
-      if (str.search(/\s/) !== -1) {
+      if (str.replace(/\s/g, '').length == 0) {
         return true; // 스페이스가 있는 경우
       } else {
         return false; // 스페이스 없는 경우
