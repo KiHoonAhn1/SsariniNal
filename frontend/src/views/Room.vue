@@ -141,7 +141,13 @@
           >
             최종 결과
           </button>
-          <img class="play-btn" src="~@/assets/play-button.png" v-if="this.room.host == this.getUser.id" @click="gameStart()" alt="" />
+          <img
+            class="play-btn"
+            src="~@/assets/play-button.png"
+            v-if="this.room.host == this.getUser.id"
+            @click="gameStart()"
+            alt=""
+          />
           <button
             class="waiting-room-btn select-game"
             @click="openmodal = true"
@@ -201,6 +207,7 @@ export default {
       stompClient: null,
       pNumber: 3,
       gameType: null,
+      interval: null,
     };
   },
   // 방 생성시
@@ -223,13 +230,16 @@ export default {
         },
       });
     };
+    if (this.getIsLogin) {
+      this.interval = setInterval(this.keepSign, 1000);
+    }
   },
   // 방 삭제시
   updated() {
     this.setButton();
   },
   computed: {
-    ...mapGetters(['getRoomId', 'getUser', 'getStompClient']),
+    ...mapGetters(['getRoomId', 'getUser', 'getStompClient', 'getIsLogin']),
     ...mapState(['visitedRoomId']),
   },
   watch: {
@@ -427,6 +437,16 @@ export default {
           teamNo: this.getUser.teamNo,
         })
       );
+    },
+    keepSign() {
+      axios({
+        method: 'get',
+        url: `/sign/${this.getRoomId}`,
+      })
+        .then(() => {
+          console.log('ok!');
+        })
+        .catch(() => {});
     },
     // 메세지 수신
     onMessageReceived(payload) {

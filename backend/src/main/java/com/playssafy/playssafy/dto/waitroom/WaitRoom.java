@@ -24,6 +24,7 @@ public class WaitRoom {
     private boolean speakgameExplain;
     private boolean jumpgameExplain;
     private boolean progress; // 현재 게임이 진행중인지 여부
+    private int sign; // 게임 진행 여부 통신
 
     // 테스트용 멤버 초기화
     public WaitRoom() {
